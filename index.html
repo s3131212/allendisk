@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Allen Disk</title>
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+  <div id="main">
+    <div id="header">
+      <h1 class="text-center">Allen Disk</h1>
+    </div>
+    <div class="container">
+    <div class="col-md-12">
+        <div id="about" class="container">
+            <div class="row" style="width:80%;margin:0 auto;">
+                <blockquote class="col-md-6">
+                    <p>一句話介紹 Allen Disk？ 簡單、方便又免費</p>
+                    <small><a href="http://liwrar.net/">逆回十六夜</a></small>
+                </blockquote>
+                <blockquote class="blockquote-reverse col-md-6">
+                    <p>只要一台伺服器，整個雲端硬碟掌握在你手中。</p>
+                    <small><a href="http://ombwp.net/">Henry Wu</a></small>
+                </blockquote>
+            </div>
+        <p>Allen Disk 是一個強大、免費、開源的雲端硬碟，有了Allen Disk，你將可以擁有自己的網路硬碟，甚至開放註冊帳號，給大家當作免空。 Allen Disk 配有檔案加密儲存、外連檔案、線上預覽、分享資料夾等等功能，讓你輕鬆管理你的檔案或是分享給大家一起使用。</p>
+    </div>
+    <div id="detail" class="container">
+        <h2 class="text-center"><i class="fa fa-plug"></i>&nbsp;功能特色</h2>
+        <h3><i class="fa fa-desktop"></i>&nbsp;使用介面</h3>
+        <p>Allen Disk採用Bootstrap設計，介面簡單方便，一目了然，操作簡便</p>
+        <img src="img/screenshot-2.png" />
+
+        <h3><i class="fa fa-lock"></i>&nbsp;檔案加密</h3>
+        <p>Allen Disk採用高安全性的加密技術 <code>AES-256</code> ，即使伺服器被攻破也不一定可以取得使用者檔案，可以下載<a href="http://blog.allenchou.cc/download.php?s=allendiskencryption.zip">此檔案</a>以比較加密前後之差別</p>
+        
+        <h3><i class="fa fa-upload"></i>&nbsp;簡單上傳</h3>
+        <p>Allen Disk 支援拖拉上傳和傳統的上傳方法，其中拖拉上傳配有上傳進度，只要把檔案從桌面拉到瀏覽器內，剩下的， Allen Disk 都會幫你做好，當你意識到你沒有按下上傳按鈕時， Allen Disk 已經上傳好了。另外，傳統上傳方法支援資料夾上傳，拖曳上傳尚不支援此功能。</p>
+        <img src="img/screenshot-1.png" />
+
+        <h3><i class="fa fa-share"></i>&nbsp;快速分享</h3>
+        <p>Allen Disk 讓您可以和朋友們一起分享檔案，您可以分享單一檔案或是整個資料夾，也可以在 Allen Disk 上外連檔案，只要按幾下滑鼠，整個世界，都是你的分享圈。</p>
+        <img src="img/screenshot-3.png" />
+
+        <h3><i class="fa fa-picture-o"></i>&nbsp;線上預覽</h3>
+        <p>Allen Disk 內建線上預覽功能，不要懷疑，你只要上傳檔案上去，就可以在線上觀看了，不論是音樂、影片、圖片，甚至是文字檔、網頁檔案，都可以輕輕鬆鬆的在 Allen Disk 上觀看。</p>
+        <img src="img/screenshot-4.png" />
+    </div>
+    <div id="download" class="container">
+      <h2 class="text-center"><i class="glyphicon glyphicon-download"></i>&nbsp;檔案下載</h2>
+        <div class="col-md-6">
+          <a href="https://github.com/s3131212/allendisk/archive/master.zip" class="btn btn-primary btn-large btn-block">
+            <span style="font-size:25px;"><i class="fa fa-download"></i> &nbsp; Allen Disk 1.3</span>
+          </a>
+        </div>
+        <div class="col-md-6">
+          <a href="https://github.com/s3131212/allendisk" class="btn btn-warning btn-large btn-block">
+            <span style="font-size:25px;"><i class="fa fa-github"></i> &nbsp; Github</span><br>
+          </a>
+        </div>
+    </div>
+    <div id="no" class="container">
+      <h2 class="text-center"><i class="fa fa-history"></i>&nbsp;版本更新</h2>
+        <h3>1.3</h3>
+        <blockquote>
+            <p>1.修正XSS漏洞</p>
+            <p>2.新增安裝 / 升級導引</p>
+            <p>3.全新UI</p>
+            <p>4.拖曳上傳 + 上傳進度</p>
+            <p>5.資料夾功能</p>
+            <p>6.更強大的檔案分享</p>
+            <p>7.線上預覽檔案</p>
+            <p>8.批次管理檔案 / 資料夾</p>
+        </blockquote>
+        <h3>1.2</h3>
+        <blockquote>
+            <p>1.修正許多錯誤</p>
+            <p>2.新增管理員介面</p>
+            <p>3.全新UI</p>
+            <p>4.新增多檔上傳</p>
+        </blockquote>
+        <h3>1.1</h3>
+        <blockquote>
+            <p>1.修正檔案下載錯誤</p>
+            <p>2.可以選擇是否顯示「為何選用我們」(why.php)及「使用條款」(tos.php)</p>
+            <p>3.採用AJAX重新命名及刪除檔案</p>
+            <p>4.從1.1起授權改用MIT</p>
+        </blockquote>
+        <h3>1.0</h3>
+        <blockquote>
+            <p>Allen Disk首版，支援檔案加密、外連等等功能</p>
+        </blockquote>
+    </div>
+    <div id="lic" class="container">
+      <h2 class="text-center"><i class="fa fa-copyright"></i>&nbsp;授權</h2>
+        <p>Allen Disk採用MIT釋出，請務必遵守MIT之原則</a></p>
+        <p>以下<a href="http://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89">維基百科</a>對MIT授權條款的中文翻譯</p>
+        <blockquote>
+        <p>被授權人有權利使用、復製、修改、合併、出版發行、散布、再授權及販售軟體及軟體的副本。<br>
+        被授權人可根據程式的需要修改授權條款為適當的內容。<br>
+        在軟體和軟體的所有副本中都必須包含版權聲明和許可聲明。</p>
+        </blockquote>
+    </div>
+    <div id="dev" class="container">
+      <h2 class="text-center"><i class="fa fa-code"></i>&nbsp;開發人員</h2>
+        <h3>Allen Chou</h3>
+        <p>不用說，我就是Allen Chou，是位出生於台灣，生長於台灣的人類，現實世界中我是一位每天在國中處罰老師的學生，但一到了網路世界，我是個每天翻著英文文件研究程式的標準宅男，熱愛程式，對PHP特別喜愛，在Licson和TingYu慫恿下也學了node.js，對網路技術有點懵懵懂懂，比較熟悉的是HTML,CSS,PHP，目前正在努力學nodejs,C++,jQuery。</p>
+        <p><i class="fa fa-globe"></i>&nbsp;<a href="http://allenchou.cc">我的網站</a></p>
+    </div>
+    <div id="install" class="container">
+      <h2 class="text-center"><i class="fa fa-hdd-o"></i>&nbsp;安裝</h2>
+      <h3>系統需求</h3>
+        <table class="table">
+        <tr>
+            <td>PHP</td>
+            <td>5.2以上</td>
+        </tr>
+        <tr>
+            <td>MySQL</td>
+            <td>5.0以上</td>
+        </tr>
+        <tr>
+            <td>PHP模組</td>
+            <td>Mysqli, MCrypt, Multibyte String</td>
+        </tr>
+        </table>
+      <h3>自動安裝教學</h3>
+        <p>從 Allen Disk 1.3 起，已經內建安裝與升級系統，以下為使用安裝導引之教學</p>
+        <h4>1. 複製檔案安裝目錄</h4>
+        <h4>2. 打開 Allen Disk 網址</h4>
+        <h4>3. 確認所有安裝條件符合</h4>
+        <img src="img/install-1.png" />
+        <h4>4. 選擇安裝模式</h4>
+        <p>安裝模式分為：全新安裝、舊版升級，舊版必須為 1.2 版，若為 1.2 以下之版本，請備份所有檔案後全新安裝，完成後重新上傳檔案</p>
+        <img src="img/install-2.png" />
+        <h4>5. 填入 MySQL 資訊</h4>
+        <p>若為舊版升級，則安裝程序到此結束，全新安裝請繼續往下看</p>
+        <img src="img/install-3.png" />
+        <h4>6. 填入網站資訊</h4>
+        <img src="img/install-4.png" />
+        <h4>7. 新增一個帳號</h4>
+        <img src="img/install-5.png" />
+        <h3>手動安裝教學</h3>
+        <p>若無法透過安裝程序進行安裝，請使用手動安裝，以下為步驟</p>
+        <h4>1. 打開 /database.php 並依照註解填入資料</h4>
+        <img src="img/install-6.png" />
+        <h4>2. 將 /install/install.sql 匯入 MySQL</h4>
+        <h4>3. 到安裝網址 /admin 填入網站資訊並新增帳號</h4>
+        <p>管理後台預設密碼為 1234</p>
+        <img src="img/install-7.png" />
+    </div>
+<div id="faq" class="container">
+      <h2 class="text-center"><i class="fa fa-question-circle"></i>&nbsp;疑難排解</h2>
+        <h3>檔案無法上傳</h3>
+        <ol><li>請先看看檔案上傳錯誤時是否有通知</li>
+        <li>嘗試看看傳統上傳功能，可能您的瀏覽器無法支援 AJAX 上傳</li>
+        <li>是否有奇怪的 PHP 執行錯誤或是 MySQL 無法正常執行</li>
+        <li>請檢查 php.ini 中的 file_uploads, upload_max_filesize, memory_limit, post_max_size，必須比管理員介面內的設定值還要大， memory_limit, post_max_size 要略大於 file_uploads, upload_max_filesize ， 且 max_input_time, max_execution_time 不要太小</li></ol>
+        <h3>無法安裝</h3>
+        <p>請確定 MySQL 資訊正確且可以寫入讀取，必要檔案可以讀寫，需求模組齊全，以上內容會在安裝前作確認，如果一切符合但仍然無法安裝，請嘗試手動安裝或是通知 <a href="mailto:s3131212@gmail.com">Allen</a></p>
+        <h3>我發現Bug或是漏洞，怎麼辦</h3>
+        <p>請將漏洞或 Bug 的內容寄送到 <a href="mailto:s3131212@gmail.com">s3131212@gmail.com</a> 並詳細說明漏洞內容、重現方法等等，我們會由衷的感謝您的！</p>
+        <h3>我想要把Allen Disk用於商業用途</h3>
+        <p>我們完全歡迎Allen Disk用於商業用途，但是請務必留下網頁底部的版權宣告</p>
+    </div>
+        </div>
+        <div class="copyright">
+        <p>Copyright © 2014 <a href="http://allenchou.cc">Allen Chou</a></p></div>
+    </div>
+  </div>
+</body>
+</html>
