@@ -1,5 +1,6 @@
 <?php
 include('database.php'); 
+error_reporting(0);
 $sitename=$db->select("setting",array("name"=>"sitename")); 
 $config["sitename"]=$sitename[0]["value"];
 $sitetitle=$db->select("setting",array("name"=>"sitetitle")); 
