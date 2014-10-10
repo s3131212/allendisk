@@ -1,6 +1,5 @@
 <?php header("Content-Type:text/html; charset=utf-8");
 include('class/sql.class.php');
-error_reporting(0);
 $config['sql']['host'] = 'host';
 $config['sql']['dbname'] = 'dbname';
 $config['sql']['username'] = 'username';
