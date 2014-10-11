@@ -144,7 +144,7 @@ else header("location: home.php?dir=0");
     <div class="col-md-2">
         <h1 class="text-center"><?php echo $config["sitetitle"]; ?></h1>
         <ul class="nav nav-stacked nav-pills nav-side">
-            <li class="active"><a href="home.php?dir=/">首頁</a></li>
+            <li class="active"><a href="home.php?dir=0">首頁</a></li>
             <li><a href="#" id="info-btn">帳號資訊</a></li>
             <li><a href="logout.php">登出</a></li>
         </ul>
