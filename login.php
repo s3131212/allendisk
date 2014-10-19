@@ -15,13 +15,23 @@ session_destroy();
 <body>
 <div class="container">
     <h1 class="text-center"><?php echo $config["sitetitle"]; ?></h1>
-    <ul class="nav nav-tabs">
-        <li><a href="index.php">首頁</a></li>
-        <?php if($config["why"]){ ?><li><a href="why.php"><?php echo $config["sitename"];?>的好處</a></li><?php } ?>
-        <li class="active"><a href="#">登入</a></li>
-        <?php if($config["reg"]){ ?><li><a href="reg.php">註冊</a></li><?php } ?>
-        <?php if($config["tos"]){ ?><li><a href="tos.php">使用條款</a></li><?php } ?>
-    </ul>
+        <?php
+        if($_SESSION["login"]){
+        ?>
+            <ul class="nav nav-tabs">
+                <li><a href="index.php">首頁</a></li>
+                <li><a href="logout.php">登出</a></li>
+            </ul>
+        <?php }else{ 
+        ?>
+            <ul class="nav nav-tabs">
+                <li><a href="index.php">首頁</a></li>
+                <?php if($config["why"]){ ?><li><a href="why.php"><?php echo $config["sitename"];?>的好處</a></li><?php } ?>
+                <li><a href="login.php">登入</a></li>
+                <?php if($config["reg"]){ ?><li><a href="reg.php">註冊</a></li><?php } ?>
+                <?php if($config["tos"]){ ?><li><a href="tos.php">使用條款</a></li><?php } ?>
+            </ul>
+        <?php } ?>
     <?php 
     $err=$_GET["err"];
     if($err=="1"){

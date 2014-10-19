@@ -166,7 +166,7 @@ else header("location: home.php?dir=0");
             <button class="btn btn-primary" type="button" id="upload-btn">上傳檔案</button>
             <button class="btn btn-success" type="button" id="mkdir-btn">新增資料夾</button>
         </div>
-        <div id="file_list_container">
+        <div id="file_list_container" style="margin-top:70px;">
             <?php 
                 $filecheck=$db->select("file",array('owner' => $_SESSION["username"],'dir'=>$_SESSION["dir"]));
                 $dircheck=$db->select("dir",array('owner' => $_SESSION["username"],'parent'=>$_SESSION["dir"]));
@@ -256,9 +256,9 @@ else header("location: home.php?dir=0");
                         <div style="margin:0 auto; width:50%; font-size:25px; text-align:center; padding:50px;">
                             <span>拖拉到此上傳</span>
                             <br /><span style="font-size:15px;">或</span><br />
-                            <div style="height:44px; width:64px; margin:0 auto;">
-                                <button class="btn primary" id="upload_button">上傳</button>
-                                <input id="file" name="file[]" type="file" style="opacity:0 ;margin-top: -44px;width: 64px;height: 44px;" multiple></br>
+                            <div style="height:44px; width:94px; margin:0 auto;">
+                                <button class="btn primary" id="upload_button">瀏覽檔案</button>
+                                <input id="file" name="file[]" type="file" style="opacity:0 ;margin-top: -44px;width: 93px;height: 44px;" multiple></br>
                             </div>
                         </div>
                     </div>
@@ -324,7 +324,7 @@ else header("location: home.php?dir=0");
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="update = true;">&times;</button>
-                    <h3 id="myModalLabel">上傳檔案</h3>
+                    <h3 id="myModalLabel">帳號資訊</h3>
                 </div>
                 <div class="modal-body">
                     <table class="table table-hover">

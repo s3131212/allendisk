@@ -25,25 +25,23 @@ if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"]) header("Loca
 <body>
 <div class="container">
     <h1 class="text-center"><?php echo $config["sitetitle"]; ?></h1>
-<?php
-if($_SESSION["login"]){
-?>
-    <ul class="nav nav-tabs">
-        <li><a href="index.php">首頁</a></li>
-        <li><a href="upload.php">上傳檔案</a></li>
-        <li><a href="info.php">帳號資訊</a></li>
-        <li><a href="logout.php">登出</a></li>
-    </ul>
-<?php }else{ 
-?>
-    <ul class="nav nav-tabs">
-        <li><a href="index.php">首頁</a></li>
-        <?php if($config["why"]){ ?><li><a href="why.php"><?php echo $config["sitename"];?>的好處</a></li><?php } ?>
-        <li><a href="login.php">登入</a></li>
-        <?php if($config["reg"]){ ?><li><a href="reg.php">註冊</a></li><?php } ?>
-        <?php if($config["tos"]){ ?><li><a href="tos.php">使用條款</a></li><?php } ?>
-    </ul>
-<?php } ?>
+        <?php
+        if($_SESSION["login"]){
+        ?>
+            <ul class="nav nav-tabs">
+                <li><a href="index.php">首頁</a></li>
+                <li><a href="logout.php">登出</a></li>
+            </ul>
+        <?php }else{ 
+        ?>
+            <ul class="nav nav-tabs">
+                <li><a href="index.php">首頁</a></li>
+                <?php if($config["why"]){ ?><li><a href="why.php"><?php echo $config["sitename"];?>的好處</a></li><?php } ?>
+                <li><a href="login.php">登入</a></li>
+                <?php if($config["reg"]){ ?><li><a href="reg.php">註冊</a></li><?php } ?>
+                <?php if($config["tos"]){ ?><li><a href="tos.php">使用條款</a></li><?php } ?>
+            </ul>
+        <?php } ?>
     <div class="jumbotron">
         <h1><?php echo $res[0]["name"]; ?></h1>
         <p>擁有者：<?php echo $res[0]["owner"]; ?></br>檔案大小：<?php sizecount($res[0]["size"]/1000/1000); ?></br>上傳時間：<?php echo $res[0]["date"]; ?></p>
