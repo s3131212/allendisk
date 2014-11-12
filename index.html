@@ -6,27 +6,58 @@
 <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script>
+    $(function() {
+        $('body').scrollspy({ target: '.navbar', offset: 70 });
+        $('.nav-link').on("click",function(){
+            $("html, body").animate({ scrollTop: $($(this).attr("href")).offset().top-50 }, 1500);
+        });
+    });
+</script>
 </head>
 <body>
-  <div id="main">
-    <div id="header">
+    <div id="main">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Allen Disk</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#about" class="nav-link">關於</a></li>
+                    <li><a href="#detail" class="nav-link">功能特色</a></li>
+                    <li><a href="#download" class="nav-link">下載</a></li>
+                    <li><a href="#install" class="nav-link">安裝</a></li>
+                    <li><a href="#no" class="nav-link">版本更新</a></li>
+                    <li><a href="#lic" class="nav-link">授權</a></li>
+                    <li><a href="#dev" class="nav-link">開發人員</a></li>
+                    <li><a href="#faq" class="nav-link">疑難排解</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="header" style="padding-top:70px;">
       <h1 class="text-center">Allen Disk</h1>
     </div>
     <div class="container">
-    <div class="col-md-12">
-        <div id="about" class="container">
-            <div class="row" style="width:80%;margin:0 auto;">
-                <blockquote class="col-md-6">
+    <div id="about" class="container">
+            <div class="row">
+                <blockquote class="col-md-4">
                     <p>一句話介紹 Allen Disk？ 簡單、方便又免費</p>
                     <small><a href="http://liwrar.net/">逆回十六夜</a></small>
                 </blockquote>
-                <blockquote class="blockquote-reverse col-md-6">
+                <blockquote class="col-md-4">
                     <p>只要一台伺服器，整個雲端硬碟掌握在你手中。</p>
                     <small><a href="http://ombwp.net/">Henry Wu</a></small>
                 </blockquote>
+                <blockquote class="col-md-4">
+                    <p>十一個字給他-簡單直覺的雲端硬碟軟體。</p>
+                    <small><a href="http://yoleeto.com/">Hugo Huang</a></small>
+                </blockquote>
             </div>
-        <p>Allen Disk 是一個強大、免費、開源的雲端硬碟，有了Allen Disk，你將可以擁有自己的網路硬碟，甚至開放註冊帳號，給大家當作免空。 Allen Disk 配有檔案加密儲存、外連檔案、線上預覽、分享資料夾等等功能，讓你輕鬆管理你的檔案或是分享給大家一起使用。</p>
+            <p>Allen Disk 是一個強大、免費、開源的雲端硬碟，有了Allen Disk，你將可以擁有自己的網路硬碟，甚至開放註冊帳號，給大家當作免空。 Allen Disk 配有檔案加密儲存、外連檔案、線上預覽、分享資料夾等等功能，讓你輕鬆管理你的檔案或是分享給大家一起使用。</p>
     </div>
     <div id="detail" class="container">
         <h2 class="text-center"><i class="fa fa-plug"></i>&nbsp;功能特色</h2>
@@ -46,14 +77,14 @@
         <img src="img/screenshot-3.png" />
 
         <h3><i class="fa fa-picture-o"></i>&nbsp;線上預覽</h3>
-        <p>Allen Disk 內建線上預覽功能，不要懷疑，你只要上傳檔案上去，就可以在線上觀看了，不論是音樂、影片、圖片，甚至是文字檔、網頁檔案，都可以輕輕鬆鬆的在 Allen Disk 上觀看。</p>
+        <p>Allen Disk 內建線上預覽功能，不要懷疑，你只要上傳檔案上去，就可以在線上觀看了，不論是音樂、影片、圖片、文字檔，甚至網頁檔案、 Microsoft Office 檔案，都可以輕輕鬆鬆的在 Allen Disk 上觀看。</p>
         <img src="img/screenshot-4.png" />
     </div>
     <div id="download" class="container">
       <h2 class="text-center"><i class="glyphicon glyphicon-download"></i>&nbsp;檔案下載</h2>
         <div class="col-md-6">
           <a href="https://github.com/s3131212/allendisk/archive/master.zip" class="btn btn-primary btn-large btn-block">
-            <span style="font-size:25px;"><i class="fa fa-download"></i> &nbsp; Allen Disk 1.3</span>
+            <span style="font-size:25px;"><i class="fa fa-download"></i> &nbsp; Allen Disk 1.4</span>
           </a>
         </div>
         <div class="col-md-6">
@@ -61,54 +92,6 @@
             <span style="font-size:25px;"><i class="fa fa-github"></i> &nbsp; Github</span><br>
           </a>
         </div>
-      </div>
-    <div id="no" class="container">
-      <h2 class="text-center"><i class="fa fa-history"></i>&nbsp;版本更新</h2>
-        <h3>1.3</h3>
-        <blockquote>
-            <p>1.修正XSS漏洞</p>
-            <p>2.新增安裝 / 升級導引</p>
-            <p>3.全新UI</p>
-            <p>4.拖曳上傳 + 上傳進度</p>
-            <p>5.資料夾功能</p>
-            <p>6.更強大的檔案分享</p>
-            <p>7.線上預覽檔案</p>
-            <p>8.批次管理檔案 / 資料夾</p>
-        </blockquote>
-        <h3>1.2</h3>
-        <blockquote>
-            <p>1.修正許多錯誤</p>
-            <p>2.新增管理員介面</p>
-            <p>3.全新UI</p>
-            <p>4.新增多檔上傳</p>
-        </blockquote>
-        <h3>1.1</h3>
-        <blockquote>
-            <p>1.修正檔案下載錯誤</p>
-            <p>2.可以選擇是否顯示「為何選用我們」(why.php)及「使用條款」(tos.php)</p>
-            <p>3.採用AJAX重新命名及刪除檔案</p>
-            <p>4.從1.1起授權改用MIT</p>
-        </blockquote>
-        <h3>1.0</h3>
-        <blockquote>
-            <p>Allen Disk首版，支援檔案加密、外連等等功能</p>
-        </blockquote>
-    </div>
-    <div id="lic" class="container">
-      <h2 class="text-center"><i class="fa fa-copyright"></i>&nbsp;授權</h2>
-        <p>Allen Disk採用MIT釋出，請務必遵守MIT之原則</a></p>
-        <p>以下<a href="http://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89">維基百科</a>對MIT授權條款的中文翻譯</p>
-        <blockquote>
-        <p>被授權人有權利使用、復製、修改、合併、出版發行、散布、再授權及販售軟體及軟體的副本。<br>
-        被授權人可根據程式的需要修改授權條款為適當的內容。<br>
-        在軟體和軟體的所有副本中都必須包含版權聲明和許可聲明。</p>
-        </blockquote>
-    </div>
-    <div id="dev" class="container">
-      <h2 class="text-center"><i class="fa fa-code"></i>&nbsp;開發人員</h2>
-        <h3>Allen Chou</h3>
-        <p>不用說，我就是Allen Chou，是位出生於台灣，生長於台灣的人類，現實世界中我是一位每天在國中處罰老師的學生，但一到了網路世界，我是個每天翻著英文文件研究程式的標準宅男，熱愛程式，對PHP特別喜愛，在Licson和TingYu慫恿下也學了node.js，對網路技術有點懵懵懂懂，比較熟悉的是HTML,CSS,PHP，目前正在努力學nodejs,C++,jQuery。</p>
-        <p><i class="fa fa-globe"></i>&nbsp;<a href="http://allenchou.cc">我的網站</a></p>
     </div>
     <div id="install" class="container">
       <h2 class="text-center"><i class="fa fa-hdd-o"></i>&nbsp;安裝</h2>
@@ -128,13 +111,21 @@
         </tr>
         </table>
       <h3>自動安裝教學</h3>
-        <p>從 Allen Disk 1.3 起，已經內建安裝與升級系統，以下為使用安裝導引之教學</p>
+        <p>從 Allen Disk 1.3 起，已經內建安裝與升級系統</p>
+        <div class="well">使用升級系統前請先執行以下步驟
+            <ol>
+                <li>確認版本為 1.2 版或 1.3 版，若為 1.2 以下之版本，請備份所有檔案後選擇全新安裝，完成後重新上傳檔案</li>
+                <li>備份所有檔案和 SQL 資訊</li><li>以 1.4 版檔案覆蓋舊檔，但是<span class="text-danger">檔案 database.php 和 資料夾 /file 請不要覆蓋掉</span></li>
+                <li>接下來開始執行升級系統</li>
+            </ol>
+        </div>
+        <p>以下為使用安裝導引之教學</p>
         <h4>1. 複製檔案安裝目錄</h4>
         <h4>2. 打開 Allen Disk 網址</h4>
         <h4>3. 確認所有安裝條件符合</h4>
         <img src="img/install-1.png" />
         <h4>4. 選擇安裝模式</h4>
-        <p>安裝模式分為：全新安裝、舊版升級，舊版升級請直接以 Allen Disk 1.3 版檔案覆蓋 1.2 版檔案（database.php 和 /file 除外，絕對不要覆蓋到這兩個檔案），然後進行升級程序，請注意舊版必須為 1.2 版，若為 1.2 以下之版本，請備份所有檔案後全新安裝，完成後重新上傳檔案。</p>
+        <p>安裝模式分為：全新安裝、舊版升級，舊版升級所使用之升級系統，請見上方注意事項</p>
         <img src="img/install-2.png" />
         <h4>5. 填入 MySQL 資訊</h4>
         <p>若為舊版升級，則安裝程序到此結束，全新安裝請繼續往下看</p>
@@ -152,7 +143,80 @@
         <p>管理後台預設密碼為 1234</p>
         <img src="img/install-7.png" />
     </div>
-<div id="faq" class="container">
+    <div id="no" class="container">
+      <h2 class="text-center"><i class="fa fa-history"></i>&nbsp;版本更新</h2>
+        <h3>1.4</h3>
+        <blockquote>
+            <p>1.修正數個 Bug</p>
+            <p>2.修正用字錯誤</p>
+            <p>3.上傳進度完善化</p>
+            <p>4.增強安全性</p>
+            <p>5.可選擇自動更新頻率</p>
+            <p>6.可全選檔案</p>
+            <p>7.可在後台管理用戶</p>
+            <p>8.新增回收桶</p>
+            <p>9.新增檔案標記功能</p>
+            <p>10.新增遠端上傳</p>
+            <small>2014 / 11 / 12</small>
+        </blockquote>
+        <h3>1.3</h3>
+        <blockquote>
+            <p>1.修正XSS漏洞</p>
+            <p>2.新增安裝 / 升級導引</p>
+            <p>3.全新UI</p>
+            <p>4.拖曳上傳 + 上傳進度</p>
+            <p>5.資料夾功能</p>
+            <p>6.更強大的檔案分享</p>
+            <p>7.線上預覽檔案</p>
+            <p>8.批次管理檔案 / 資料夾</p>
+            <small>2014 / 10 / 10</small>
+        </blockquote>
+        <h3>1.2</h3>
+        <blockquote>
+            <p>1.修正許多錯誤</p>
+            <p>2.新增管理員介面</p>
+            <p>3.全新UI</p>
+            <p>4.新增多檔上傳</p>
+            <small>2014 / 02 / 17</small>
+        </blockquote>
+        <h3>1.1</h3>
+        <blockquote>
+            <p>1.修正檔案下載錯誤</p>
+            <p>2.可以選擇是否顯示「為何選用我們」(why.php)及「使用條款」(tos.php)</p>
+            <p>3.採用AJAX重新命名及刪除檔案</p>
+            <p>4.從1.1起授權改用MIT</p>
+            <small>2013 / 09 / 29</small>
+        </blockquote>
+        <h3>1.0</h3>
+        <blockquote>
+            <p>Allen Disk首版，支援檔案加密、外連等等功能</p>
+            <small>2013 / 09 / 08</small>
+        </blockquote>
+    </div>
+    <div id="lic" class="container">
+      <h2 class="text-center"><i class="fa fa-copyright"></i>&nbsp;授權</h2>
+        <p>Allen Disk採用MIT釋出，請務必遵守MIT之原則</a></p>
+        <blockquote>Copyright (C) 2012~2014 Allen Chou <br /><br />
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br /><br />
+
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br /><br />
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+        </blockquote>
+        <p>以下<a href="http://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89">維基百科</a>對MIT授權條款的中文翻譯</p>
+        <blockquote>
+        <p>被授權人有權利使用、復製、修改、合併、出版發行、散布、再授權及販售軟體及軟體的副本。<br>
+        被授權人可根據程式的需要修改授權條款為適當的內容。<br>
+        在軟體和軟體的所有副本中都必須包含版權聲明和許可聲明。</p>
+        </blockquote>
+    </div>
+    <div id="dev" class="container">
+      <h2 class="text-center"><i class="fa fa-code"></i>&nbsp;開發人員</h2>
+        <h3>Allen Chou</h3>
+        <p>不用說，我就是Allen Chou，是位出生於台灣，生長於台灣的人類，現實世界中我是一位每天在國中處罰老師的學生，但一到了網路世界，我是個每天翻著英文文件研究程式的標準宅男，熱愛程式，對PHP特別喜愛，在Licson和TingYu慫恿下也學了node.js，對網路技術有點懵懵懂懂，比較熟悉的是HTML,CSS,PHP，目前正在努力學nodejs,C++,jQuery。</p>
+        <p><i class="fa fa-globe"></i>&nbsp;<a href="http://allenchou.cc">我的網站</a></p>
+    </div>
+    <div id="faq" class="container">
       <h2 class="text-center"><i class="fa fa-question-circle"></i>&nbsp;疑難排解</h2>
         <h3>檔案無法上傳</h3>
         <ol><li>請先看看檔案上傳錯誤時是否有通知</li>
@@ -166,10 +230,10 @@
         <h3>我想要把Allen Disk用於商業用途</h3>
         <p>我們完全歡迎Allen Disk用於商業用途，但是請務必留下網頁底部的版權宣告</p>
     </div>
-        </div>
-        <div class="copyright">
-        <p>Copyright © 2014 <a href="http://allenchou.cc">Allen Chou</a></p></div>
+    <div class="copyright">
+            <p>Copyright © 2014 <a href="http://allenchou.cc">Allen Chou</a></p>
     </div>
-  </div>
+    </div>
+    </div>
 </body>
 </html>
