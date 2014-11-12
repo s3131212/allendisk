@@ -10,10 +10,9 @@ if(!session_id()) session_start();
 function delete_dir($id){
     $result = true;
     foreach ($GLOBALS['db']->select("file",array('owner'=>$_SESSION["username"],'dir' => $id)) as $k) {
-        $result = $GLOBALS['db']->delete('file',array('id' => $k["id"]));
-        $result = @unlink("file/" . $k["realname"] . ".data");
+        $result = $GLOBALS['db']->update('file',array('recycle' => '1'), array('id' => $k['id']));
     }
-    $result = $GLOBALS['db']->delete('dir',array('id' => $id));
+    $result = $GLOBALS['db']->update('dir',array('recycle' => '1'), array('id' => $id));
     return $result;
 }
 function scan_dir($id){

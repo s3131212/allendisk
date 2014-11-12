@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 include('config.php'); 
 if(!session_id()) session_start();
 if(!file_exists("install/install.lock")){
@@ -44,7 +50,7 @@ if($_SESSION["login"]){
         <?php } ?>
     <div class="jumbotron">
     <h1><?php echo $config["sitename"];?></h1>
-    <p>最先進，最大方，最安全的網路硬碟</p>
+    <p><?php echo $config["subtitle"];?></p>
     <p>
         <?php if($config["why"]){ ?><a href="why.php" class="btn btn-primary btn-large">為何使用<?php echo $config["sitename"];?></a><?php } ?>
     </p>

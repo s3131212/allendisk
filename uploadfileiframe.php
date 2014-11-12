@@ -1,10 +1,19 @@
-<?php include('config.php'); 
+<?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
+include('config.php'); 
 if(!session_id()) session_start();
 if(!$_SESSION["login"]) exit();
 ignore_user_abort(true);
 set_time_limit(0);
 function sizecount($size){
-    if ($size>=0.001 &&$size < 1) {
+    if ($size<0.001) {
+        echo round(($size*1000*1000), 2) . "B";
+    }elseif ($size>=0.001 &&$size < 1) {
         echo round(($size*1000), 2) . "KB";
     }elseif ($size>=1 &&$size < 1000) {
         echo round($size, 2) . "MB";
@@ -24,7 +33,6 @@ function sizecount($size){
 </head>
 <body>
 <div class="container">
- <script>console.log('<?php var_dump($_FILES["file"]); ?>');</script>
 <table class="table">
     <tr>
         <td>檔案名稱</td>
@@ -44,7 +52,7 @@ for ($j=0 ; $j<count($_FILES["file"]["name"]) ; $j++){
     if ($_FILES['file']['size'][$j]>($config["size"]*1000*1000)) {
         $result="sizeout";
     }
-    $used=$db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\'',mysql_real_escape_string($_SESSION["username"],$db->databaseLink)));
+    $used = $db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\' AND `recycle` = \'0\'',mysql_real_escape_string($_SESSION["username"])));
     if ($used[0]['sum']>=($config["total"]*1000*1000)){
       $result="totalout";
     }
@@ -62,7 +70,7 @@ for ($j=0 ; $j<count($_FILES["file"]["name"]) ; $j++){
         fclose($fp);
         fclose($dest);
         $mkid = sha1(mt_rand() . uniqid());
-        $db->insert(array("name"=>$_FILES['file']['name'][$j],"size"=>$_FILES['file']['size'][$j],"owner"=>$_SESSION["username"],"secret"=>$passphrase,"id"=>$mkid,"realname"=>$filename,"type"=>$_FILES['file']['type'][$j],"dir"=>$_SESSION["dir"]),"file");
+        $db->insert(array("name"=>$_FILES['file']['name'][$j],"size"=>$_FILES['file']['size'][$j],"owner"=>$_SESSION["username"],"secret"=>$passphrase,"id"=>$mkid,"realname"=>$filename,"type"=>$_FILES['file']['type'][$j],"dir"=>$_SESSION["dir"],"recycle"=>"0"),"file");
         $result="success";
     }
     if ($result=="success") { ?>

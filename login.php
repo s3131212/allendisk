@@ -1,4 +1,11 @@
-<?php include('config.php');  
+<?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
+include('config.php');  
 if(!session_id()) session_start();
 session_destroy();
 ?>
@@ -27,7 +34,7 @@ session_destroy();
             <ul class="nav nav-tabs">
                 <li><a href="index.php">首頁</a></li>
                 <?php if($config["why"]){ ?><li><a href="why.php"><?php echo $config["sitename"];?>的好處</a></li><?php } ?>
-                <li><a href="login.php">登入</a></li>
+                <li class="active"><a href="login.php">登入</a></li>
                 <?php if($config["reg"]){ ?><li><a href="reg.php">註冊</a></li><?php } ?>
                 <?php if($config["tos"]){ ?><li><a href="tos.php">使用條款</a></li><?php } ?>
             </ul>

@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 require("../config.php"); 
 if(!session_id()) session_start();
 ?>
@@ -23,6 +29,7 @@ if($_SESSION["alogin"]){?>
     <a href="#">管理介面首頁</a>
   </li>
   <li><a href="newuser.php">新增使用者</a></li>
+  <li><a href="manuser.php">管理使用者</a></li>
   <li><a href="../index.php">回到首頁</a></li>
   <li><a href="login.php">登出</a></li>
 </ul>
@@ -65,12 +72,22 @@ if($_SESSION["alogin"]){?>
             <td>填入「首頁網址」而非管理員介面網址，記得加上" http(s):// "和網址最後的" / "</td>
         </tr>
         <tr>
+            <td>自動更新週期</td>
+            <td><input type="text" value="<?php echo $config["updatesec"]; ?>" name="updatesec" id="updatesec" class="form-control" /></td>
+            <td>自動更新檔案目錄的週期秒數（整數），也就是幾秒更新一次，填入 0 代表關閉自動更新功能，數字過小可能造成網路流量與 CPU 爆增，建議 2~5 秒</td>
+        </tr>
+        <tr>
+            <td>標語</td>
+            <td><input type="text" value="<?php echo $config["subtitle"]; ?>" name="subtitle" id="subtitle" class="form-control" /></td>
+            <td>顯示在首頁的標語</td>
+        </tr>
+        <tr>
             <td>啟用註冊功能</td>
             <td><input type="checkbox" <?php if($config["reg"]){echo "checked";} ?> name="reg" id="reg" value="true" /></td>
             <td>允許使用者註冊帳號，個人用網路硬碟請勿勾選</td>
         </tr>
         <tr>
-            <td>顯示「為何選要XXX」</td>
+            <td>顯示「為何選用XXX」</td>
             <td><input type="checkbox" <?php if($config["why"]){echo "checked";} ?> name="why" id="why" value="true" /></td>
             <td>內容請至why.php修改</td>
         </tr>

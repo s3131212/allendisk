@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 if(file_exists("install.lock")){
     header("Location: ../index.php");
     exit();
@@ -61,19 +67,29 @@ if(file_exists("install.lock")){
                     <td>填入「首頁網址」而非管理員介面網址，記得加上" http(s):// "和網址最後的" / "</td>
                 </tr>
                 <tr>
+                    <td>自動更新週期</td>
+                    <td><input type="text" value="" name="updatesec" id="updatesec" class="form-control" /></td>
+                    <td>自動更新檔案目錄的週期秒數（整數），也就是幾秒更新一次，填入 0 代表關閉自動更新功能，數字過小可能造成網路流量與 CPU 爆增，建議 2~5 秒</td>
+                </tr>
+                <tr>
+                    <td>標語</td>
+                    <td><input type="text" value="" name="subtitle" id="subtitle" class="form-control" /></td>
+                    <td>顯示在首頁的標語</td>
+                </tr>
+                <tr>
                     <td>啟用註冊功能</td>
                     <td><input type="checkbox" checked name="reg" id="reg" value="true" /></td>
                     <td>允許使用者註冊帳號，個人用網路硬碟請勿勾選</td>
                 </tr>
                 <tr>
-                    <td>顯示「為何選要XXX」</td>
+                    <td>顯示「為何選用XXX」</td>
                     <td><input type="checkbox" checked name="why" id="why" value="true" /></td>
                     <td>內容請至why.php修改</td>
                 </tr>
                 <tr>
                     <td>顯示「使用條款」</td>
                     <td><input type="checkbox" checked name="tos" id="tos" value="true" /></td>
-                    <td>單一使用者可以使用的空間</td>
+                    <td>內容請至tos.php修改</td>
                 </tr>
                 <tr>
                     <td>管理員密碼</td>

@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 if(file_exists("install.lock")){
     header("Location: ../index.php");
     exit();
@@ -27,7 +33,8 @@ if(file_exists("install.lock")){
     </ul>
     <div>
         <a href="mysql-setting.php" class="btn btn-primary btn-lg btn-block">全新安裝</a>
-        <a href="mysql-update.php" class="btn btn-info btn-lg btn-block">舊版升級</a>
+        <a href="mysql-update.php?ver=1.3" class="btn btn-info btn-lg btn-block">舊版升級 (1.3)</a>
+        <a href="mysql-update.php?ver=1.2" class="btn btn-default btn-lg btn-block">舊版升級 (1.2)</a>
     </div>
 </div>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>

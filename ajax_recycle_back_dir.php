@@ -7,13 +7,12 @@ License: MIT License
 */
 include('config.php'); 
 if(!session_id()) session_start();
-function delete_dir($id){
+function back_dir($id){
     $result = true;
     foreach ($GLOBALS['db']->select("file",array('owner'=>$_SESSION["username"],'dir' => $id)) as $k) {
-        $result = $GLOBALS['db']->delete('file',array('id' => $k["id"]));
-        $result = @unlink("file/" . $k["realname"] . ".data");
+        $result = $GLOBALS['db']->update('file',array('recycle' => '0'), array('id' => $k['id']));
     }
-    $result = $GLOBALS['db']->delete('dir',array('id' => $id));
+    $result = $GLOBALS['db']->update('dir',array('recycle' => '0'), array('id' => $id));
     return $result;
 }
 function scan_dir($id){
@@ -21,7 +20,7 @@ function scan_dir($id){
     foreach ($GLOBALS['db']->select("dir",array('owner'=>$_SESSION["username"],'parent' => $id)) as $d) {
         $result = scan_dir($d["id"]);
     }
-    $result = delete_dir($id);
+    $result = back_dir($id);
     return $result;
 }
 $res = $GLOBALS['db']->select('dir',array('id' => $_GET["id"]));
@@ -29,7 +28,7 @@ if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"]){
     $result = scan_dir($_GET['id']);
     echo json_encode(array(
         "success" => $result,
-        "message" => $result ? "成功刪除。" : "刪除失敗。"
+        "message" => $result ? "成功還原" : "還原失敗。"
     ));
 }
 else {

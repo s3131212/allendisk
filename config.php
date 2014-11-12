@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 include('database.php'); 
 error_reporting(0);
 $sitename=$db->select("setting",array("name"=>"sitename")); 
@@ -11,6 +17,10 @@ $url=$db->select("setting",array("name"=>"url"));
 $config["url"]=$url[0]["value"];
 $total=$db->select("setting",array("name"=>"total")); 
 $config["total"]=$total[0]["value"];
+$updatesec=$db->select("setting",array("name"=>"updatesec")); 
+$config["updatesec"]=$updatesec[0]["value"];
+$subtitle=$db->select("setting",array("name"=>"subtitle")); 
+$config["subtitle"]=$subtitle[0]["value"];
 $reg=$db->select("setting",array("name"=>"reg")); 
 if ($reg[0]["value"]=="true") {
 	$config["reg"]=true;

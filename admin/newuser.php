@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 require("../config.php"); 
 if(!session_id()) session_start();
 ?>
@@ -21,6 +27,7 @@ if($_SESSION["alogin"]){?>
 <ul class="nav nav-tabs">
   <li><a href="index.php">管理介面首頁</a></li>
   <li class="active"><a href="newuser.php">新增使用者</a></li>
+  <li><a href="manuser.php">管理使用者</a></li>
   <li><a href="../index.php">回到首頁</a></li>
   <li><a href="login.php">登出</a></li>
 </ul>
@@ -39,29 +46,29 @@ if($err=="2"){
 <p style="font-size:30px;">新增使用者</p>
 <div class="row" style="margin:0 auto;"> <div class="col-md-6">
 <form class="form-horizontal" action="newb.php" method="post">
-  <div class="form-group">
+    <div class="form-group">
     <label class="control-label" for="username">帳號</label>
-    <div class="controls">
-      <input type="text" id="username" class="form-control" placeholder="Username" name="username">
+        <div class="controls">
+          <input type="text" id="username" class="form-control" placeholder="Username" name="username">
+        </div>
     </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label" for="password">密碼</label>
-    <div class="controls">
-      <input type="text" id="password" class="form-control" placeholder="Password" name="password">
+    <div class="form-group">
+        <label class="control-label" for="password">密碼</label>
+        <div class="controls">
+            <input type="text" id="password" class="form-control" placeholder="Password" name="password">
+        </div>
     </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label" for="email">Email</label>
-    <div class="controls">
-      <input type="text" id="email" class="form-control" placeholder="Email" name="email">
+    <div class="form-group">
+        <label class="control-label" for="email">Email</label>
+        <div class="controls">
+          <input type="text" id="email" class="form-control" placeholder="Email" name="email">
+        </div>
     </div>
-  </div>
-  <div class="form-group">
-    <div class="controls">
-      <button type="submit" class="btn">新增使用者</button>
+    <div class="form-group">
+        <div class="controls">
+          <button type="submit" class="btn">新增使用者</button>
+        </div>
     </div>
-  </div>
 </form></div></div>
 </br>
 </div>

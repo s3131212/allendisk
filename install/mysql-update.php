@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 if(file_exists("install.lock")){
     header("Location: ../index.php");
     exit();
@@ -27,7 +33,7 @@ require_once('../database.php');
         <li><a href="#">新增帳號</a></li>
     </ul>
     <div class="alert alert-info" role="alert"><p>請輸入舊版MySQL資訊，系統會自動為您更新資料庫</p></div>
-    <form method="post" action="mysql-update-action.php">
+    <form method="post" action="mysql-update-action.php?ver=<?php echo htmlspecialchars($_GET["ver"]); ?>">
         <table class="table table-hover">
             <thead>
                 <tr>

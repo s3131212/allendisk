@@ -1,4 +1,11 @@
-<?php include('../config.php');  
+<?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
+require('../config.php');  
 if(!session_id()) session_start();
 session_destroy();
 ?>

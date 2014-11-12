@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 include('config.php'); 
 if(!session_id()) session_start();
 if(!$_SESSION["login"]) exit();
@@ -29,7 +35,7 @@ for ($j=0 ; $j<count($_FILES["file"]["name"]) ; $j++){
     if ($_FILES['file']['size'][$j]>($config["size"]*1000*1000)) {
         $result="sizeout";
     }
-    $used=$db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\'',$_SESSION["username"]));
+    $used = $db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\' AND `recycle` = \'0\'',mysql_real_escape_string($_SESSION["username"])));
     if ($used[0]['sum']>=($config["total"]*1000*1000)){
       $result="totalout";
     }
@@ -47,7 +53,7 @@ for ($j=0 ; $j<count($_FILES["file"]["name"]) ; $j++){
         fclose($fp);
         fclose($dest);
         $mkid = sha1(mt_rand() . uniqid());
-        $db->insert(array("name"=>$_FILES['file']['name'][$j],"size"=>$_FILES['file']['size'][$j],"owner"=>$_SESSION["username"],"secret"=>$passphrase,"id"=>$mkid,"realname"=>$filename,"type"=>$_FILES['file']['type'][$j],"dir"=>$_SESSION["dir"]),"file");
+        $db->insert(array("name"=>$_FILES['file']['name'][$j],"size"=>$_FILES['file']['size'][$j],"owner"=>$_SESSION["username"],"secret"=>$passphrase,"id"=>$mkid,"realname"=>$filename,"type"=>$_FILES['file']['type'][$j],"dir"=>$_SESSION["dir"],"recycle"=>'0'),"file");
         $result="success";
     }
     if ($result=="success") { ?>

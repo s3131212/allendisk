@@ -11,11 +11,11 @@ if(!session_id()) session_start();
 $res = $db->select("file",array('id' => $_GET['id']));
 
 if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"]){
-    $result = $db->update('file',array('name' => $_GET["name"]), array('id' => $_GET['id']));
+    $result = $db->update('file',array('recycle' => '0'), array('id' => $_GET['id']));
     
     echo json_encode(array(
         "success" => $result,
-        "message" => $result ? "成功重新命名檔案。" : "重新命名檔案失敗。"
+        "message" => $result ? "成功還原檔案。" : "還原檔案失敗。"
     ));
 }
 else {

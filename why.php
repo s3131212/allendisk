@@ -1,4 +1,11 @@
-<?php include('config.php'); 
+<?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
+include('config.php'); 
 if(!session_id()) session_start();
 function sizecount($size){
     if ($size<0.001) {
@@ -37,13 +44,13 @@ $res=$db->select("file",array("id"=>$_GET['id']));
         ?>
             <ul class="nav nav-tabs">
                 <li><a href="index.php">首頁</a></li>
-                <?php if($config["why"]){ ?><li><a href="why.php"><?php echo $config["sitename"];?>的好處</a></li><?php } ?>
+                <?php if($config["why"]){ ?><li class="active"><a href="why.php"><?php echo $config["sitename"];?>的好處</a></li><?php } ?>
                 <li><a href="login.php">登入</a></li>
                 <?php if($config["reg"]){ ?><li><a href="reg.php">註冊</a></li><?php } ?>
                 <?php if($config["tos"]){ ?><li><a href="tos.php">使用條款</a></li><?php } ?>
             </ul>
         <?php } ?>
-    <div>
+    <div class="well">
         <h1>為何選用<?php echo $config["sitename"];?></h1>
         <ul>
             <li>檔案加密：所有在<?php echo $config["sitename"];?>的檔案都會加密儲存，且每個檔案的密碼皆不一樣，即使伺服器被攻破，也無法解開加密過的檔案</li>

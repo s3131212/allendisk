@@ -1,4 +1,10 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 if(!session_id()) session_start();
 if(!$_SESSION['login']) exit();
 include('config.php'); 
@@ -9,7 +15,7 @@ if(isset($_POST['name'])&&$_POST["name"]!=null){
     if($dircheck[0]["id"]!=null){
         $re = 1;
     }else{
-        $db->insert(array("id"=>sha1(md5(mt_rand() . uniqid())),"name"=>$name,"owner"=>$_SESSION["username"],"parent"=>$_SESSION["dir"]),"dir");
+        $db->insert(array("id"=>sha1(md5(mt_rand() . uniqid())),"name"=>$name,"owner"=>$_SESSION["username"],"parent"=>$_SESSION["dir"],"recycle"=>'0'),"dir");
         $re = 2;
     }
 }

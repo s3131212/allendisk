@@ -1,30 +1,12 @@
 <?php
+/*
+Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou
+Author: Allen Chou ( http://allenchou.cc )
+License: MIT License
+*/
 include('config.php'); 
 if(!session_id()) session_start();
-/*
-function rename_dir($id,$name){
-    $res = $db->update('dir',array('name' => $_GET["name"]), array('id' => $id));
-    if($res[0]["location"]=="/"){
-        $loc = "/".$res[0]["name"];
-        $nloc = "/".$name;
-    }else{
-        $loc = $res[0]["location"].$res[0]["name"];
-        $nloc = $res[0]["location"].$name;
-    }
-    $word_count = mb_strlen($loc, "utf-8");
-    foreach ($db->select("file",array('dir' => $loc.'/%'),'','',true) as $value) {
-        if($value["owner"]==$_SESSION["username"]){
-            if($value['dir']==$loc){
-                $db->update('file',array('dir' => $nloc), array('id' => $value['id']));
-            }else{
-                mb_substr($value['dir'],-,$word_count+1,"utf-8");
-                $db->update('file',array('dir' => $nloc), array('id' => $value['id']));
-            }
-
-        }
-    }
-}
-*/
 $res = $db->select("dir",array('id' => $_GET['id']));
 
 if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"]){
