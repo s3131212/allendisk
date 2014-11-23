@@ -320,8 +320,10 @@ $(function(){
         update = false;
         if($(this).attr('data-dir-move-id')!=null){
             $('tr[data-id="' + $(this).attr('data-dir-move-id') + '"]').addClass('is_moving');
+            var cdir = $(this).attr('data-dir-move-id');
         }else{
             $('tr[data-id="' + $(this).attr('data-move-id') + '"]').addClass('is_moving');
+            var cdir = "";
         }
         $.ajax({
             url: 'ajax_list_dir.php',
@@ -329,6 +331,8 @@ $(function(){
             dataType: 'json',
             success: function(data){
                 $('#ajax_load_tree').html(data[0].content);
+                $('[data-id='+cdir+']').removeClass("filetreeselector");
+                $('[data-parent='+cdir+']').remove();
             },
         });
         $('#mvfile-modal').modal('show');
