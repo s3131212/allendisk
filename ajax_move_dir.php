@@ -8,7 +8,7 @@ License: MIT License
 include('config.php'); 
 if(!session_id()) session_start();
 $res = $GLOBALS['db']->select('dir',array('id' => $_GET["id"]));
-if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"]){
+if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"] && isset($_GET['dir'])  && isset($_GET['id'])){
     $result = $GLOBALS['db']->update('dir',array('parent' => $_GET['dir']), array('id' => $_GET['id']));
     echo json_encode(array(
         "success" => $result,
