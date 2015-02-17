@@ -34,7 +34,7 @@ class MySQL {
 		}
 		
 		if($this->databaseLink->connect_error !== null){
-   		    $this->lastError = 'Could not connect to server: ' . mysql_error($this->databaseLink);
+   		    $this->lastError = 'Could not connect to server: ' . mysqli_error($this->databaseLink);
 			return false;
 		}
 		
