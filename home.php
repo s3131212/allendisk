@@ -79,14 +79,18 @@ function fileformat($type,$name){
 }
 
 function create_used_bar($total){
-    $audio = 0; $video = 0; $image = 0; $other = 0;
+    global $config;
+    $audio = 0; $video = 0; $image = 0; $other = 0; $used = 0;
     foreach($GLOBALS["db"]->select("file",array('owner' => $_SESSION["username"])) as $d){
+        $used += $d["size"];
+
         if(preg_match("/image\/(.*)/i", $d["type"])) $image+=$d["size"];
         elseif(preg_match("/audio\/(.*)/i", $d["type"])) $audio+=$d["size"];
         elseif(preg_match("/video\/(.*)/i", $d["type"])) $video+=$d["size"];
         else $other+=$d["size"];
     }
-    $output = '<div class="progress progress-striped">';
+    $output = '<p>已經使用'.sizecount($config["total"]).'中的'.sizecount(($used/1000/1000)).' ( '.round($used/1000/1000/$config["total"]*100,2).'% )</p>';
+    $output .= '<div class="progress progress-striped">';
     $used_list = '<ul class="list-unstyled">';
     if($audio != 0){
         $output .= '<div class="progress-bar progress-bar-success"  role="progressbar" style="width:'.round(($audio/1000/1000/$total*100),1).'%;"></div>';
@@ -307,7 +311,6 @@ if($_GET["dir"]!="0"){
             <li><a href="logout.php">登出</a></li>
         </ul>
         <div id="usage_box">
-            <p>已經使用<?php echo sizecount($config["total"]); ?>中的<?php echo sizecount(($used/1000/1000)); ?> ( <?php echo round($used/1000/1000/$config["total"]*100,2); ?>% )</p>
             <?php create_used_bar($config["total"]); ?>
         </div>
         <p class="text-center text-info">Proudly Powered by <br /> <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
