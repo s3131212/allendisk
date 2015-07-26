@@ -1,24 +1,24 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-include('config.php'); 
+include(dirname(dirname(__FILE__)).'/config.php'); 
 if(!session_id()) session_start();
 
 $res = $db->select("file",array('id' => $_GET['id']));
 
 if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"]){
-    $db->delete('file',array('id' => $_GET['id']));
-    
-    $result = @unlink("file/" . $res[0]["realname"] . ".data");
+    $result = $db->update('file',array('recycle' => '1'), array('id' => $_GET['id']));
     
     echo json_encode(array(
         "success" => $result,
         "message" => $result ? "成功刪除檔案。" : "刪除檔案失敗。"
     ));
+    $token = fopen(dirname(dirname(__FILE__)).'/updatetoken/'.md5($_SESSION['username']).'.token', "w");
+    fclose($token);
 }
 else {
     echo json_encode(array(

@@ -43,16 +43,17 @@ class MySQL {
 		return true;
 	}
 	
-	private function SecureData($data){
+	function SecureData($data){
+		//Filter for SQL Injection & XSS
 		if(is_array($data)){
 			foreach($data as $key=>$val){
 				if(!is_array($data[$key])){
-					$data[$key] = $this->databaseLink->real_escape_string($data[$key]);
+					$data[$key] = htmlspecialchars($this->databaseLink->real_escape_string($data[$key]));
 				}
 			}
 		}
 		else {
-			$data = $this->databaseLink->real_escape_string($data, $this->databaseLink);
+			$data = htmlspecialchars($this->databaseLink->real_escape_string($data));
 		}
 		
 		return $data;

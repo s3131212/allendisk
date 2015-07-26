@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -59,9 +59,9 @@ function check_extension($ext){
             </tr>
             <tr>
                 <td>PHP</td>
-                <td>5.2</td>
-                <td>5.2以上</td>
-                <td><?php check_php_version(5.2); ?></td>
+                <td>5.3.7 以上</td>
+                <td>5.5 以上</td>
+                <td><?php check_php_version(5.3); ?></td>
             </tr>
             <tr>
                 <td>Multibyte String 函式庫</td>
@@ -81,6 +81,12 @@ function check_extension($ext){
                 <td>必須支援</td>
                 <td><?php check_extension('mcrypt'); ?></td>
             </tr>
+            <tr>
+                <td>GD 函式庫</td>
+                <td>必須支援</td>
+                <td>必須支援</td>
+                <td><?php check_extension('gd'); ?></td>
+            </tr>
         </table>
         <h2>權限檢測</h2>
         <table class="table table-hover">
@@ -92,7 +98,7 @@ function check_extension($ext){
             <tr>
                 <td>database.php</td>
                 <td>可寫</td>
-                <td><?php check(is_writable('../database.php')); ?></td>
+                <td><?php check(is_writable(dirname(dirname(__FILE__)).'/database.php')); ?></td>
             </tr>
             <tr>
                 <td>database-sample.php</td>
@@ -103,6 +109,11 @@ function check_extension($ext){
                 <td>install.sql</td>
                 <td>可讀</td>
                 <td><?php check(is_writable('install.sql')); ?></td>
+            </tr>
+            <tr>
+                <td>/file</td>
+                <td>可寫</td>
+                <td><?php check(is_writable(dirname(dirname(__FILE__)).'/file')); ?></td>
             </tr>
         </table>
         <p><?php if($error){ ?><span style="color:red;">您必須解決以上問題才能繼續安裝</span><!--當然你可以用直接瀏覽 install-method.php 的方式來繞過檢測，但是到時無法正常運作是你家的事，我不負責--><?php }else{ ?><a href="install-method.php" class="btn btn-primary">下一步</a><?php } ?></p>

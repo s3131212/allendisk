@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -32,19 +32,36 @@ for ($j=0 ; $j<count($_FILES["file"]["name"]) ; $j++){
         if($_FILES['file']['error'][$j]==4) $result = "nofile";
     }
     if($_FILES['file']['name'][$j]==null) $result = "nofile";
-    if ($_FILES['file']['size'][$j]>($config["size"]*1000*1000)) {
-        $result="sizeout";
+    if($config['size'] != 0){
+        if ($_FILES['file']['size'][$j]>($config["size"]*1000*1000)) {
+            $result="sizeout";
+        }
     }
-    $used = $db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\' AND `recycle` = \'0\'',mysql_real_escape_string($_SESSION["username"])));
-    if ($used[0]['sum']>=($config["total"]*1000*1000)){
-      $result="totalout";
+    if($config['total'] != 0){
+        $used = $db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\' AND `recycle` = \'0\'',$db->SecureData($_SESSION["username"])));
+        if ($used[0]['sum']>=($config["total"]*1000*1000)){
+          $result="totalout";
+        }
     }
-    $passphrase = sha1(md5(mt_rand() . uniqid()));
+
+    /* Create Key */
+    /*
+        $passphrase['a'] 是檔案加密用的 Key
+        $passphrase['b'] 是位檔案加密的 Key 作加密所使用的密碼，來自使用者的密碼
+        $passphrase['c'] 由 a, b 算出，儲存在資料庫
+    */
+    $passphrase['a'] = sha1(md5(mt_rand() . uniqid()));
+    $passphrase['b'] = $_SESSION['password'];
+    $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+    $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
+    $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
+    unset($key);
+    unset($iv);
+
     $filename = sha1(md5(mt_rand() . uniqid()));
     if ($result=='') {
-        $iv = substr(md5("\x1B\x3C\x58".$passphrase, true), 0, 8);
-        $key = substr(md5("\x2D\xFC\xD8".$passphrase, true) .
-        md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
+        $iv = substr(md5("\x1B\x3C\x58".$passphrase['a'], true), 0, 8);
+        $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true) . md5("\x2D\xFC\xD9".$passphrase['a'], true), 0, 24);
         $opts = array('iv'=>$iv, 'key'=>$key);
         $fp = fopen($_FILES['file']['tmp_name'][$j], 'rb');
         $dest = fopen('./file/' . $filename . '.data', 'wb');
@@ -53,9 +70,11 @@ for ($j=0 ; $j<count($_FILES["file"]["name"]) ; $j++){
         fclose($fp);
         fclose($dest);
         $mkid = sha1(mt_rand() . uniqid());
-        $db->insert(array("name"=>$_FILES['file']['name'][$j],"size"=>$_FILES['file']['size'][$j],"owner"=>$_SESSION["username"],"secret"=>$passphrase,"id"=>$mkid,"realname"=>$filename,"type"=>$_FILES['file']['type'][$j],"dir"=>$_SESSION["dir"],"recycle"=>'0'),"file");
+        $db->insert(array("name"=>$_FILES['file']['name'][$j],"size"=>$_FILES['file']['size'][$j],"owner"=>$_SESSION["username"],"id"=>$mkid,"realname"=>$filename,'secret'=>$passphrase['c'],"type"=>$_FILES['file']['type'][$j],"dir"=>$_SESSION["dir"],"recycle"=>'0'),"file");
         $result="success";
     }
+    $token = fopen(dirname(__FILE__)."/updatetoken/".md5($_SESSION['username']).'.token', "w");
+    fclose($token);
     if ($result=="success") { ?>
         <tr>
             <td><?php echo $_FILES['file']['name'][$j]; ?></td>

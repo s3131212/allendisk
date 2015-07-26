@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -17,6 +17,8 @@ if(isset($_POST['name'])&&$_POST["name"]!=null){
     }else{
         $db->insert(array("id"=>sha1(md5(mt_rand() . uniqid())),"name"=>$name,"owner"=>$_SESSION["username"],"parent"=>$_SESSION["dir"],"recycle"=>'0'),"dir");
         $re = 2;
+        $token = fopen(dirname(__FILE__).'/updatetoken/'.md5($_SESSION['username']).'.token', "w");
+        fclose($token);
     }
 }
 ?>

@@ -1,22 +1,24 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-include('config.php'); 
+include(dirname(dirname(__FILE__)).'/config.php'); 
 if(!session_id()) session_start();
 
 $res = $db->select("file",array('id' => $_GET['id']));
 
 if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"]){
-    $result = $db->update('file',array('dir' => $_GET["dir"]), array('id' => $_GET['id']));
+    $result = $db->update('file',array('name' => $_GET["name"]), array('id' => $_GET['id']));
     
     echo json_encode(array(
         "success" => $result,
-        "message" => $result ? "成功移動檔案。" : "移動失敗。"
+        "message" => $result ? "成功重新命名檔案。" : "重新命名檔案失敗。"
     ));
+    $token = fopen(dirname(dirname(__FILE__)).'/updatetoken/'.md5($_SESSION['username']).'.token', "w");
+    fclose($token);
 }
 else {
     echo json_encode(array(

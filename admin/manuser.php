@@ -10,9 +10,9 @@ if(!session_id()) session_start();
 function sizecount($size){
     if ($size<0.001) {
         return round(($size*1000*1000), 2) . "B";
-    }elseif ($size>=0.001 &&$size < 1) {
+    }elseif ($size>=0.001 && $size < 1) {
         return round(($size*1000), 2) . "KB";
-    }elseif ($size>=1 &&$size < 1000) {
+    }elseif ($size>=1 && $size < 1000) {
         return round($size, 2) . "MB";
     }elseif ($size >= 1000) {
         return round(($size/1000), 2) . 'GB';
@@ -21,6 +21,7 @@ function sizecount($size){
 $alert = "";
 if(isset($_GET["delete"])){
     foreach ($db->select("file",array("owner"=>$_GET["delete"])) as $d) {
+        unlink(dirname(dirname(__FILE__))."/file/".$d['realname'].'.data');
         $db->delete("file",array('id' => $d["id"]));
     }
     foreach ($db->select("dir",array("owner"=>$_GET["delete"])) as $d) {
@@ -45,9 +46,10 @@ if(isset($_GET["delete"])){
 if($_SESSION["alogin"]){?>
 <body>
 <div class="container">
-  <h1 class="text-center"><?php echo $config["sitetitle"]; ?>管理介面</h1>
+  <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
     <ul class="nav nav-tabs">
         <li><a href="index.php">管理介面首頁</a></li>
+        <li><a href="setting.php">設定</a></li>
         <li><a href="newuser.php">新增使用者</a></li>
         <li class="active"><a href="#">管理使用者</a></li>
         <li><a href="../index.php">回到首頁</a></li>
@@ -67,7 +69,7 @@ if($_SESSION["alogin"]){?>
         <tbody>
             <?php
                 foreach ($db->select('user') as $d) {
-                    $used = $db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\'',mysql_real_escape_string($d["name"])));
+                    $used = $db->ExecuteSQL(sprintf("SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = '%s'",$db->SecureData($d['name'])));
                     ?>
                     <tr>
                         <td><?php echo $d["name"] ?></td>

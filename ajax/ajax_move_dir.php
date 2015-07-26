@@ -1,11 +1,11 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-include('config.php'); 
+include(dirname(dirname(__FILE__)).'/config.php'); 
 if(!session_id()) session_start();
 $res = $GLOBALS['db']->select('dir',array('id' => $_GET["id"]));
 if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"] && isset($_GET['dir'])  && isset($_GET['id'])){
@@ -14,6 +14,8 @@ if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"] && isset($_GE
         "success" => $result,
         "message" => $result ? "成功移動。" : "移動失敗。"
     ));
+    $token = fopen(dirname(dirname(__FILE__)).'/updatetoken/'.md5($_SESSION['username']).'.token', "w");
+    fclose($token);
 }
 else {
     echo json_encode(array(

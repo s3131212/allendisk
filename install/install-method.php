@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -31,10 +31,11 @@ if(file_exists("install.lock")){
         <li><a href="#">網站設定</a></li>
         <li><a href="#">新增帳號</a></li>
     </ul>
+    <br />
     <div>
         <a href="mysql-setting.php" class="btn btn-primary btn-lg btn-block">全新安裝</a>
-        <a href="mysql-update.php?ver=1.3" class="btn btn-info btn-lg btn-block">舊版升級 (1.3)</a>
-        <a href="mysql-update.php?ver=1.2" class="btn btn-default btn-lg btn-block">舊版升級 (1.2)</a>
+        <a href="mysql-set.php?update=true" class="btn btn-info btn-lg btn-block">從 1.4 升級</a>
+        <p>從 1.4 升級者請確認 database.php 內的連線資訊正確。1.3 以下欲升級請先升上 1.4 再進行 1.5 升級程序</p>
     </div>
 </div>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>

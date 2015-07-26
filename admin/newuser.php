@@ -11,7 +11,7 @@ if(!session_id()) session_start();
 <!DOCTYPE html>
 <html>
 <head>
-<title>管理員介面 - <?php echo $config["sitename"];?></title>
+<title>管理員介面 - <?php echo $config["sitename"]; ?></title>
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,14 +23,15 @@ if(!session_id()) session_start();
 if($_SESSION["alogin"]){?>
 <body>
 <div class="container">
-  <h1 class="text-center"><?php echo $config["sitetitle"]; ?>管理介面</h1>
-<ul class="nav nav-tabs">
-  <li><a href="index.php">管理介面首頁</a></li>
-  <li class="active"><a href="newuser.php">新增使用者</a></li>
-  <li><a href="manuser.php">管理使用者</a></li>
-  <li><a href="../index.php">回到首頁</a></li>
-  <li><a href="login.php">登出</a></li>
-</ul>
+    <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
+    <ul class="nav nav-tabs">
+      <li><a href="index.php">管理介面首頁</a></li>
+      <li><a href="setting.php">設定</a></li>
+      <li class="active"><a href="newuser.php">新增使用者</a></li>
+      <li><a href="manuser.php">管理使用者</a></li>
+      <li><a href="../index.php">回到首頁</a></li>
+      <li><a href="login.php">登出</a></li>
+    </ul>
 <?php 
 if ($_GET["s"]=="1") {
     echo '<div class="alert alert-success">新增完成</div>';
@@ -66,7 +67,7 @@ if($err=="2"){
     </div>
     <div class="form-group">
         <div class="controls">
-          <button type="submit" class="btn">新增使用者</button>
+          <button type="submit" class="btn btn-default">新增使用者</button>
         </div>
     </div>
 </form></div></div>

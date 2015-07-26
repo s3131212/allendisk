@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -28,11 +28,11 @@ function check_dir($id){
     }else return true;
 }
 $res=$db->select("file",array("id"=>$_GET['id']));
-if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"] && $_GET["download"]=="true") header("Location: rdownfile.php?id=".$_GET["id"]);
+if($_SESSION["login"] && $_SESSION["username"] == $res[0]["owner"] && $_GET["download"]=="true") header("Location: rdownfile.php?id=".$_GET["id"]."&download=true");
 if($res[0]["recycle"]=="1" || $res[0]["share"]=="0") $show = false;
 else{
     if($res[0]["dir"]!=0){
-        if(!check_dir($res[0]["dir"])) $show = false;
+        //if(!check_dir($res[0]["dir"])) $show = false;
     }
 }
 ?>
@@ -44,6 +44,7 @@ else{
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>body{ background-color: #F8F8F8; }</style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -70,7 +71,7 @@ else{
         <?php if($show){ ?>
         <h1><?php echo $res[0]["name"]; ?></h1>
         <p>擁有者：<?php echo $res[0]["owner"]; ?></br>檔案大小：<?php sizecount($res[0]["size"]/1000/1000); ?></br>上傳時間：<?php echo $res[0]["date"]; ?></p>
-        <p><a href="rdownfile.php?id=<?php echo $_GET["id"]; ?>" class="btn btn-large btn-primary">下載</a></p>
+        <p><a href="rdownfile.php?id=<?php echo $_GET["id"]; ?>&password=<?php echo $_GET["password"]; ?>" class="btn btn-large btn-primary">下載</a></p>
         <?php }else{ ?>
         <h1>404 Not Found</h1>
         <p>此檔案不存在，可能不存在、已經被刪除或是被設定為不公開。</p>

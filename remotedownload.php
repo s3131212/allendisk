@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -33,26 +33,39 @@ function getname($url){
 
 if(isset($_POST["file"])){
     $result = '';
-    $used = $db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\' AND `recycle` = \'0\'',mysql_real_escape_string($_SESSION["username"])));
-    if ($used[0]['sum']>=($config["total"]*1000*1000)){
-      $result="totalout";
+    if($config['total'] != 0 ){
+        $used = $db->ExecuteSQL(sprintf('SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = \'%s\' AND `recycle` = \'0\'',$db->SecureData($_SESSION["username"])));
+        if ($used[0]['sum']>=($config["total"]*1000*1000)){
+          $result="totalout";
+        }
     }
-    $file = file_get_contents($_POST["file"]);
-    if($file){
-        $header = get_headers($_POST["file"],1);
+    $file = @file_get_contents($_POST["file"]);
+    $header = @get_headers($_POST["file"],1);
+    if($file !== false && stripos($header[0], '200') !== false){
         $name = getname($_POST["file"]);
         if(strlen($file) == 0){ // 只有當無法正常偵測大小時才使用 header ，因為header可能被偽造
             $size = $header["Content-Length"];
         }else{
             $size = strlen($file);
         }
+        if($config['size'] != 0){
+            if ($size > ($config["size"]*1000*1000)) {
+                $result="sizeout";
+            }
+        }
+        /* Create Key */
+        $passphrase['a'] = sha1(md5(mt_rand() . uniqid()));
+        $passphrase['b'] = $_SESSION['password'];
+        $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+        $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
+        $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
+        unset($key);
+        unset($iv);
 
-        $passphrase = sha1(md5(mt_rand() . uniqid()));
         $filename = sha1(md5(mt_rand() . uniqid()));
         if ($result=='') {
-            $iv = substr(md5("\x1B\x3C\x58".$passphrase, true), 0, 8);
-            $key = substr(md5("\x2D\xFC\xD8".$passphrase, true) .
-            md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
+            $iv = substr(md5("\x1B\x3C\x58".$passphrase['a'], true), 0, 8);
+            $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true) . md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
             $opts = array('iv'=>$iv, 'key'=>$key);
             $fp = fopen($_POST["file"], 'rb');
             //$fp = $file;
@@ -62,12 +75,14 @@ if(isset($_POST["file"])){
             fclose($fp);
             fclose($dest);
             $mkid = sha1(mt_rand() . uniqid());
-            $db->insert(array("name"=>$name,"size"=>$size,"owner"=>$_SESSION["username"],"secret"=>$passphrase,"id"=>$mkid,"realname"=>$filename,"type"=>$header["Content-Type"],"dir"=>$_SESSION["dir"],"recycle"=>"0"),"file");
+            $db->insert(array("name"=>$name,"size"=>$size,"owner"=>$_SESSION["username"],"id"=>$mkid,'secret'=>$passphrase['c'], "realname"=>$filename,"type"=>$header["Content-Type"],"dir"=>$_SESSION["dir"],"recycle"=>"0"),"file");
             $result="success";
         }
     }else $result = "nofile";
     if ($result=="success") {
         $data = "<tr><td>".$name."</td><td>".sizecount($size/1000/1000)."</td><td>上傳成功</td></tr>";
+        $token = fopen(dirname(__FILE__).'/updatetoken/'.md5($_SESSION['username']).'.token', "w");
+        fclose($token);
     }else{
         if ($result=="sizeout") $sta = "檔案太大";
         elseif ($result=="totalout") $sta = "帳戶空間不足";
@@ -93,6 +108,7 @@ if(isset($_POST["file"])){
         <input id="file" name="file" type="text" required class="form-control" placeholder="請輸入網址"></br>
         <input id="submit" name="submit" type="submit" class="btn btn-primary" value="開始上傳">
     </form>
+    <br />
     <table class="table">
     <tr>
         <td>檔案名稱</td>

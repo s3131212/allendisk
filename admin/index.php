@@ -7,6 +7,27 @@ License: MIT License
 */
 require("../config.php"); 
 if(!session_id()) session_start();
+function sizecount($size){
+    if ($size<0.001) {
+        return round(($size*1000*1000), 2) . "B";
+    }elseif ($size>=0.001 && $size < 1) {
+        return round(($size*1000), 2) . "KB";
+    }elseif ($size>=1 && $size < 1000) {
+        return round($size, 2) . "MB";
+    }elseif ($size >= 1000) {
+        return round(($size/1000), 2) . 'GB';
+    }
+}
+$used = $db->ExecuteSQL(sprintf("SELECT SUM(`size`) AS `sum` FROM `file`"));
+$filecount = $db->ExecuteSQL(sprintf("SELECT COUNT(`id`) AS `count` FROM `file`"));
+$sharecount = $db->ExecuteSQL(sprintf("SELECT COUNT(`id`) AS `count` FROM `file` WHERE `share` = '1'"));
+$usercount = $db->ExecuteSQL(sprintf("SELECT COUNT(`name`) AS `count` FROM `user`"));
+
+//Check Update
+$current_version = '1.5.0';
+$newest_version = @file_get_contents('http://ad.allenchou.cc/version.txt');
+//$newest_version = '1.5.1'; //development only
+if(version_compare($newest_version ,$current_version, '>')) $update = true;
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,96 +38,61 @@ if(!session_id()) session_start();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<style>body{ background-color: #F8F8F8; }</style>
+<style>
+    body{
+        background-color: #F8F8F8;
+    }
+    p {
+      line-height: 30px;
+    }
+    .num{
+        font-size: 20px;
+        line-height: 30px;
+    }
+</style>
 </head>
 <?php
 if($_SESSION["alogin"]){?>
 <body>
 <div class="container">
-  <h1 class="text-center"><?php echo $config["sitetitle"]; ?>管理介面</h1>
-<ul class="nav nav-tabs">
-  <li class="active">
-    <a href="#">管理介面首頁</a>
-  </li>
-  <li><a href="newuser.php">新增使用者</a></li>
-  <li><a href="manuser.php">管理使用者</a></li>
-  <li><a href="../index.php">回到首頁</a></li>
-  <li><a href="login.php">登出</a></li>
-</ul>
-<?php if ($_GET["s"]=="1") {
-    echo '<div class="alert alert-success">設定修改完成</div>';
-}?>
-<form method="post" action="set.php">
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <td>名稱</td>
-            <td>值</td>
-            <td>註解</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>網頁標題</td>
-            <td><input type="text" value="<?php echo $config["sitename"]; ?>" name="sitename" id="sitename" class="form-control" /></td>
-            <td>顯示在&lt;title&gt;，所以別使用HTML Tag</td>
-        </tr>
-        <tr>
-            <td>網頁名稱</td>
-            <td><input type="text" value="<?php echo $config["sitetitle"]; ?>" name="sitetitle" id="sitetitle" class="form-control" /></td>
-            <td>可以利用&lt;img&gt;來顯示Logo</td>
-        </tr>
-        <tr>
-            <td>上傳單檔大小限制</td>
-            <td><input type="text" value="<?php echo $config["size"]; ?>" name="size" id="size" class="form-control" /></td>
-            <td>單一檔案上傳最大限制，單位為MB，1000MB = 1GB，必須 ≤ upload_max_filesize & post_max_size</td>
-        </tr>
-        <tr>
-            <td>使用者空間</td>
-            <td><input type="text" value="<?php echo $config["total"]; ?>" name="total" id="total" class="form-control" /></td>
-            <td>單一使用者最大可用空間，單位為MB，1000MB = 1GB</td>
-        </tr>
-        <tr>
-            <td>網站網址</td>
-            <td><input type="text" value="<?php echo $config["url"]; ?>" name="url" id="url" class="form-control" /></td>
-            <td>填入「首頁網址」而非管理員介面網址，記得加上" http(s):// "和網址最後的" / "</td>
-        </tr>
-        <tr>
-            <td>自動更新週期</td>
-            <td><input type="text" value="<?php echo $config["updatesec"]; ?>" name="updatesec" id="updatesec" class="form-control" /></td>
-            <td>自動更新檔案目錄的週期秒數（整數），也就是幾秒更新一次，填入 0 代表關閉自動更新功能，數字過小可能造成網路流量與 CPU 爆增，建議 2~5 秒</td>
-        </tr>
-        <tr>
-            <td>標語</td>
-            <td><input type="text" value="<?php echo $config["subtitle"]; ?>" name="subtitle" id="subtitle" class="form-control" /></td>
-            <td>顯示在首頁的標語</td>
-        </tr>
-        <tr>
-            <td>啟用註冊功能</td>
-            <td><input type="checkbox" <?php if($config["reg"]){echo "checked";} ?> name="reg" id="reg" value="true" /></td>
-            <td>允許使用者註冊帳號，個人用網路硬碟請勿勾選</td>
-        </tr>
-        <tr>
-            <td>顯示「為何選用XXX」</td>
-            <td><input type="checkbox" <?php if($config["why"]){echo "checked";} ?> name="why" id="why" value="true" /></td>
-            <td>內容請至why.php修改</td>
-        </tr>
-        <tr>
-            <td>顯示「使用條款」</td>
-            <td><input type="checkbox" <?php if($config["tos"]){echo "checked";} ?> name="tos" id="tos" value="true" /></td>
-            <td>單一使用者可以使用的空間</td>
-        </tr>
-        <tr>
-            <td>管理員密碼</td>
-            <td><input type="text" value="<?php $res=$db->select("setting",array("name"=>"admin")); echo $res[0]["value"]?>" name="admin" id="admin" class="form-control" /></td>
-            <td>到此介面的密碼</td>
-        </tr>
-    </tbody>
-</table>
-<input type="submit" value="送出" class="btn btn-primary">
-</form>
-</br>
+    <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">管理介面首頁</a></li>
+        <li><a href="setting.php">設定</a></li>
+        <li><a href="newuser.php">新增使用者</a></li>
+        <li><a href="manuser.php">管理使用者</a></li>
+        <li><a href="../index.php">回到首頁</a></li>
+        <li><a href="login.php">登出</a></li>
+    </ul>
+    <br />
+    <?php
+        if($update){
+            echo '<div class="alert alert-warning">新版 Allen Disk 已經發表，請儘速至 <a href="http://ad.allenchou.cc" target="_blank">Allen Disk 官網</a> 下載新版，謝謝</div>';
+        }
+    ?>
+    <div class='row'>
+      <div class="panel panel-default col-md-4 col-md-offset-1">
+          <div class="panel-heading">
+              <h3 class="panel-title">檔案</h3>
+          </div>
+          <div class="panel-body">
+              <p>檔案數：<span class='num'><?php echo $filecount[0]['count']; ?> 個</span></p>
+              <p>佔用空間：<span class='num'><?php echo sizecount(($used[0]["sum"]/1000/1000)); ?></span></p>
+              <p>公開分享檔案數：<span class='num'><?php echo $sharecount[0]['count']; ?> 個</span></p>
+          </div>
+      </div>
+      <div class="panel panel-default col-md-4 col-md-offset-2">
+          <div class="panel-heading">
+              <h3 class="panel-title">用戶</h3>
+          </div>
+          <div class="panel-body">
+              <p>用戶數：<span class='num'><?php echo $usercount[0]['count']; ?> 位</span></p>
+              <p>總可用空間：<span class='num'><?php echo ($config['total'] != 0) ? sizecount($usercount[0]['count'] * $config['total']/1000/1000) : '無限制'; ?></span></p>
+          </div>
+      </div>
+    </div>
 </div>
+</br>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
 </body>
 </html>

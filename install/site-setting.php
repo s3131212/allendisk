@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -54,22 +54,17 @@ if(file_exists("install.lock")){
                 <tr>
                     <td>上傳單檔大小限制</td>
                     <td><input type="text" value="" name="size" id="size" class="form-control" /></td>
-                    <td>單一檔案上傳最大限制，單位為MB，1000MB = 1GB ，必須 ≤ upload_max_filesize & post_max_size</td>
+                    <td>單一檔案上傳最大限制，單位為MB，1000MB = 1GB，必須 ≤ upload_max_filesize & post_max_size ， 0 代表無限</td>
                 </tr>
                 <tr>
                     <td>使用者空間</td>
                     <td><input type="text" value="" name="total" id="total" class="form-control" /></td>
-                    <td>單一使用者最大可用空間，單位為MB，1000MB = 1GB</td>
+                    <td>單一使用者最大可用空間，單位為MB，1000MB = 1GB ， 0 代表無限</td>
                 </tr>
                 <tr>
                     <td>網站網址</td>
                     <td><input type="text" value="" name="url" id="url" class="form-control" /></td>
                     <td>填入「首頁網址」而非管理員介面網址，記得加上" http(s):// "和網址最後的" / "</td>
-                </tr>
-                <tr>
-                    <td>自動更新週期</td>
-                    <td><input type="text" value="" name="updatesec" id="updatesec" class="form-control" /></td>
-                    <td>自動更新檔案目錄的週期秒數（整數），也就是幾秒更新一次，填入 0 代表關閉自動更新功能，數字過小可能造成網路流量與 CPU 爆增，建議 2~5 秒</td>
                 </tr>
                 <tr>
                     <td>標語</td>
@@ -78,23 +73,23 @@ if(file_exists("install.lock")){
                 </tr>
                 <tr>
                     <td>啟用註冊功能</td>
-                    <td><input type="checkbox" checked name="reg" id="reg" value="true" /></td>
+                    <td><input type="checkbox" name="reg" id="reg" value="true" /></td>
                     <td>允許使用者註冊帳號，個人用網路硬碟請勿勾選</td>
                 </tr>
                 <tr>
                     <td>顯示「為何選用XXX」</td>
-                    <td><input type="checkbox" checked name="why" id="why" value="true" /></td>
+                    <td><input type="checkbox" name="why" id="why" value="true" /></td>
                     <td>內容請至why.php修改</td>
                 </tr>
                 <tr>
                     <td>顯示「使用條款」</td>
-                    <td><input type="checkbox" checked name="tos" id="tos" value="true" /></td>
-                    <td>內容請至tos.php修改</td>
+                    <td><input type="checkbox" name="tos" id="tos" value="true" /></td>
+                    <td>單一使用者可以使用的空間</td>
                 </tr>
                 <tr>
                     <td>管理員密碼</td>
                     <td><input type="text" value="" name="admin" id="admin" class="form-control" /></td>
-                    <td>到管理介面的密碼，管理介面網址位於 allendisk.url/admin</td>
+                    <td>到管理介面的密碼</td>
                 </tr>
             </tbody>
         </table>

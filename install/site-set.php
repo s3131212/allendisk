@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -11,12 +11,11 @@ if(file_exists("install.lock")){
 }
 require("../config.php"); 
 $db->update('setting',array('value' => $_POST["sitename"]), array('name' => "sitename"));
-$db->update('setting',array('value' => $_POST["sitetitle"]), array('name' => "sitetitle"));
+$db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->databaseLink->real_escape_string($_POST["sitetitle"])));
 $db->update('setting',array('value' => $_POST["size"]), array('name' => "size"));
 $db->update('setting',array('value' => $_POST["url"]), array('name' => "url"));
 $db->update('setting',array('value' => $_POST["total"]), array('name' => "total"));
 $db->update('setting',array('value' => $_POST["admin"]), array('name' => "admin"));
-$db->update('setting',array('value' => (int)$_POST["updatesec"]), array('name' => "updatesec"));
 $db->update('setting',array('value' => $_POST["subtitle"]), array('name' => "subtitle"));
 
 if ($_POST["tos"]!="true") {

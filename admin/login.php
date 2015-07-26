@@ -5,9 +5,11 @@ Copyright (C) 2012~2014 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-require('../config.php');  
+require('../config.php');
+include("../captcha/simple-php-captcha.php");
 if(!session_id()) session_start();
-session_destroy();
+$_SESSION['captcha'] = simple_php_captcha();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,30 +24,51 @@ session_destroy();
 </head>
 <body>
 <div class="container">
-    <h1 class="text-center"><?php echo $config["sitetitle"]; ?>管理介面</h1>
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#">管理介面首頁</a></li>
-        <li><a href="../index.php">回到首頁</a></li>
-        </ul>
-<?php 
-$err=$_GET["err"];
-if($err=="1"){
-  echo '<div class="alert alert-danger"><p>密碼有錯誤</p></div>';
-}
-?>
-<form class="form-horizontal" action="loginc.php" method="post">
-    <div class="form-group">
-        <label class="control-label" for="password">密碼</label>
-        <div class="controls">
-            <input type="password" id="password" placeholder="Password" name="password" class="form-control">
-        </div>
-    </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn">登入</button>
+    <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
+    <?php 
+    $err = $_GET["err"];
+    if($err=="1"){
+      echo '<div class="alert alert-danger"><p>密碼或驗證碼錯誤</p></div>';
+    }
+    ?>
+    <div class="row" style="margin:0 auto;">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                        <form class="form-horizontal" action="loginc.php" method="post" role="form" style="margin:20px">
+                            <div class="form-group">
+                                <label class="control-label" for="password">密碼</label>
+                                <div class="controls">
+                                    <input type="password" id="password" class="form-control" placeholder="Password" name="password">
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="form-group">
+                                <label class="control-label" for="captcha">驗證碼</label>
+                                <div class='row'>
+                                    <div class='col-md-5 col-md-offset-1'>
+                                        <div class="controls">
+                                            <input type="text" id="captcha" class="form-control" placeholder="Captcha" name="captcha">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <img src="<?php echo $_SESSION['captcha']['image_src'] ?>" alt="captcha" style='width: 100%; height:auto;' />
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="form-group">
+                                <div class="controls">
+                                    <button type="submit" class="btn btn-success btn-block">登入</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <a href="../index.php">← 回首頁</a>
             </div>
         </div>
-</form>
-<p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
+    <br />
+    <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
 </div>
 </body>
