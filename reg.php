@@ -13,6 +13,15 @@ if (!session_id()) {
     session_start();
 }
 
+function md5_128($text) {
+
+    for ($i = 0; $i < 128; ++$i) {
+        $text = md5($text);
+    }
+
+    return $text;
+}
+
 if (isset($_POST["name"]) && isset($_POST["password2"]) && isset($_POST["password"]) && $config["reg"] == 'true') {
     $username = $_POST['name'];
     $email = $_POST['email'];
@@ -39,7 +48,12 @@ if (isset($_POST["name"]) && isset($_POST["password2"]) && isset($_POST["passwor
             "pass"  => password_hash($password, PASSWORD_DEFAULT),
             "email" => $email
         ], "user");
-        $err = 3;
+
+        $_SESSION['login'] = true;
+        $_SESSION['username'] = $username;
+        $_SESSION['password'] = md5_128($password);
+        header("Location: home.php");
+        exit;
     }
 }
 

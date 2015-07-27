@@ -11,7 +11,7 @@ $extraMeta = (isset($_GET["fin"]) && $_GET["fin"] == "fin") ? "<meta http-equiv=
 if (file_exists("install.lock") && !isset($_GET["fin"])) {
     $message = "<div class=\"alert alert-warning\" role=\"alert\">很抱歉，Allen Disk已經安裝完成，如果要重新進行安裝，請刪除 /install/install.lock</div>";
 } elseif (isset($_GET["fin"]) && $_GET["fin"] == "fin") {
-    $message = "<div class="alertalert - success" role="alert">恭喜！Allen Disk 已經安裝完成，您即將被導引至首頁。</div>";
+    $message = "<div class=\"alert alert-success\" role=\"alert\">恭喜！Allen Disk 已經安裝完成，您即將被導引至首頁。</div>";
 } elseif (!file_exists("install.lock") && !isset($_GET["fin"])) {
     header("Location: env-check.php");
     exit;
@@ -25,8 +25,7 @@ if (file_exists("install.lock") && !isset($_GET["fin"])) {
         <title>Allen Disk 安裝程序</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <?php
-echo $extraMeta;?>
+        <?php echo $extraMeta;?>
             <link href="../css/bootstrap.min.css" rel="stylesheet">
             <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
             <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>

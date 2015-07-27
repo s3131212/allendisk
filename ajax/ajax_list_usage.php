@@ -7,20 +7,8 @@
  */
 @set_time_limit(20);
 
-require_once dirname(dirname(__FILE__) . '/require.php');
+require_once dirname(dirname(__FILE__)) . '/require.php';
 _session_start();
-function sizecount($size) {
-
-    if ($size < 0.001) {
-        return round(($size * 1000 * 1000), 2) . "B";
-    } elseif ($size >= 0.001 && $size < 1) {
-        return round(($size * 1000), 2) . "KB";
-    } elseif ($size >= 1 && $size < 1000) {
-        return round($size, 2) . "MB";
-    } elseif ($size >= 1000) {
-        return round(($size / 1000), 2) . 'GB';
-    }
-}
 
 function create_used_bar() {
     global $config;

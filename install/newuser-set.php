@@ -17,21 +17,18 @@ include '../class/password_compat.php';
 $getPost = ["username", "email", "password"];
 
 foreach ($getPost as $key => $value) {
-    if (!isset($_POST[$value]) {
+    if (!isset($_POST[$value])) {
         header("Location: newuser-setting.php?err=0");
         exit;
     }
 
-        $$value = $_POST['username'];
-    }
+    $$value = $_POST['username'];
+}
 
-    $db->insert(["name" => $username, "pass" => password_hash($password, PASSWORD_DEFAULT), "email" => $email], "user");
+$db->insert(["name" => $username, "pass" => password_hash($password, PASSWORD_DEFAULT), "email" => $email], "user");
 
-    $install_token = fopen("install.lock", "w");
-    fclose($install_token);
+$install_token = fopen("install.lock", "w");
+fclose($install_token);
 
-    header("Location: index.php?fin=fin");
-    exit;
-    {
-
-    }
+header("Location: index.php?fin=fin");
+exit;

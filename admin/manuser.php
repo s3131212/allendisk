@@ -110,8 +110,7 @@ echo $d["jointime"]?>
                                     <?php
 echo sizecount(($used[0]["sum"] / 1000 / 1000));?>
                                 </td>
-                                <td><a href="manuser.php?delete=<?php
-echo $d[" name "];?>" class="btn btn-danger">刪除</td>
+                                <td><a href="manuser.php?delete=<?php echo $d["name"];?>" class="btn btn-danger">刪除</td>
                     </tr>
             <?php
 }

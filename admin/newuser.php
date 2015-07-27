@@ -15,9 +15,7 @@ if (!$_SESSION["alogin"]) {
 
 $title = "{$config["sitetitle"]} 管理介面";
 
-$successMsg = (isset($_GET["s"]) && $_GET["s"] == "1"):
-"<div class=\"alert alert-success\">新增完成</div>":
-"";
+$successMsg = (isset($_GET["s"]) && $_GET["s"] == "1") ? "<div class=\"alert alert-success\">新增完成</div>" : "";
 
 if (isset($_GET["err"])) {
     switch ($_GET["err"]) {
@@ -35,9 +33,7 @@ if (isset($_GET["err"])) {
     }
 }
 
-$alertMsg = (isset($alertInfo)):
-"<div class=\"alert alert-danger\">{$alertInfo}</div>":
-"";
+$alertMsg = (isset($alertInfo)) ? "<div class=\"alert alert-danger\">{$alertInfo}</div>" : "";
 ?>
     <!DOCTYPE html>
     <html>
@@ -58,10 +54,6 @@ echo $config["sitename"];?>
         }
         </style>
     </head>
-    <?php
-
-if ($_SESSION["alogin"]) {?>
-
         <body>
             <div class="container">
                 <h1 class="text-center"><?php

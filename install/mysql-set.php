@@ -15,7 +15,7 @@ $error = false;
 $errormsg = null;
 try {
 
-    if ($_GET['update'] != 'true') {
+    if (isset($_GET['update']) && $_GET['update'] != 'true') {
         if (isset($_POST['dbname']) && $_POST['dbname'] != '') {
             $mysql_file = '../database.php';
             $mysql_sample_file = 'database-sample.php';
@@ -44,28 +44,27 @@ try {
             throw new Exception($db->lastError);
         }
     }
-}
 } catch (Exception $e) {
-        $error = true;
-        $errormsg = [
-            'type'     => 'SQL Insert Error',
-            'line'     => __LINE__,
-            'file'     => dirname(__FILE__) . ';' . __FILE__,
-            'errormsg' => $e->getMessage()
-        ];
-    }
+    $error = true;
+    $errormsg = [
+        'type'     => 'SQL Insert Error',
+        'line'     => __LINE__,
+        'file'     => dirname(__FILE__) . ';' . __FILE__,
+        'errormsg' => $e->getMessage()
+    ];
+}
 
-    if ($error) {
-        echo "SQL 發生錯誤：";
-        print_r($errormsg);
-        echo '若您無法自行解決，請嘗試聯絡 Allen Disk 開發者，或直接聯絡 Allen ( <a href="mailto:s3131212@gmail.com">s3131212@gmail.com</a> ) ，並將此頁訊息完整題交給我們，我們會儘速為您解答。';
+if ($error) {
+    echo "SQL 發生錯誤：";
+    print_r($errormsg);
+    echo '若您無法自行解決，請嘗試聯絡 Allen Disk 開發者，或直接聯絡 Allen ( <a href="mailto:s3131212@gmail.com">s3131212@gmail.com</a> ) ，並將此頁訊息完整題交給我們，我們會儘速為您解答。';
+} else {
+
+    if ($_GET['update'] != 'true') {
+        header("Location:site-setting.php");
     } else {
-
-        if ($_GET['update'] != 'true') {
-            header("Location:site-setting.php");
-        } else {
-            $install_token = fopen("install.lock", "w");
-            fclose($install_token);
-            header("Location: index.php?fin=fin");
-        }
+        $install_token = fopen("install.lock", "w");
+        fclose($install_token);
+        header("Location: index.php?fin=fin");
     }
+}

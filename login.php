@@ -18,8 +18,7 @@ session_destroy();
 
     <head>
         <title>登入 -
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <meta charset="utf-8" />
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -135,6 +134,7 @@ echo $config["sitetitle"];?></h1>
 if ($config['reg'] == 'true') {?><a href="reg.php" class="pull-right">註冊新帳號 →</a>
                         <?php
 }
+
 ?>
                 </div>
             </div>
