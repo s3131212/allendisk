@@ -6,31 +6,32 @@
  * License: MIT License
  */
 
-if( file_exists( "install.lock" ) ){
-    header( "Location: ../index.php" );
+if (file_exists("install.lock")) {
+    header("Location: ../index.php");
     exit;
 }
 
-require( "../config.php") ;
-include( '../class/password_compat.php' );
+require "../config.php";
+include '../class/password_compat.php';
 
-$getPost = [ "username", "email", "password" ];
+$getPost = ["username", "email", "password"];
+
 foreach ($getPost as $key => $value) {
-    if( !isset( $_POST[$value] ) {
+    if (!isset($_POST[$value]) {
         header("Location: newuser-setting.php?err=0");
         exit;
     }
-    $$value = $_POST['username'];
-}
 
-$db->insert(
-      [ "name" => $username,
-        "pass" => password_hash($password, PASSWORD_DEFAULT),
-        "email"=> $email ],
-    "user");
+        $$value = $_POST['username'];
+    }
 
-$install_token = fopen( "install.lock", "w" );
-fclose( $install_token );
+    $db->insert(["name" => $username, "pass" => password_hash($password, PASSWORD_DEFAULT), "email" => $email], "user");
 
-header("Location: index.php?fin=fin");
-exit;
+    $install_token = fopen("install.lock", "w");
+    fclose($install_token);
+
+    header("Location: index.php?fin=fin");
+    exit;
+    {
+
+    }

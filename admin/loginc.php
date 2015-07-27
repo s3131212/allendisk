@@ -6,18 +6,19 @@
  * License: MIT License
  */
 
-require_once( '../require.php' );
+require_once '../require.php';
 _session_start();
 
-$res = $db->select('setting',array('name'=>"admin"));
+$res = $db->select('setting', ['name' => "admin"]);
 
-if( isset( $_POST["password"] ) && isset( $_POST["captcha"] ) &&
-        $_POST["password"] == $res[0]["value"] &&
-        strtolower( $_POST["captcha"] ) == strtolower( $_SESSION['captcha']['code'] ) ) {
+if (isset($_POST["password"]) && isset($_POST["captcha"]) &&
+	$_POST["password"] == $res[0]["value"] &&
+	strtolower($_POST["captcha"]) == strtolower($_SESSION['captcha']['code'])) {
 	$_SESSION['alogin'] = true;
 	$go = "index.php";
 } else {
 	$go = "login.php?err=1";
 }
-header( "Location: {$go}" );
+
+header("Location: {$go}");
 exit;
