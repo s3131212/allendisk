@@ -45,8 +45,7 @@ if (file_exists("install.lock") && !isset($_GET["fin"])) {
                 <li><a href="#">網站設定</a></li>
                 <li><a href="#">新增帳號</a></li>
             </ul>
-            <?php
-echo $message;?>
+            <?php echo $message;?>
         </div>
         <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
     </body>

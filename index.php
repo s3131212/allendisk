@@ -27,8 +27,7 @@ if ($_SESSION["login"]) {
 
     <head>
         <title>
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <meta charset="utf-8" />
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -45,8 +44,7 @@ echo $config["sitename"];?>
 
     <body>
         <div class="container">
-            <h1 class="text-center"><?php
-echo $config["sitetitle"];?></h1>
+            <h1 class="text-center"><?php echo $config["sitetitle"];?></h1>
             <?php
 
 if ($_SESSION["login"]) {
@@ -65,8 +63,7 @@ if ($_SESSION["login"]) {
     if ($config["why"]) {?>
                             <li>
                                 <a href="why.php">
-                                    <?php
-echo $config["sitename"];?>的好處</a>
+                                    <?php echo $config["sitename"];?>的好處</a>
                             </li>
                             <?php
 }
@@ -95,17 +92,14 @@ echo $config["sitename"];?>的好處</a>
 
 ?>
                         <div class="jumbotron">
-                            <h1><?php
-echo $config["sitename"];?></h1>
+                            <h1><?php echo $config["sitename"];?></h1>
                             <p>
-                                <?php
-echo $config["subtitle"];?>
+                                <?php echo $config["subtitle"];?>
                             </p>
                             <p>
                                 <?php
 
-if ($config["why"]) {?><a href="why.php" class="btn btn-primary btn-large">為何使用<?php
-echo $config["sitename"];?></a>
+if ($config["why"]) {?><a href="why.php" class="btn btn-primary btn-large">為何使用<?php echo $config["sitename"];?></a>
                                     <?php
 }
 

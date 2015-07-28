@@ -46,8 +46,7 @@ if (isset($_GET["delete"])) {
 
     <head>
         <title>管理員介面 -
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <meta charset="utf-8" />
@@ -63,8 +62,7 @@ echo $config["sitename"];?>
 
     <body>
         <div class="container">
-            <h1 class="text-center"><?php
-echo $config["sitetitle"];?> 管理介面</h1>
+            <h1 class="text-center"><?php echo $config["sitetitle"];?> 管理介面</h1>
             <ul class="nav nav-tabs">
                 <li><a href="index.php">管理介面首頁</a></li>
                 <li><a href="setting.php">設定</a></li>
@@ -73,8 +71,7 @@ echo $config["sitetitle"];?> 管理介面</h1>
                 <li><a href="../index.php">回到首頁</a></li>
                 <li><a href="login.php">登出</a></li>
             </ul>
-            <?php
-echo $alert;?>
+            <?php echo $alert;?>
                 <table class="table">
                     <thead>
                         <tr>
@@ -95,16 +92,13 @@ foreach ($db
     ?>
                             <tr>
                                 <td>
-                                    <?php
-echo $d["name"]?>
+                                    <?php echo $d["name"]?>
                                 </td>
                                 <td>
-                                    <?php
-echo $d["email"]?>
+                                    <?php echo $d["email"]?>
                                 </td>
                                 <td>
-                                    <?php
-echo $d["jointime"]?>
+                                    <?php echo $d["jointime"]?>
                                 </td>
                                 <td>
                                     <?php

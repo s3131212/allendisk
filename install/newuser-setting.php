@@ -40,8 +40,7 @@ $error = (isset($_GET["err"]) && $_GET["err"] == "0") ? "<div class=\"alert aler
                 <li><a href="#">網站設定</a></li>
                 <li class="active"><a href="#">新增帳號</a></li>
             </ul>
-            <?php
-echo $error;?>
+            <?php echo $error;?>
                 <form method="post" action="newuser-set.php">
                     <div class="form-group">
                         <label for="username">帳號</label>

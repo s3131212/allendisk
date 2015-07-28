@@ -90,17 +90,14 @@ if (!check_dir($_GET["id"])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="js/bootstrap.min.js"></script>
         <title>
-            <?php
-echo $dir[0]["name"]?> -
-                <?php
-echo $config["sitename"]?>
+            <?php echo $dir[0]["name"]?> -
+                <?php echo $config["sitename"]?>
         </title>
     </head>
 
     <body>
         <div class="container">
-            <h1 class="text-center"><?php
-echo $config["sitetitle"];?></h1>
+            <h1 class="text-center"><?php echo $config["sitetitle"];?></h1>
             <?php
 
 if ($_SESSION["login"]) {
@@ -119,8 +116,7 @@ if ($_SESSION["login"]) {
     if ($config["why"]) {?>
                             <li>
                                 <a href="why.php">
-                                    <?php
-echo $config["sitename"];?>的好處</a>
+                                    <?php echo $config["sitename"];?>的好處</a>
                             </li>
                             <?php
 }
@@ -148,10 +144,8 @@ echo $config["sitename"];?>的好處</a>
 }
 
 ?>
-                        <h2>檢視<?php
-echo $dir[0]["name"]?></h2>
-                        <?php
-echo $alert;?>
+                        <h2>檢視<?php echo $dir[0]["name"]?></h2>
+                        <?php echo $alert;?>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -168,12 +162,10 @@ if ($alert == "") {
         foreach ($dircheck as $d) {?>
                                         <tr>
                                             <td>
-                                                <?php
-echo $d['name'];?>
+                                                <?php echo $d['name'];?>
                                             </td>
                                             <td>資料夾</td>
-                                            <td><a href="share_dir.php?id=<?php
-echo $d[" id "];?>" class="btn btn-default">開啟</a></td>
+                                            <td><a href="share_dir.php?id=<?php echo $d[" id "];?>" class="btn btn-default">開啟</a></td>
                                         </tr>
                                         <?php
 }
@@ -183,15 +175,13 @@ echo $d[" id "];?>" class="btn btn-default">開啟</a></td>
         foreach ($filecheck as $d) {?>
                                             <tr>
                                                 <td>
-                                                    <?php
-echo $d['name'];?>
+                                                    <?php echo $d['name'];?>
                                                 </td>
                                                 <td>
                                                     <?php
 fileformat($d['type'], $d['name']);?>
                                                 </td>
-                                                <td><a href="downfile.php?id=<?php
-echo $d['id'];?>" target="_blank" class="btn btn-default">下載</a></td>
+                                                <td><a href="downfile.php?id=<?php echo $d['id'];?>" target="_blank" class="btn btn-default">下載</a></td>
                                             </tr>
                                             <?php
 }

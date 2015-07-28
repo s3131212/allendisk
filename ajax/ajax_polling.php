@@ -6,7 +6,7 @@
  * License: MIT License
  */
 @set_time_limit(0);
-require_once dirname(dirname(__FILE__) . '/require.php');
+require_once dirname(dirname(__FILE__)) . '/require.php';
 _session_start();
 $data = $_SESSION['username'];
 $time = time();

@@ -26,7 +26,7 @@ if (isset($_POST['name']) && $_POST["name"] != null) {
     ]);
 
     if ($dircheck[0]["id"] != null) {
-        $re = 1;
+        $echo = '<div class="alert alert-warning" role="alert">此目錄下有重複名稱的資料夾</div>';
     } else {
         $db->insert([
             "id"      => sha1(md5(mt_rand() . uniqid())),
@@ -35,7 +35,12 @@ if (isset($_POST['name']) && $_POST["name"] != null) {
             "parent"  => $_SESSION["dir"],
             "recycle" => '0'
         ], "dir");
-        $re = 2;
+        //$echo = '<div class="alert alert-success" role="alert">新增完成</div>';
+        $echo = '
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script>
+            $("#mkdir-modal", window.parent.document).fadeOut();
+        </script>';
         $token = fopen(dirname(__FILE__) . '/updatetoken/' . md5($_SESSION['username']) . '.token', "w");
         fclose($token);
     }
@@ -54,15 +59,7 @@ if (isset($_POST['name']) && $_POST["name"] != null) {
 
     <body>
         <div class="repsd">
-            <?php
-
-if ($re == 1) {
-    echo '<div class="alert alert-warning" role="alert">此目錄下有重複名稱的資料夾</div>';
-} elseif ($re == 2) {
-    echo '<div class="alert alert-success" role="alert">新增完成</div>';
-}
-
-?>
+            <?php echo $echo;?>
                 <form action="mkdir.php" method="post" role="form">
                     <div class="form-group">
                         <input type="text" name="name" id="name" placeholder="資料夾名稱" class="form-control" required />

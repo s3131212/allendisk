@@ -64,8 +64,7 @@ $_SESSION['captcha'] = simple_php_captcha();
 
     <head>
         <title>註冊 -
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <meta charset="utf-8" />
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -102,8 +101,7 @@ if ($_SESSION["login"]) {?>
     if ($config["why"]) {?>
                                 <li>
                                     <a href="why.php">
-                                        <?php
-echo $config["sitename"];?>的好處</a>
+                                        <?php echo $config["sitename"];?>的好處</a>
                                 </li>
                                 <?php
 }
@@ -201,14 +199,12 @@ if ($config["reg"]) {
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
-                                                        <img src="<?php
-echo $_SESSION['captcha']['image_src']?>" alt="captcha" />
+                                                        <img src="<?php echo $_SESSION['captcha']['image_src']?>" alt="captcha" />
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <br/>
                                                         <p>註冊後代表您已經同意<a href="tos.php">使用條款</a>且如果有違反，
-                                                            <?php
-echo $config["sitename"];?>將不必負任何責任</p>
+                                                            <?php echo $config["sitename"];?>將不必負任何責任</p>
                                                         <div class="form-group">
                                                             <div class="controls">
                                                                 <button type="submit" class="btn btn-primary">註冊</button>

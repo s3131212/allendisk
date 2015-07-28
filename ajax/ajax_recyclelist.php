@@ -54,23 +54,19 @@ foreach ($db
     ?>
     <tr>
         <td>
-            <?php
-echo $d["name"];?>
+            <?php echo $d["name"];?>
         </td>
         <td>
             <?php
 echo fileformat($d["type"], $d['name']);?>
         </td>
         <td>
-            <?php
-echo $ordir;?>
+            <?php echo $ordir;?>
         </td>
         <td>
             <div class="btn-group">
-                <a href="#" data-id="<?php
-echo $d[" id "]?>" data-type="file" class="btn btn-default recycle_back">還原</a>
-                <a href="#" data-id="<?php
-echo $d[" id "]?>" data-type="file" class="btn btn-danger real_delete">永久刪除</a>
+                <a href="#" data-id="<?php echo $d[" id "]?>" data-type="file" class="btn btn-default recycle_back">還原</a>
+                <a href="#" data-id="<?php echo $d[" id "]?>" data-type="file" class="btn btn-danger real_delete">永久刪除</a>
             </div>
         </td>
     </tr>
@@ -99,20 +95,16 @@ foreach ($db
     ?>
         <tr>
             <td>
-                <?php
-echo $d["name"];?>
+                <?php echo $d["name"];?>
             </td>
             <td>資料夾</td>
             <td>
-                <?php
-echo $ordir;?>
+                <?php echo $ordir;?>
             </td>
             <td>
                 <div class="btn-group">
-                    <a href="#" data-id="<?php
-echo $d[" id "]?>" data-type="dir" class="btn btn-default recycle_back">還原</a>
-                    <a href="#" data-id="<?php
-echo $d[" id "]?>" data-type="dir" class="btn btn-danger real_delete">永久刪除</a>
+                    <a href="#" data-id="<?php echo $d[" id "]?>" data-type="dir" class="btn btn-default recycle_back">還原</a>
+                    <a href="#" data-id="<?php echo $d[" id "]?>" data-type="dir" class="btn btn-danger real_delete">永久刪除</a>
                 </div>
             </td>
         </tr>

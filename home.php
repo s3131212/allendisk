@@ -13,7 +13,7 @@ if (!session_id()) {
 }
 
 if (!$_SESSION["login"]) {
-    header("Location:login.php");
+    header("Location: login.php");
     exit;
 }
 
@@ -57,7 +57,8 @@ $info = $db->select("user", [
 if (isset($_GET["dir"]) && $_GET["dir"] != null) {
     $_SESSION["dir"] = $_GET["dir"];
 } else {
-    header("location: home.php?dir=0");
+    header("Location: home.php?dir=0");
+    exit;
 }
 
 if ($_GET["dir"] != "0") {
@@ -67,7 +68,7 @@ if ($_GET["dir"] != "0") {
     ]);
 
     if ($dir[0]["name"] == null) {
-        header("location: home.php?dir=0");
+        header("Location: home.php?dir=0");
         exit;
     }
 }
@@ -81,8 +82,7 @@ $dirlocation = array_reverse($dirlocation);
 
     <head onselect='return false;'>
         <title>
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <meta charset="utf-8" />
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -95,8 +95,7 @@ echo $config["sitename"];?>
         <script src="js/sweet-alert.min.js"></script>
         <link rel="stylesheet" href="css/sweet-alert.css">
         <script>
-        var dir = '<?php
-echo $_SESSION["dir"];?> ';
+        var dir = '<?php echo $_SESSION["dir"];?> ';
         </script>
         <script src="js/modernizr.js" charset="utf-8"></script>
         <script src="js/script.js" charset="utf-8"></script>
@@ -265,8 +264,7 @@ echo $_SESSION["dir"];?> ';
                 <div class="col-md-2">
                     <div class="navbar-header">
                         <a class="navbar-brand" href="home.php?dir=0">
-                            <?php
-echo $config["sitetitle"];?>
+                            <?php echo $config["sitetitle"];?>
                         </a>
                     </div>
                 </div>
@@ -277,18 +275,13 @@ echo $config["sitetitle"];?>
                                 <a href="home.php?dir=0" class="btn <?php
 echo ($_GET['dir'] == '0') ? 'btn-primary' : 'btn-default';?>"><i class="fa fa-home"></i> 首頁</a>
                                 <?php
-
 if (!empty($dirlocation)) {
     foreach ($dirlocation as $key => $value) {?>
-                                    <button class="btn btn-default btn-arrow"><i class="fa fa-caret-right"></i></button>
-                                    <a href="home.php?dir=<?php
-echo $value['id'];?>" class="btn <?php
-echo ($value['id'] == $_GET['dir']) ? 'btn-primary' : 'btn-default';?>"><i class="fa fa-folder"></i> <?php
-echo $value['name'];?></a>
+                                        <button class="btn btn-default btn-arrow"><i class="fa fa-caret-right"></i></button>
+                                        <a href="home.php?dir=<?php echo $value['id'];?>" class="btn <?php echo ($value['id'] == $_GET['dir']) ? 'btn-primary' : 'btn-default';?>"><i class="fa fa-folder"></i> <?php echo $value['name'];?></a>
                                     <?php
 }
 }
-
 ?>
                             </div>
                         </div>
@@ -302,23 +295,19 @@ echo $value['name'];?></a>
                 <div class="col-md-2">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
-                            <a href="#" id="user-info-btn" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php
-echo $_SESSION["username"]?> <small><i class="fa fa-chevron-down"></i></small></a>
+                            <a href="#" id="user-info-btn" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $_SESSION["username"]?> <small><i class="fa fa-chevron-down"></i></small></a>
                             <ul class="dropdown-menu" id="user-info">
                                 <li>
                                     <div class="navbar-login" style="padding:5px 15px;width:200px;max-width:250px">
                                         <h5>帳號資訊</h5>
                                         <i class="fa fa-user fa-fw"></i>
-                                        <?php
-echo $_SESSION["username"]?>
+                                        <?php echo $_SESSION["username"]?>
                                             <br/>
                                             <i class="fa fa-envelope fa-fw"></i>
-                                            <?php
-echo $info[0]["email"]?>
+                                            <?php echo $info[0]["email"]?>
                                                 <br/>
                                                 <i class="fa fa-history fa-fw"></i>
-                                                <?php
-echo $info[0]["jointime"]?>
+                                                <?php echo $info[0]["jointime"]?>
                                     </div>
                                 </li>
                                 <li><a href="#" id="info-btn"><i class="fa fa-lock"></i> 更改密碼</a></li>

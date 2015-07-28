@@ -48,8 +48,7 @@ $res = $db->select("file", [
 
     <body>
         <div class="container">
-            <h1 class="text-center"><?php
-echo $config["sitetitle"];?></h1>
+            <h1 class="text-center"><?php echo $config["sitetitle"];?></h1>
             <?php
 
 if ($_SESSION["login"]) {
@@ -68,8 +67,7 @@ if ($_SESSION["login"]) {
     if ($config["why"]) {?>
                             <li class="active">
                                 <a href="why.php">
-                                    <?php
-echo $config["sitename"];?>的好處</a>
+                                    <?php echo $config["sitename"];?>的好處</a>
                             </li>
                             <?php
 }
@@ -98,34 +96,24 @@ echo $config["sitename"];?>的好處</a>
 
 ?>
                         <div class="well">
-                            <h2>為何選用<?php
-echo $config["sitename"];?></h2>
+                            <h2>為何選用<?php echo $config["sitename"];?></h2>
                             <ul>
                                 <li>檔案加密：所有在
-                                    <?php
-echo $config["sitename"];?>的檔案都會加密儲存，且每個檔案的密碼皆不一樣，即使伺服器被攻破，也無法解開加密過的檔案</li>
+                                    <?php echo $config["sitename"];?>的檔案都會加密儲存，且每個檔案的密碼皆不一樣，即使伺服器被攻破，也無法解開加密過的檔案</li>
                                 <li>安全性：
-                                    <?php
-echo $config["sitename"];?>內不只是檔案，任何機密資料都會加密儲存，且有對各種方式的攻擊做出防護，可以避免機密外流</li>
+                                    <?php echo $config["sitename"];?>內不只是檔案，任何機密資料都會加密儲存，且有對各種方式的攻擊做出防護，可以避免機密外流</li>
                                 <li>快速：
-                                    <?php
-echo $config["sitename"];?>的下載速度是非常快的，相較於中國的免空，
-                                        <?php
-echo $config["sitename"];?>的速度快了許多</li>
+                                    <?php echo $config["sitename"];?>的下載速度是非常快的，相較於中國的免空，
+                                        <?php echo $config["sitename"];?>的速度快了許多</li>
                                 <li>不砍檔：要分享檔案還要三不五時補檔嗎？
-                                    <?php
-echo $config["sitename"];?>有絕對不砍檔保證（如果違反法律則除外），您的檔案即使不多人下載，也絕對不會被刪除</li>
+                                    <?php echo $config["sitename"];?>有絕對不砍檔保證（如果違反法律則除外），您的檔案即使不多人下載，也絕對不會被刪除</li>
                                 <li>支援外連：什麼？免空檔案支援外連是多麼稀少的事情啊！可是，
-                                    <?php
-echo $config["sitename"];?>就可以，您的檔案都可以外連，不論音樂影片圖片，甚至HTML,CSS,JS檔案，全部都可以外連，把
-                                        <?php
-echo $config["sitename"];?>當作檔案庫也無妨</li>
+                                    <?php echo $config["sitename"];?>就可以，您的檔案都可以外連，不論音樂影片圖片，甚至HTML,CSS,JS檔案，全部都可以外連，把
+                                        <?php echo $config["sitename"];?>當作檔案庫也無妨</li>
                                 <li>下載免等待：幾乎所有免空要下載都要等很久，短至15秒，長至5分鐘，可是
-                                    <?php
-echo $config["sitename"];?>完全不用，不論是否為會員，都可以享有直接下載的權利！</li>
+                                    <?php echo $config["sitename"];?>完全不用，不論是否為會員，都可以享有直接下載的權利！</li>
                                 <li>空間：
-                                    <?php
-echo $config["sitename"];?>提供
+                                    <?php echo $config["sitename"];?>提供
                                         <?php
 echo ($config["total"] != 0) ? "高達" . sizecount($config["total"]) : "無限制"?>的空間，且單檔可以
                                             <?php

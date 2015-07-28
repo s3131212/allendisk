@@ -1,9 +1,9 @@
 <?php
-/*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
-Author: Allen Chou ( http://allenchou.cc )
-License: MIT License
+/**
+ * Allen Disk 1.5
+ * Copyright (C) 2012~2015 Allen Chou
+ * Author: Allen Chou ( http://allenchou.cc )
+ * License: MIT License
  */
 require "../require.php";
 _session_start();
@@ -40,8 +40,7 @@ $alertMsg = (isset($alertInfo)) ? "<div class=\"alert alert-danger\">{$alertInfo
 
     <head>
         <title>管理員介面 -
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,8 +55,7 @@ echo $config["sitename"];?>
     </head>
         <body>
             <div class="container">
-                <h1 class="text-center"><?php
-echo $title;?></h1>
+                <h1 class="text-center"><?php echo $title;?></h1>
                 <ul class="nav nav-tabs">
                     <li><a href="index.php">管理介面首頁</a></li>
                     <li><a href="setting.php">設定</a></li>
@@ -66,8 +64,7 @@ echo $title;?></h1>
                     <li><a href="../index.php">回到首頁</a></li>
                     <li><a href="login.php">登出</a></li>
                 </ul>
-                <?php
-echo $successMsg . $alertMsg;?>
+                <?php echo $successMsg . $alertMsg;?>
                     <p style="font-size:30px;">新增使用者</p>
                     <div class="row" style="margin:0 auto;">
                         <div class="col-md-6">

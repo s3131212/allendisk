@@ -122,48 +122,48 @@ for ($j = 0; $j < count($_FILES["file"]["name"]); ++$j) {
     if ($result == "success") {?>
         <tr>
             <td>
-                <?php
-echo $_FILES['file']['name'][$j];?>
+                <?php echo $_FILES['file']['name'][$j];?>
             </td>
             <td>
-                <?php
-sizecount($_FILES['file']['size'][$j] / 1000 / 1000);?>
+                <?php sizecount($_FILES['file']['size'][$j] / 1000 / 1000);?>
             </td>
             <td>上傳成功</td>
         </tr>
-        <?php
-} else {
-        ?>
+        <?php } else { ?>
             <tr class="error">
                 <td>Unknow</td>
                 <td>Unknow</td>
                 <td>
                     <?php
+                    switch ($result) {
+                        case 'inierr':
+                        case 'sizeout':
+                            echo "檔案大小超出限制";
+                            break;
 
-        if ($result == "sizeout") {
-            echo "檔案太大";
-        } elseif ($result == "unknow") {
-            echo "找不到該檔案，或是發生未知得錯誤";
-        } elseif ($result == "totalout") {
-            echo "帳戶空間不足";
-        } elseif ($result == "inierr") {
-            echo "檔案超過 POST 或是伺服器設定限制";
-        } elseif ($result == "par") {
-            echo "系統錯誤，檔案上傳不完全";
-        } elseif ($result == "nofile") {
-            echo "沒有選取的檔案";
-        } else {
-            echo "發生未知得錯誤";
-        }
+                        case 'totalout':
+                            echo "帳戶空間不足";
+                            break;
 
-        ?>
+                        case 'par':
+                            echo "檔案上傳不完全（系統錯誤）";
+                            break;
+
+                        case 'nofile':
+                            echo "沒有選取的檔案";
+                            break;
+
+                        default:
+                            echo "發生未知錯誤";
+                            break;
+                    }
+                    ?>
                 </td>
             </tr>
             <?php
-}
+    }
 }
 
 header("Connection: close");
-//解決Upload Error Code 3
-
-?>
+exit;
+// 解決 Upload Error Code 3

@@ -71,10 +71,8 @@ if ($res[0]["recycle"] == "1" || $res[0]["share"] == "0") {
 
     <head>
         <title>
-            <?php
-echo $res[0]["name"];?> -
-                <?php
-echo $config["sitename"];?>
+            <?php echo $res[0]["name"];?> -
+                <?php echo $config["sitename"];?>
         </title>
         <meta charset="utf-8" />
         <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -90,8 +88,7 @@ echo $config["sitename"];?>
 
     <body>
         <div class="container">
-            <h1 class="text-center"><?php
-echo $config["sitetitle"];?></h1>
+            <h1 class="text-center"><?php echo $config["sitetitle"];?></h1>
             <?php
 
 if ($_SESSION["login"]) {
@@ -110,8 +107,7 @@ if ($_SESSION["login"]) {
     if ($config["why"]) {?>
                             <li>
                                 <a href="why.php">
-                                    <?php
-echo $config["sitename"];?>的好處</a>
+                                    <?php echo $config["sitename"];?>的好處</a>
                             </li>
                             <?php
 }
@@ -143,21 +139,16 @@ echo $config["sitename"];?>的好處</a>
                             <?php
 
 if ($show) {?>
-                                <h1><?php
-echo $res[0]["name"];?></h1>
+                                <h1><?php echo $res[0]["name"];?></h1>
                                 <p>擁有者：
-                                    <?php
-echo $res[0]["owner"];?>
+                                    <?php echo $res[0]["owner"];?>
                                         </br>檔案大小：
                                         <?php
 sizecount($res[0]["size"] / 1000 / 1000);?>
                                             </br>上傳時間：
-                                            <?php
-echo $res[0]["date"];?>
+                                            <?php echo $res[0]["date"];?>
                                 </p>
-                                <p><a href="rdownfile.php?id=<?php
-echo $_GET[" id "];?>&password=<?php
-echo $_GET["password "];?>" class="btn btn-large btn-primary">下載</a></p>
+                                <p><a href="rdownfile.php?id=<?php echo $_GET[" id "];?>&password=<?php echo $_GET["password "];?>" class="btn btn-large btn-primary">下載</a></p>
                                 <?php
 } else {?>
                                     <h1>404 Not Found</h1>

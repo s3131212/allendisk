@@ -20,8 +20,7 @@ $captchaSrc = $_SESSION['captcha']['image_src'];
 
     <head>
         <title>登入管理介面 -
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,10 +36,8 @@ echo $config["sitename"];?>
 
     <body>
         <div class="container">
-            <h1 class="text-center"><?php
-echo $title;?></h1>
-            <?php
-echo $loginErrMessage;?>
+            <h1 class="text-center"><?php echo $title;?></h1>
+            <?php echo $loginErrMessage;?>
                 <div class="row" style="margin:0 auto;">
                     <div class="col-md-4 col-md-offset-4">
                         <div class="panel panel-default">
@@ -62,8 +59,7 @@ echo $loginErrMessage;?>
                                                 </div>
                                             </div>
                                             <div class="col-md-5">
-                                                <img src="<?php
-echo $captchaSrc;?>" alt="captcha" style='width: 100%; height:auto;' />
+                                                <img src="<?php echo $captchaSrc;?>" alt="captcha" style='width: 100%; height:auto;' />
                                             </div>
                                         </div>
                                     </div>

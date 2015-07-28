@@ -55,8 +55,7 @@ if ($_SESSION["alogin"]) {
 
     <head>
         <title>管理員介面 -
-            <?php
-echo $config["sitename"];?>
+            <?php echo $config["sitename"];?>
         </title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <meta charset="utf-8" />
@@ -81,8 +80,7 @@ echo $config["sitename"];?>
 
     <body>
         <div class="container">
-            <h1 class="text-center"><?php
-echo $text["h1 .container .text-center"];?></h1>
+            <h1 class="text-center"><?php echo $text["h1 .container .text-center"];?></h1>
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#">管理介面首頁</a></li>
                 <li><a href="setting.php">設定</a></li>
@@ -92,8 +90,7 @@ echo $text["h1 .container .text-center"];?></h1>
                 <li><a href="login.php">登出</a></li>
             </ul>
             <br />
-            <?php
-echo $updateText;?>
+            <?php echo $updateText;?>
                 <div class='row'>
                     <div class="panel panel-default col-md-4 col-md-offset-1">
                         <div class="panel-heading">
@@ -101,16 +98,13 @@ echo $updateText;?>
                         </div>
                         <div class="panel-body">
                             <p>
-                                <?php
-echo $text["#1 p .container .row .panel .panel-default .col-md-4 .col-md-offset-1 .panel-body"];?>
+                                <?php echo $text["#1 p .container .row .panel .panel-default .col-md-4 .col-md-offset-1 .panel-body"];?>
                             </p>
                             <p>
-                                <?php
-echo $text["#2 p .container .row .panel .panel-default .col-md-4 .col-md-offset-1 .panel-body"];?>
+                                <?php echo $text["#2 p .container .row .panel .panel-default .col-md-4 .col-md-offset-1 .panel-body"];?>
                             </p>
                             <p>
-                                <?php
-echo $text["#3 p .container .row .panel .panel-default .col-md-4 .col-md-offset-1 .panel-body"];?>
+                                <?php echo $text["#3 p .container .row .panel .panel-default .col-md-4 .col-md-offset-1 .panel-body"];?>
                             </p>
                         </div>
                     </div>
@@ -120,12 +114,10 @@ echo $text["#3 p .container .row .panel .panel-default .col-md-4 .col-md-offset-
                         </div>
                         <div class="panel-body">
                             <p>
-                                <?php
-echo $text["#1 p .container .row .panel .panel-default .col-md-4 .col-md-offset-2 .panel-body"];?>
+                                <?php echo $text["#1 p .container .row .panel .panel-default .col-md-4 .col-md-offset-2 .panel-body"];?>
                             </p>
                             <p>
-                                <?php
-echo $text["#2 p .container .row .panel .panel-default .col-md-4 .col-md-offset-2 .panel-body"];?>
+                                <?php echo $text["#2 p .container .row .panel .panel-default .col-md-4 .col-md-offset-2 .panel-body"];?>
                             </p>
                         </div>
                     </div>
