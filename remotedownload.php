@@ -56,7 +56,7 @@ if(isset($_POST["file"])){
         /* Create Key */
         $passphrase['a'] = sha1(md5(mt_rand() . uniqid()));
         $passphrase['b'] = $_SESSION['password'];
-        $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+        $iv = md5("\x1B\x3C\x58".$passphrase['b'], true) . md5("\x1B\x3C\x58".$passphrase['b'], true);
         $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
         $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
         unset($key);
@@ -64,7 +64,7 @@ if(isset($_POST["file"])){
 
         $filename = sha1(md5(mt_rand() . uniqid()));
         if ($result=='') {
-            $iv = substr(md5("\x1B\x3C\x58".$passphrase['a'], true), 0, 8);
+            $iv = md5("\x1B\x3C\x58".$passphrase['a'], true) . md5("\x1B\x3C\x58".$passphrase['a'], true);
             $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true) . md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
             $opts = array('iv'=>$iv, 'key'=>$key);
             $fp = fopen($_POST["file"], 'rb');

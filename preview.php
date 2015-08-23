@@ -12,7 +12,7 @@ header("Cache-Control: no-store, no-cache, must-revalidate");
 function decode_file($id){
     $res = $GLOBALS['db']->select("file",array("id"=>$id));
     $passphrase = decrypt_code($res[0]['secret']);
-    $iv = substr(md5("\x1B\x3C\x58".$passphrase, true), 0, 8);
+    $iv = md5("\x1B\x3C\x58".$passphrase, true) . md5("\x1B\x3C\x58".$passphrase, true);
     $key = substr(md5("\x2D\xFC\xD8".$passphrase, true) . md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
     $opts = array('iv'=>$iv, 'key'=>$key);
     $fp = fopen('./file/'.$res[0]["realname"].'.data', 'rb');
@@ -22,7 +22,7 @@ function decode_file($id){
 function decrypt_code($code){
     $passphrase['b'] = $_SESSION['password'];
     $passphrase['c'] = $code;
-    $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+    $iv = md5("\x1B\x3C\x58".$passphrase['b'], true) . md5("\x1B\x3C\x58".$passphrase['b'], true);
     $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
     return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
 }

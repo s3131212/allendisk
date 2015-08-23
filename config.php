@@ -6,7 +6,7 @@ Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
 include('database.php'); 
-error_reporting(0);
+@error_reporting(0);
 //error_reporting(E_ALL);
 
 $sitename = $db->select("setting",array("name" =>"sitename")); 

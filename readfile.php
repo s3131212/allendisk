@@ -49,7 +49,7 @@ if($res[0]["owner"] == $data["username"] || $res[0]["share"] == "1" || ($token["
 
 	$passphrase = $_GET['password'];
 
-    $iv = substr(md5("\x1B\x3C\x58".$passphrase, true), 0, 8);
+    $iv = md5("\x1B\x3C\x58".$passphrase, true) . md5("\x1B\x3C\x58".$passphrase, true);
     $key = substr(md5("\x2D\xFC\xD8".$passphrase, true) . md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
     $opts = array('iv'=>$iv, 'key'=>$key);
 

@@ -30,13 +30,13 @@ if(isset($_POST['pass'])&&isset($_POST['pass2'])){
                 /* Get original key */
                 $passphrase['b'] = $_SESSION['password'];
                 $passphrase['c'] = $value['secret'];
-                $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+                $iv = md5("\x1B\x3C\x58".$passphrase['b'], true) . md5("\x1B\x3C\x58".$passphrase['b'], true);
                 $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
                 $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
                 
                 /* Update new key */
                 $passphrase['b'] = $new_password;
-                $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+                $iv = md5("\x1B\x3C\x58".$passphrase['b'], true) . md5("\x1B\x3C\x58".$passphrase['b'], true);
                 $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
                 $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
                 $db->update('file',array('secret' => $passphrase['c']), array('id' => $value['id']));

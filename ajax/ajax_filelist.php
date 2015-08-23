@@ -25,7 +25,7 @@ function linkcheck($type, $id,$name, $secret){
     /* Decode Password */
     $passphrase['b'] = $_SESSION['password'];
     $passphrase['c'] = $secret;
-    $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+    $iv = md5("\x1B\x3C\x58".$passphrase['b'], true) . md5("\x1B\x3C\x58".$passphrase['b'], true);
     $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
     $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
     if(preg_match("/image\/(.*)/i", $type) || preg_match("/audio\/(.*)/i", $type)||preg_match("/video\/(.*)/i", $type) || preg_match("/text\/(.*)/i", $type) || $type == "application/pdf" || $type == "application/x-shockwave-flash" ){
@@ -56,7 +56,7 @@ function sharefile($share,$id,$secret){
         /* Decode Password */
         $passphrase['b'] = $_SESSION['password'];
         $passphrase['c'] = $secret;
-        $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true), 0, 8);
+        $iv = md5("\x1B\x3C\x58".$passphrase['b'], true) . md5("\x1B\x3C\x58".$passphrase['b'], true);
         $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true) . md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
         $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
         
