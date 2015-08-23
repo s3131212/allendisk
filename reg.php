@@ -54,7 +54,7 @@ $_SESSION['captcha'] = simple_php_captcha();
 
 <body>
 	<div class="container">
-		<h1 class="text-center">Allen Disk</h1>
+		<h1 class="text-center"><?php echo $config["sitetitle"]; ?></h1>
 		<div class="col-md-6 col-md-offset-3">
 			<?php if($_SESSION[ "login"]){ ?>
 			<ul class="nav nav-tabs">
