@@ -30,16 +30,17 @@ function fileformat($type,$name){
     }
 }
 include(dirname(dirname(__FILE__)).'/config.php');
-
-    foreach($db->select("file",array('owner' => $_SESSION["username"],'recycle'=>'1')) as $d){
+$res = $db->select("file",array('owner' => $_SESSION["username"],'recycle'=>'1'));
+if($res[0]['id'] != null){
+    foreach($res as $d){
         if($d["dir"]!=0){
             $ordir = $db->select('dir',array('id'=>$d["dir"]));
             if($ordir[0]["recycle"]==1) continue;
-            $ordir = $ordir[0]["name"];
-        }else{
-            $ordir = "主目錄";
-        }
-    ?>
+                $ordir = $ordir[0]["name"];
+            }else{
+                $ordir = "主目錄";
+            }
+?>
         <tr>
             <td><?php echo $d["name"]; ?></td>
             <td><?php echo fileformat($d["type"], $d['name']); ?></td>
@@ -52,7 +53,10 @@ include(dirname(dirname(__FILE__)).'/config.php');
             </td>
         </tr>
 <?php }
-    foreach($db->select("dir",array('owner' => $_SESSION["username"],'recycle'=>'1')) as $d){
+}
+$res = $db->select("dir",array('owner' => $_SESSION["username"],'recycle'=>'1'));
+if($res[0]['id'] != null){
+    foreach($res as $d){
         if($d["parent"]!=0){
             $ordir = $db->select('dir',array('id'=>$d["parent"]));
             if($ordir[0]["recycle"]==1) continue;
@@ -60,7 +64,7 @@ include(dirname(dirname(__FILE__)).'/config.php');
         }else{
             $ordir = "主目錄";
         }
-    ?>
+?>
         <tr>
             <td><?php echo $d["name"]; ?></td>
             <td>資料夾</td>
@@ -73,4 +77,5 @@ include(dirname(dirname(__FILE__)).'/config.php');
             </td>
         </tr>
 <?php }
+}
 exit();

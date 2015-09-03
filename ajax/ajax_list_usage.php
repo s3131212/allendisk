@@ -24,13 +24,16 @@ function sizecount($size){
 function create_used_bar(){
     global $config;
     $audio = 0; $video = 0; $image = 0; $other = 0; $used = 0;
-    foreach($GLOBALS["db"]->select("file",array('owner' => $_SESSION["username"])) as $d){
-        $used += $d["size"];
+    $res = $GLOBALS["db"]->select("file",array('owner' => $_SESSION["username"]));
+    if($res[0]['id'] != null){
+        foreach($res as $d){
+            $used += $d["size"];
 
-        if(preg_match("/image\/(.*)/i", $d["type"])) $image+=$d["size"];
-        elseif(preg_match("/audio\/(.*)/i", $d["type"])) $audio+=$d["size"];
-        elseif(preg_match("/video\/(.*)/i", $d["type"])) $video+=$d["size"];
-        else $other+=$d["size"];
+            if(preg_match("/image\/(.*)/i", $d["type"])) $image+=$d["size"];
+            elseif(preg_match("/audio\/(.*)/i", $d["type"])) $audio+=$d["size"];
+            elseif(preg_match("/video\/(.*)/i", $d["type"])) $video+=$d["size"];
+            else $other+=$d["size"];
+        }
     }
     if($config["total"] != 0){
         $output = '<div class="progress">';
