@@ -1,12 +1,18 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
 require("../config.php"); 
 if(!session_id()) session_start();
+
+if(!$_SESSION["alogin"]){
+  header("location:login.php");
+  exit();
+}
+
 function sizecount($size){
     if ($size<0.001) {
         return round(($size*1000*1000), 2) . "B";
@@ -51,8 +57,6 @@ if(version_compare($newest_version ,$current_version, '>')) $update = true;
     }
 </style>
 </head>
-<?php
-if($_SESSION["alogin"]){?>
 <body>
 <div class="container">
     <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
@@ -96,8 +100,3 @@ if($_SESSION["alogin"]){?>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
 </body>
 </html>
-<?php
-}else{
-header("location:login.php");
-}
-?>

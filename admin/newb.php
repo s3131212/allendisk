@@ -1,14 +1,17 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
 require("../config.php"); 
 include('../class/password_compat.php');
 if(!session_id()) session_start();
-if($_SESSION["alogin"]){
+if(!$_SESSION["alogin"]){
+  header("location:login.php");
+  exit();
+}
 $username = $_POST['username'];
 $email = $_POST['email'];
 $password = $_POST['password'];
@@ -28,7 +31,4 @@ if ($password=="") {
 }
 $db->insert(array("name"=>$username,"pass"=>password_hash($password, PASSWORD_DEFAULT),"email"=>$email),"user");
 header("Location: newuser.php?s=1");
-}else{
-header("location:login.php");
-}
 ?>

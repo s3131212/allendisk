@@ -1,12 +1,16 @@
 <?php
 /*
-Allen Disk 1.4
-Copyright (C) 2012~2014 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
 require("../config.php"); 
 if(!session_id()) session_start();
+if(!$_SESSION["alogin"]){
+  header("location:login.php");
+  exit();
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,8 +23,6 @@ if(!session_id()) session_start();
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <style>body{ background-color: #F8F8F8; }</style>
 </head>
-<?php
-if($_SESSION["alogin"]){?>
 <body>
 <div class="container">
     <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
@@ -76,8 +78,3 @@ if($err=="2"){
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
 </body>
 </html>
-<?php
-}else{
-header("location:login.php");
-}
-?>
