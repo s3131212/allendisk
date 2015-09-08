@@ -1,13 +1,11 @@
 <?php
-/*
-Allen Disk 1.5
-Copyright (C) 2012~2015 Allen Chou
-Author: Allen Chou ( http://allenchou.cc )
-License: MIT License
-*/
+/* Allen Disk 1.4
+Copyright (C) 2012~2014 Allen Chou 
+Author: Allen Chou ( http://allenchou.cc ) 
+License: MIT License */ 
 include( 'config.php');
 include( "captcha/simple-php-captcha.php");
-include('../class/password_compat.php');
+include( 'class/password_compat.php' );
 if(!session_id()) session_start();
 if(isset($_POST[ "name"])&&isset($_POST[ "password2"])&&isset($_POST[ "password"])&& $config[ "reg"]=='true' ){
 	$username=$_POST[ 'name'];
@@ -54,7 +52,7 @@ $_SESSION['captcha'] = simple_php_captcha();
 
 <body>
 	<div class="container">
-		<h1 class="text-center"><?php echo $config["sitetitle"]; ?></h1>
+		<h1 class="text-center">Allen Disk</h1>
 		<div class="col-md-6 col-md-offset-3">
 			<?php if($_SESSION[ "login"]){ ?>
 			<ul class="nav nav-tabs">
