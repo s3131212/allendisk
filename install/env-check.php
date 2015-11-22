@@ -5,26 +5,28 @@ Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-if(file_exists("install.lock")){
-    header("Location: ../index.php");
+if (file_exists('install.lock')) {
+    header('Location: ../index.php');
     exit();
 }
-function check($val){
+function check($val)
+{
     global $error;
-    if($val){
-        echo "<span style=\"color:green;\">√</span>";
-    }
-    else {
+    if ($val) {
+        echo '<span style="color:green;">√</span>';
+    } else {
         $error = true;
-        echo "<span style=\"color:red;\">Χ</span>";
+        echo '<span style="color:red;">Χ</span>';
     }
 }
 
-function check_php_version($version){
+function check_php_version($version)
+{
     check(phpversion() >= $version);
 }
 
-function check_extension($ext){
+function check_extension($ext)
+{
     check(extension_loaded($ext));
 }
 ?>
@@ -116,7 +118,11 @@ function check_extension($ext){
                 <td><?php check(is_writable(dirname(dirname(__FILE__)).'/file')); ?></td>
             </tr>
         </table>
-        <p><?php if($error){ ?><span style="color:red;">您必須解決以上問題才能繼續安裝</span><!--當然你可以用直接瀏覽 install-method.php 的方式來繞過檢測，但是到時無法正常運作是你家的事，我不負責--><?php }else{ ?><a href="install-method.php" class="btn btn-primary">下一步</a><?php } ?></p>
+        <p><?php if ($error) {
+    ?><span style="color:red;">您必須解決以上問題才能繼續安裝</span><!--當然你可以用直接瀏覽 install-method.php 的方式來繞過檢測，但是到時無法正常運作是你家的事，我不負責--><?php 
+} else {
+    ?><a href="install-method.php" class="btn btn-primary">下一步</a><?php 
+} ?></p>
 </div>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
 </body>

@@ -5,17 +5,19 @@ Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-require("../config.php"); 
-if(!session_id()) session_start();
-if(!$_SESSION["alogin"]){
-  header("location:login.php");
-  exit();
+require '../config.php';
+if (!session_id()) {
+    session_start();
+}
+if (!$_SESSION['alogin']) {
+    header('location:login.php');
+    exit();
 }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>管理員介面 - <?php echo $config["sitename"]; ?></title>
+<title>管理員介面 - <?php echo $config['sitename']; ?></title>
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +27,7 @@ if(!$_SESSION["alogin"]){
 </head>
 <body>
 <div class="container">
-    <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
+    <h1 class="text-center"><?php echo $config['sitetitle']; ?> 管理介面</h1>
     <ul class="nav nav-tabs">
       <li><a href="index.php">管理介面首頁</a></li>
       <li><a href="setting.php">設定</a></li>
@@ -35,15 +37,14 @@ if(!$_SESSION["alogin"]){
       <li><a href="login.php">登出</a></li>
     </ul>
 <?php 
-if ($_GET["s"]=="1") {
+if (isset($_GET['s']) && $_GET['s'] == '1') {
     echo '<div class="alert alert-success">新增完成</div>';
 }
-$err=$_GET["err"];
-if($err=="0"){
-  echo '<div class="alert alert-danger">不能有任何欄位是空白的</div>';
+if (isset($_GET['err']) && $_GET['err'] == '0') {
+    echo '<div class="alert alert-danger">不能有任何欄位是空白的</div>';
 }
-if($err=="2"){
-  echo '<div class="alert alert-danger">已經有重複的帳號</div>';
+if (isset($_GET['err']) && $_GET['err'] == '2') {
+    echo '<div class="alert alert-danger">已經有重複的帳號</div>';
 }
 ?>
 <p style="font-size:30px;">新增使用者</p>

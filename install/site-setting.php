@@ -5,8 +5,8 @@ Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-if(file_exists("install.lock")){
-    header("Location: ../index.php");
+if (file_exists('install.lock')) {
+    header('Location: ../index.php');
     exit();
 }
 ?>
