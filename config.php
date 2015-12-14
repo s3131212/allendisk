@@ -6,6 +6,14 @@ Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
+
+/* Session Directory Praser */
+$dir = explode('/', dirname($_SERVER['REQUEST_URI']));
+if(end($dir) == 'admin'){
+	array_pop($dir);
+}
+session_set_cookie_params(60*60*24*5, '/' . implode($dir, '/'));
+
 include 'database.php';
 //error_reporting(0);
 error_reporting(E_ALL);
