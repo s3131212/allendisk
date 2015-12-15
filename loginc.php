@@ -6,10 +6,11 @@ Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
+
+include 'config.php';
 if (!session_id()) {
     session_start();
 }
-include 'config.php';
 include dirname(__FILE__).'/class/password_compat.php';
 function login($username, $password)
 {

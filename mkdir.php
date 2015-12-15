@@ -5,13 +5,13 @@ Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
+include 'config.php';
 if (!session_id()) {
     session_start();
 }
 if (!$_SESSION['login']) {
     exit();
 }
-include 'config.php';
 $re = 0;
 if (isset($_POST['name']) && $_POST['name'] != null) {
     $name = str_replace('/', '', $_POST['name']);

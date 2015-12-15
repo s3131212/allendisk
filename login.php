@@ -8,8 +8,8 @@ License: MIT License
 include 'config.php';
 if (!session_id()) {
     session_start();
+    //setcookie(session_name(),session_id(),0, '/' . parse_url($config['url'])['path']);
 }
-session_destroy();
 ?>
 <!DOCTYPE html>
 <html>

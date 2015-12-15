@@ -5,7 +5,7 @@ Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-require '../config.php';
+require_once '../config.php';
 include '../captcha/simple-php-captcha.php';
 if (!session_id()) {
     session_start();

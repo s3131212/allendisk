@@ -1,5 +1,7 @@
 <?php
 
+require_once '../config.php';
+
 //
 //  A simple PHP CAPTCHA script
 //
