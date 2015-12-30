@@ -53,4 +53,17 @@ if ($tos[0]['value'] == 'true') {
 /* Session Directory Praser */
 //session_set_cookie_params(0, '/' . parse_url($config['url'])['path']);
 //setcookie('PHPSESSID',session_id(),0, '/' . parse_url($config['url'])['path']);
-session_name(preg_replace("/[^a-zA-Z0-9]+/", "", $config['url']));
+//session_name(preg_replace("/[^a-zA-Z0-9]+/", "", $config['url']));
+if(!isset($_COOKIE['session_name'])){
+	$session_name = uniqid('allendisk');
+	$dir = explode('/', dirname($_SERVER['SCRIPT_NAME']));
+	if(end($dir) == 'admin'){
+		array_pop($dir);
+	}
+	print_r($dir);
+	setcookie('session_name', $session_name, time()+(60*60*24*5), implode($dir, '/'));
+	//$_COOKIE['session_name'] = $session_name;
+	session_name($session_name);
+}else{
+	session_name($_COOKIE['session_name']);
+}
