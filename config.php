@@ -60,7 +60,6 @@ if(!isset($_COOKIE['session_name'])){
 	if(end($dir) == 'admin'){
 		array_pop($dir);
 	}
-	print_r($dir);
 	setcookie('session_name', $session_name, time()+(60*60*24*5), implode($dir, '/'));
 	//$_COOKIE['session_name'] = $session_name;
 	session_name($session_name);
