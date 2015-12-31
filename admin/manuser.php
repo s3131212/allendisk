@@ -80,10 +80,10 @@ if (isset($_GET['delete'])) {
         <tbody>
             <?php
                 $user_list = $db->select('user');
-                if(is_array($user_list)){
+                if (is_array($user_list)) {
                     foreach ($db->select('user') as $d) {
                         $used = $db->ExecuteSQL(sprintf("SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = '%s'", $db->SecureData($d['name'])));
-            ?>
+                        ?>
                         <tr>
                             <td><?php echo $d['name'] ?></td>
                             <td><?php echo $d['email'] ?></td>
@@ -94,6 +94,7 @@ if (isset($_GET['delete'])) {
                         ?>" class="btn btn-danger">刪除</td>
                         </tr> 
             <?php
+
                     }
                 }
             ?>

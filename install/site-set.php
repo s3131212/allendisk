@@ -12,15 +12,16 @@ if (file_exists('install.lock')) {
 }
 function check_set($key)
 {
-	if(isset($_POST[$key]) && $_POST[$key] != null)
-		return true;
-	else
-		return false;
+    if (isset($_POST[$key]) && $_POST[$key] != null) {
+        return true;
+    } else {
+        return false;
+    }
 }
 require '../config.php';
-if(!(check_set('sitename') && check_set('sitetitle') && check_set('size') && check_set('url') && check_set('total') && check_set('admin') && check_set('subtitle'))) {
-	echo '<script>alert("請確認所有空格都有填寫"); window.history.go(-1);</script>';
-	exit();
+if (!(check_set('sitename') && check_set('sitetitle') && check_set('size') && check_set('url') && check_set('total') && check_set('admin') && check_set('subtitle'))) {
+    echo '<script>alert("請確認所有空格都有填寫"); window.history.go(-1);</script>';
+    exit();
 }
 $db->update('setting', array('value' => $_POST['sitename']), array('name' => 'sitename'));
 $db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->databaseLink->real_escape_string($_POST['sitetitle'])));

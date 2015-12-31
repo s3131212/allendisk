@@ -72,8 +72,8 @@ if (isset($_POST['pass']) && isset($_POST['pass2'])) {
     <?php if ($re == 1) {
     echo '<div class="alert alert-warning" role="alert">兩次密碼不相同，請重新輸入</div>';
 } elseif ($re == 2) {
-        echo '<div class="alert alert-success" role="alert">變更完成，三秒後自動登出，請重新登入</div><script>redirection();</script>';
-    }
+    echo '<div class="alert alert-success" role="alert">變更完成，三秒後自動登出，請重新登入</div><script>redirection();</script>';
+}
     ?>
         <form action="setpass.php" method="post" role="form">
             <div class="form-group">

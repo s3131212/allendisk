@@ -42,4 +42,4 @@ header('Content-Transfer-Encoding: binary');
 header('Content-Description: File Transfer');
 header('Content-Disposition: attachment; filename="'.$res[0]['name'].'"');
 $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc');
-echo @substr(stream_get_contents($fp), 0, -($blocksize-($res[0]['size'] % $blocksize)));
+echo @substr(stream_get_contents($fp), 0, -($blocksize - ($res[0]['size'] % $blocksize)));

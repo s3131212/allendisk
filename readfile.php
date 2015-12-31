@@ -93,7 +93,7 @@ if ($res[0]['owner'] == $data['username'] || $res[0]['share'] == '1' || ($token[
         }
     } else {
         $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc');
-        echo @substr(stream_get_contents($fp), 0, -($blocksize-($res[0]['size'] % $blocksize)));
+        echo @substr(stream_get_contents($fp), 0, -($blocksize - ($res[0]['size'] % $blocksize)));
     }
 } else {
     header('HTTP/1.1 403 Unauthorized');

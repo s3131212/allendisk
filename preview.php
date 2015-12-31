@@ -22,7 +22,7 @@ function decode_file($id)
     $fp = fopen('./file/'.$res[0]['realname'].'.data', 'rb');
     stream_filter_append($fp, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
     $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc');
-    echo @substr(stream_get_contents($fp), 0, -($blocksize-($res[0]['size'] % $blocksize)));
+    echo @substr(stream_get_contents($fp), 0, -($blocksize - ($res[0]['size'] % $blocksize)));
 }
 function decrypt_code($code)
 {

@@ -38,8 +38,8 @@ if (isset($_POST['name']) && $_POST['name'] != null) {
     <?php if ($re == 1) {
     echo '<div class="alert alert-warning" role="alert">此目錄下有重複名稱的資料夾</div>';
 } elseif ($re == 2) {
-        echo '<div class="alert alert-success" role="alert">新增完成</div>';
-    }
+    echo '<div class="alert alert-success" role="alert">新增完成</div>';
+}
     ?>
         <form action="mkdir.php" method="post" role="form">
             <div class="form-group">
