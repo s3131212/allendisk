@@ -33,7 +33,7 @@ $sharecount = $db->ExecuteSQL(sprintf("SELECT COUNT(`id`) AS `count` FROM `file`
 $usercount = $db->ExecuteSQL(sprintf('SELECT COUNT(`name`) AS `count` FROM `user`'));
 
 //Check Update
-$current_version = '1.5.0';
+$current_version = '1.6.0';
 $newest_version = @file_get_contents('http://ad.allenchou.cc/version.txt');
 //$newest_version = '1.5.1'; //development only
 if (version_compare($newest_version, $current_version, '>')) {
