@@ -1,20 +1,22 @@
 <?php
 /*
-Allen Disk 1.5
-Copyright (C) 2012~2015 Allen Chou
+Allen Disk 1.6
+Copyright (C) 2012~2016 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-require('../config.php');
-include("../captcha/simple-php-captcha.php");
-if(!session_id()) session_start();
+require_once '../config.php';
+include '../captcha/simple-php-captcha.php';
+if (!session_id()) {
+    session_start();
+}
 $_SESSION['captcha'] = simple_php_captcha();
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>登入管理介面 - <?php echo $config["sitename"];?></title>
+<title>登入管理介面 - <?php echo $config['sitename'];?></title>
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,11 +26,10 @@ $_SESSION['captcha'] = simple_php_captcha();
 </head>
 <body>
 <div class="container">
-    <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
+    <h1 class="text-center"><?php echo $config['sitetitle']; ?> 管理介面</h1>
     <?php 
-    $err = $_GET["err"];
-    if($err=="1"){
-      echo '<div class="alert alert-danger"><p>密碼或驗證碼錯誤</p></div>';
+    if (isset($_GET['err']) && $_GET['err'] == '1') {
+        echo '<div class="alert alert-danger"><p>密碼或驗證碼錯誤</p></div>';
     }
     ?>
     <div class="row" style="margin:0 auto;">

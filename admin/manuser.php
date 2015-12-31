@@ -1,44 +1,53 @@
 <?php
 /*
-Allen Disk 1.5
-Copyright (C) 2012~2015 Allen Chou
+Allen Disk 1.6
+Copyright (C) 2012~2016 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-require("../config.php"); 
-if(!session_id()) session_start();
-if(!$_SESSION["alogin"]){
-  header("location:login.php");
-  exit();
+require '../config.php';
+if (!session_id()) {
+    session_start();
 }
-function sizecount($size){
-    if ($size<0.001) {
-        return round(($size*1000*1000), 2) . "B";
-    }elseif ($size>=0.001 && $size < 1) {
-        return round(($size*1000), 2) . "KB";
-    }elseif ($size>=1 && $size < 1000) {
-        return round($size, 2) . "MB";
-    }elseif ($size >= 1000) {
-        return round(($size/1000), 2) . 'GB';
+if (!$_SESSION['alogin']) {
+    header('location:login.php');
+    exit();
+}
+function sizecount($size)
+{
+    if ($size < 0.001) {
+        return round(($size * 1000 * 1000), 2).'B';
+    } elseif ($size >= 0.001 && $size < 1) {
+        return round(($size * 1000), 2).'KB';
+    } elseif ($size >= 1 && $size < 1000) {
+        return round($size, 2).'MB';
+    } elseif ($size >= 1000) {
+        return round(($size / 1000), 2).'GB';
     }
 }
-$alert = "";
-if(isset($_GET["delete"])){
-    foreach ($db->select("file",array("owner"=>$_GET["delete"])) as $d) {
-        unlink(dirname(dirname(__FILE__))."/file/".$d['realname'].'.data');
-        $db->delete("file",array('id' => $d["id"]));
+$alert = '';
+if (isset($_GET['delete'])) {
+    $file_list = $db->select('file', array('owner' => $_GET['delete']));
+    if (is_array($file_list)) {
+        foreach ($file_list as $d) {
+            @unlink(dirname(dirname(__FILE__)).'/file/'.$d['realname'].'.data');
+            $db->delete('file', array('id' => $d['id']));
+        }
     }
-    foreach ($db->select("dir",array("owner"=>$_GET["delete"])) as $d) {
-        $db->delete("dir",array('id' => $d["id"]));
+    $dir_list = $db->select('dir', array('owner' => $_GET['delete']));
+    if (is_array($dir_list)) {
+        foreach ($db->select('dir', array('owner' => $_GET['delete'])) as $d) {
+            $db->delete('dir', array('id' => $d['id']));
+        }
     }
-    $db->delete("user",array('name' => $_GET['delete']));
+    $db->delete('user', array('name' => $_GET['delete']));
     $alert = "<div class='alert alert-success'>刪除成功</div>";
 }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>管理員介面 - <?php echo $config["sitename"];?></title>
+<title>管理員介面 - <?php echo $config['sitename'];?></title>
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +57,7 @@ if(isset($_GET["delete"])){
 </head>
 <body>
 <div class="container">
-  <h1 class="text-center"><?php echo $config["sitetitle"]; ?> 管理介面</h1>
+  <h1 class="text-center"><?php echo $config['sitetitle']; ?> 管理介面</h1>
     <ul class="nav nav-tabs">
         <li><a href="index.php">管理介面首頁</a></li>
         <li><a href="setting.php">設定</a></li>
@@ -70,17 +79,24 @@ if(isset($_GET["delete"])){
         </thead>
         <tbody>
             <?php
-                foreach ($db->select('user') as $d) {
-                    $used = $db->ExecuteSQL(sprintf("SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = '%s'",$db->SecureData($d['name'])));
-                    ?>
-                    <tr>
-                        <td><?php echo $d["name"] ?></td>
-                        <td><?php echo $d["email"] ?></td>
-                        <td><?php echo $d["jointime"] ?></td>
-                        <td><?php echo sizecount(($used[0]["sum"]/1000/1000)); ?></td>
-                        <td><a href="manuser.php?delete=<?php echo $d["name"]; ?>" class="btn btn-danger">刪除</td>
-                    </tr>    
-            <?php }
+                $user_list = $db->select('user');
+                if (is_array($user_list)) {
+                    foreach ($db->select('user') as $d) {
+                        $used = $db->ExecuteSQL(sprintf("SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = '%s'", $db->SecureData($d['name'])));
+                        ?>
+                        <tr>
+                            <td><?php echo $d['name'] ?></td>
+                            <td><?php echo $d['email'] ?></td>
+                            <td><?php echo $d['jointime'] ?></td>
+                            <td><?php echo sizecount(($used[0]['sum'] / 1000 / 1000));
+                        ?></td>
+                            <td><a href="manuser.php?delete=<?php echo $d['name'];
+                        ?>" class="btn btn-danger">刪除</td>
+                        </tr> 
+            <?php
+
+                    }
+                }
             ?>
         </tbody>
     </table>

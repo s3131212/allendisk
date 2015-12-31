@@ -5,14 +5,16 @@ Copyright (C) 2012~2014 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-include('config.php');  
-if(!session_id()) session_start();
-session_destroy();
+include 'config.php';
+if (!session_id()) {
+    session_start();
+    //setcookie(session_name(),session_id(),0, '/' . parse_url($config['url'])['path']);
+}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>登入 - <?php echo $config["sitename"];?></title>
+<title>登入 - <?php echo $config['sitename'];?></title>
 <meta charset="utf-8" />
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,7 +63,7 @@ session_destroy();
         <div class="alert"><p>&nbsp;</p></div>
 	</div>
 	<div class="col-md-12">
-		<h1 class="text-center"><?php echo $config["sitetitle"]; ?></h1>
+		<h1 class="text-center"><?php echo $config['sitetitle']; ?></h1>
 	</div>
     <div class="row" style="margin:0 auto;">
         <div class="col-md-4 col-md-offset-4">
@@ -89,7 +91,9 @@ session_destroy();
                         </form>
                     </div>
                 </div>
-                <a href="index.php">← 回首頁</a> <?php if($config['reg'] == 'true'){ ?><a href="reg.php" class="pull-right">註冊新帳號 →</a><?php } ?>
+                <a href="index.php">← 回首頁</a> <?php if ($config['reg'] == 'true') {
+    ?><a href="reg.php" class="pull-right">註冊新帳號 →</a><?php 
+} ?>
             </div>
         </div>
     <br />

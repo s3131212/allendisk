@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.5
-Copyright (C) 2012~2015 Allen Chou
+Allen Disk 1.6
+Copyright (C) 2012~2016 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -16,7 +16,9 @@ License: MIT License
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <style>body{ background-color: #F8F8F8; }</style>
-<?php if(isset($_GET["fin"])&&$_GET["fin"] == "fin") echo '<meta http-equiv="refresh" content="3; url=../index.php">'; ?>
+<?php if (isset($_GET['fin']) && $_GET['fin'] == 'fin') {
+    echo '<meta http-equiv="refresh" content="3; url=../index.php">';
+} ?>
 </head>
 <body>
 <div class="container">
@@ -28,13 +30,19 @@ License: MIT License
             <li><a href="#">新增帳號</a></li>
     </ul>
 <?php
-if(file_exists("install.lock")&&!isset($_GET["fin"])){?>
+if (file_exists('install.lock') && !isset($_GET['fin'])) {
+    ?>
     <div class="alert alert-warning" role="alert">很抱歉，Allen Disk已經安裝完成，如果要重新進行安裝，請刪除 /install/install.lock</div>
-<?php }elseif(isset($_GET["fin"])&&$_GET["fin"] == "fin"){ ?>
+<?php 
+} elseif (isset($_GET['fin']) && $_GET['fin'] == 'fin') {
+    ?>
     <div class="alert alert-success" role="alert">恭喜！Allen Disk已經安裝完成，您即將被導引至首頁</div>
-<?php }elseif(!file_exists("install.lock")&&!isset($_GET["fin"])){ ?>
+<?php 
+} elseif (!file_exists('install.lock') && !isset($_GET['fin'])) {
+    ?>
     <script>window.location.href = 'env-check.php';</script>
-<?php } ?>
+<?php 
+} ?>
 </div>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
 </body>

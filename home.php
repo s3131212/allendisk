@@ -1,60 +1,66 @@
 <?php
 /*
-Allen Disk 1.5
-Copyright (C) 2012~2015 Allen Chou
+Allen Disk 1.6
+Copyright (C) 2012~2016 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
 @set_time_limit(20);
-include('config.php'); 
-if(!session_id()) session_start();
-if(!$_SESSION["login"]){
-    header("Location:login.php");
+include 'config.php';
+if (!session_id()) {
+    session_start();
+}
+if (!$_SESSION['login']) {
+    header('Location:login.php');
     exit();
 }
-function sizecount($size){
-    if ($size<0.001) {
-        return round(($size*1000*1000), 2) . "B";
-    }elseif ($size>=0.001 &&$size < 1) {
-        return round(($size*1000), 2) . "KB";
-    }elseif ($size>=1 &&$size < 1000) {
-        return round($size, 2) . "MB";
-    }elseif ($size >= 1000) {
-        return round(($size/1000), 2) . 'GB';
+function sizecount($size)
+{
+    if ($size < 0.001) {
+        return round(($size * 1000 * 1000), 2).'B';
+    } elseif ($size >= 0.001 && $size < 1) {
+        return round(($size * 1000), 2).'KB';
+    } elseif ($size >= 1 && $size < 1000) {
+        return round($size, 2).'MB';
+    } elseif ($size >= 1000) {
+        return round(($size / 1000), 2).'GB';
     }
 }
 
-function getparentdir($id){
-	global $dirlocation;
-	if($id != '0'){
-	    $p = $GLOBALS['db']->select('dir',array('id' => $id,'owner'=>$_SESSION["username"], 'recycle'=> '0'));
-	    $dirlocation[] = array('id' => $id, 'name' => $p[0]['name']);
-	    if($p[0]['parent'] != '0'){
-	    	getparentdir($p[0]['parent']);
-	    }
-	}
+function getparentdir($id)
+{
+    global $dirlocation;
+    if ($id != '0') {
+        $p = $GLOBALS['db']->select('dir', array('id' => $id, 'owner' => $_SESSION['username'], 'recycle' => '0'));
+        $dirlocation[] = array('id' => $id, 'name' => $p[0]['name']);
+        if ($p[0]['parent'] != '0') {
+            getparentdir($p[0]['parent']);
+        }
+    }
 }
 
-
-$info = $db->select("user",array('name' => $_SESSION["username"]));
-if(isset($_GET["dir"])&&$_GET["dir"]!=null) $_SESSION["dir"] = $_GET["dir"];
-else header("location: home.php?dir=0");
-if($_GET["dir"]!="0"){
-    $dir = $db->select("dir",array('id' => $_GET["dir"],'owner'=>$_SESSION["username"]));
-    if($dir[0]["name"]==null){
-        header("location: home.php?dir=0");
+$info = $db->select('user', array('name' => $_SESSION['username']));
+if (isset($_GET['dir']) && $_GET['dir'] != null) {
+    $_SESSION['dir'] = $_GET['dir'];
+} else {
+    header('location: home.php?dir=0');
+}
+if ($_GET['dir'] != '0') {
+    $dir = $db->select('dir', array('id' => $_GET['dir'], 'owner' => $_SESSION['username']));
+    if ($dir[0]['name'] == null) {
+        header('location: home.php?dir=0');
         exit();
     }
 }
 $dirlocation = array();
-getparentdir($_GET["dir"]);
+getparentdir($_GET['dir']);
 $dirlocation = array_reverse($dirlocation);
 ?>
 <!DOCTYPE html>
 <html>
 <head onselect='return false;'>
 	<title>
-		<?php echo $config[ "sitename"];?>
+		<?php echo $config[ 'sitename'];?>
 	</title>
 	<meta charset="utf-8" />
 	<link href="css/bootstrap.min.css" rel="stylesheet">
@@ -67,7 +73,7 @@ $dirlocation = array_reverse($dirlocation);
 	<script src="js/sweet-alert.min.js"></script>
     <link rel="stylesheet" href="css/sweet-alert.css">
 	<script>
-		var dir = '<?php echo $_SESSION["dir"]; ?>';
+		var dir = '<?php echo $_SESSION['dir']; ?>';
 	</script>
 	<script src="js/modernizr.js" charset="utf-8"></script>
 	<script src="js/script.js" charset="utf-8"></script>
@@ -233,7 +239,7 @@ $dirlocation = array_reverse($dirlocation);
 			<div class="col-md-2">
 				<div class="navbar-header">
 					<a class="navbar-brand" href="home.php?dir=0">
-						<?php echo $config[ "sitetitle"]; ?>
+						<?php echo $config[ 'sitetitle']; ?>
 					</a>
 				</div>
 			</div>
@@ -243,14 +249,18 @@ $dirlocation = array_reverse($dirlocation);
 						<div class="btn-group btn-group-sm">
 							<a href="home.php?dir=0" class="btn <?php echo ($_GET['dir'] == '0') ? 'btn-primary' : 'btn-default'; ?>"><i class="fa fa-home"></i> 首頁</a>
 							<?php
-								if(!empty($dirlocation)){
-									foreach ($dirlocation as $key => $value) { ?>
+                                if (!empty($dirlocation)) {
+                                    foreach ($dirlocation as $key => $value) {
+                                        ?>
 										<button class="btn btn-default btn-arrow"><i class="fa fa-caret-right"></i></button>
-										<a href="home.php?dir=<?php echo $value['id']; ?>" class="btn <?php echo ($value['id'] == $_GET['dir']) ? 'btn-primary' : 'btn-default'; ?>"><i class="fa fa-folder"></i> <?php echo $value['name']; ?></a>
+										<a href="home.php?dir=<?php echo $value['id'];
+                                        ?>" class="btn <?php echo ($value['id'] == $_GET['dir']) ? 'btn-primary' : 'btn-default';
+                                        ?>"><i class="fa fa-folder"></i> <?php echo $value['name'];
+                                        ?></a>
 								<?php	
-									}
-								}
-							?>
+                                    }
+                                }
+                            ?>
 						</div>
 					</div>
 					<div class="pull-left btn-group" id="action_btn_multi" style="display:none;">
@@ -263,14 +273,14 @@ $dirlocation = array_reverse($dirlocation);
 			<div class="col-md-2">
 				<ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-						<a href="#" id="user-info-btn" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $_SESSION[ "username"]?> <small><i class="fa fa-chevron-down"></i></small></a>
+						<a href="#" id="user-info-btn" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo $_SESSION[ 'username']?> <small><i class="fa fa-chevron-down"></i></small></a>
                         <ul class="dropdown-menu" id="user-info">
                             <li>
                                 <div class="navbar-login" style="padding:5px 15px;width:200px;max-width:250px">
 									<h5>帳號資訊</h5>
-									<i class="fa fa-user fa-fw"></i> <?php echo $_SESSION["username"]?><br/>
-                                    <i class="fa fa-envelope fa-fw"></i> <?php echo $info[0]["email"]?><br/>
-                                    <i class="fa fa-history fa-fw"></i> <?php echo $info[0]["jointime"]?>
+									<i class="fa fa-user fa-fw"></i> <?php echo $_SESSION['username']?><br/>
+                                    <i class="fa fa-envelope fa-fw"></i> <?php echo $info[0]['email']?><br/>
+                                    <i class="fa fa-history fa-fw"></i> <?php echo $info[0]['jointime']?>
                                 </div>
                             </li>
 							<li><a href="#" id="info-btn"><i class="fa fa-lock"></i> 更改密碼</a></li>
@@ -291,7 +301,11 @@ $dirlocation = array_reverse($dirlocation);
 						<a href="#" class="btn btn-success" id="mkdir-btn"><i class="fa fa-plus"></i> 新資料夾</a>
 					</div>
 					<br/>
-						<li<?php if($_GET["dir"]=="0") echo ' class="current"'; ?>><i class="fa fa-home"></i> <a href="home.php?dir=0" data-id="0"  <?php if($_GET["dir"]!="0") echo ' style="color:#444;"'; ?>>主目錄</a>
+						<li<?php if ($_GET['dir'] == '0') {
+    echo ' class="current"';
+} ?>><i class="fa fa-home"></i> <a href="home.php?dir=0" data-id="0"  <?php if ($_GET['dir'] != '0') {
+    echo ' style="color:#444;"';
+} ?>>主目錄</a>
 							<ul class="list-home" id="dir-tree">
 							</ul>
 						</li>
@@ -323,7 +337,9 @@ $dirlocation = array_reverse($dirlocation);
 				</div>
 				<div class="modal-body">
 					<p>檔案大小限制：
-						<?php echo ($config[ 'size'] !=0 ) ? sizecount($config[ "size"]) : "無"; ?>，當您上傳檔案，代表您已經同意<a href="tos.php" target="_blank">使用條款</a>了，如果您不同意，請勿上傳任何檔案</p>
+						<?php echo ($config[ 'size'] != 0) ? sizecount($config[ 'size']) : '無'; ?><?php if ($config['tos']) {
+    ?>，當您上傳檔案，代表您已經同意<a href="tos.php" target="_blank">使用條款</a>了，如果您不同意，請勿上傳任何檔案<?php 
+} ?></p>
 					<p>如果您的瀏覽器較為老舊，或是要上傳較多檔案，請使用傳統上傳。 拖曳上傳如果卡在 100% ，代表正在進行加密程序，請耐心等候。</p>
 					<p class="text-center"><a href="#" class="btn btn-info" id="ajax_upload_btn">拖曳上傳</a>&nbsp;<a href="#" class="btn btn-info" id="traditional_upload_btn">傳統上傳</a>&nbsp;<a href="#" class="btn btn-info" id="remote_upload_btn">遠端上傳</a>
 					</p>
