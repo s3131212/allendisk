@@ -1,1 +1,0 @@
-DELETE FROM `setting` WHERE `setting`.`name` = 'updatesec';

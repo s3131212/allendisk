@@ -34,8 +34,7 @@ if (file_exists('install.lock')) {
     <br />
     <div>
         <a href="mysql-setting.php" class="btn btn-primary btn-lg btn-block">全新安裝</a>
-        <a href="mysql-set.php?update=true" class="btn btn-info btn-lg btn-block">從 1.4 升級</a>
-        <p>從 1.4 升級者請確認 database.php 內的連線資訊正確。1.3 以下欲升級請先升上 1.4 再進行 1.5 升級程序</p>
+        <p>如果您已經有 1.5 版且正常運作，請留下 /file 與 database.php ，其餘直接覆蓋後即完成更新程序</p>
     </div>
 </div>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>

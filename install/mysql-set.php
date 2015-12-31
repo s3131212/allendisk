@@ -13,28 +13,22 @@ if (file_exists('install.lock')) {
 $error = false;
 $errormsg = null;
 try {
-    if ($_GET['update'] != 'true') {
-        if (isset($_POST['dbname']) && $_POST['dbname'] != '') {
-            $mysql_file = '../database.php';
-            $mysql_sample_file = 'database-sample.php';
-            $mysql_config = vsprintf(file_get_contents($mysql_sample_file), array(
-                addslashes($_POST['host']),
-                addslashes($_POST['dbname']),
-                addslashes($_POST['username']),
-                addslashes($_POST['password']),
-            ));
+    if (isset($_POST['dbname']) && $_POST['dbname'] != '') {
+        $mysql_file = '../database.php';
+        $mysql_sample_file = 'database-sample.php';
+        $mysql_config = vsprintf(file_get_contents($mysql_sample_file), array(
+            addslashes($_POST['host']),
+            addslashes($_POST['dbname']),
+            addslashes($_POST['username']),
+            addslashes($_POST['password']),
+        ));
 
-            file_put_contents($mysql_file, $mysql_config);
-        }
-
-        require_once '../database.php';
-
-        $query = file('install.sql');
-    } else {
-        // Update from 1.4
-        require_once '../database.php';
-        $query = file('update14.sql');
+        file_put_contents($mysql_file, $mysql_config);
     }
+
+    require_once '../database.php';
+
+    $query = file('install.sql');
     foreach ($query as $val) {
         $result = $db->ExecuteSQL($val);
         if (!$result) {
