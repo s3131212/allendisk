@@ -1,6 +1,10 @@
 <?php
 
-require_once '../config.php';
+if(file_exists(dirname(__FILE__).'/config.php')){
+    require_once(dirname(__FILE__).'/config.php');
+}else{
+    require_once(dirname(dirname(__FILE__)).'/config.php');
+}
 
 //
 //  A simple PHP CAPTCHA script
