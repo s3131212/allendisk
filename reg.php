@@ -102,15 +102,14 @@ $_SESSION['captcha'] = simple_php_captcha();
 			<?php if ($config[ 'reg']) {
     ?>
 			<?php if ($err == '1') {
-    echo '<div class="alert alert-danger">兩次輸入的密碼必須相同</div>';
-}
-    if ($err == '0') {
+    	echo '<div class="alert alert-danger">兩次輸入的密碼必須相同</div>';
+	} elseif (isset($err) && $err == '0') {
         echo '<div class="alert alert-danger">不能有任何欄位是空白的</div>';
-    } elseif ($err == '2') {
+    } elseif (isset($err) && $err == '2') {
         echo '<div class="alert alert-danger">已經有重複的帳號</div>';
-    } elseif ($err == '3') {
+    } elseif (isset($err) && $err == '3') {
         echo '<div class="alert alert-success">註冊完成</div>';
-    } elseif ($err == '4') {
+    } elseif (isset($err) && $err == '4') {
         echo '<div class="alert alert-danger">驗證碼錯誤</div>';
     }
     ?>
