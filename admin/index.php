@@ -98,7 +98,7 @@ if (version_compare($newest_version, $current_version, '>')) {
               </div>
               <div class="panel-body">
                   <p>用戶數：<span class='num'><?php echo $usercount[0]['count']; ?> 位</span></p>
-                  <p>總可用空間：<span class='num'><?php echo ($config['total'] != 0) ? sizecount($usercount[0]['count'] * $config['total'] / 1000 / 1000) : '無限制'; ?></span></p>
+                  <p>總可用空間：<span class='num'><?php echo ($config['total'] != 0) ? sizecount($usercount[0]['count'] * $config['total']) : '無限制'; ?></span></p>
               </div>
           </div>
       </div>
