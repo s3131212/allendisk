@@ -32,8 +32,7 @@ if (file_exists('install.lock')) {
         <li class="active"><a href="#">新增帳號</a></li>
     </ul>
     <?php 
-    $err = $_GET['err'];
-    if ($_GET['err'] == '0') {
+    if (isset($_GET['err']) && $_GET['err'] == '0') {
         echo '<div class="alert alert-danger">不能有任何欄位是空白的</div>';
     }
     ?>
