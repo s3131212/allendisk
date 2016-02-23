@@ -5,7 +5,7 @@ Copyright (C) 2012~2016 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
-
+include dirname(dirname(__FILE__)).'/config.php';
 @set_time_limit(20);
 if (!session_id()) {
     session_start();
@@ -32,7 +32,7 @@ function fileformat($type, $name)
         echo strtoupper(substr($name, -(strlen($name) - strrpos($name, '.') - 1))).'檔';
     }
 }
-include dirname(dirname(__FILE__)).'/config.php';
+
 $res = $db->select('file', array('owner' => $_SESSION['username'], 'recycle' => '1'));
 if ($res[0]['id'] != null) {
     foreach ($res as $d) {
