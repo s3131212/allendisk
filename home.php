@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.6
-Copyright (C) 2012~2016 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -337,10 +337,9 @@ $dirlocation = array_reverse($dirlocation);
 				</div>
 				<div class="modal-body">
 					<p>檔案大小限制：
-						<?php echo ($config[ 'size'] != 0) ? sizecount($config[ 'size']) : '無'; ?><?php if ($config['tos']) {
+						<?php echo ($config['size'] != 0) ? sizecount($config[ 'size']) : '無'; ?><?php if ($config['tos']) {
     ?>，當您上傳檔案，代表您已經同意<a href="tos.php" target="_blank">使用條款</a>了，如果您不同意，請勿上傳任何檔案<?php 
 } ?></p>
-					<p>如果您的瀏覽器較為老舊，或是要上傳較多檔案，請使用傳統上傳。 拖曳上傳如果卡在 100% ，代表正在進行加密程序，請耐心等候。</p>
 					<p class="text-center"><a href="#" class="btn btn-info" id="ajax_upload_btn">拖曳上傳</a>&nbsp;<a href="#" class="btn btn-info" id="traditional_upload_btn">傳統上傳</a>&nbsp;<a href="#" class="btn btn-info" id="remote_upload_btn">遠端上傳</a>
 					</p>
 					<div id="upload_box" style="width:100%; height:200px; background-color:#eeeeee; -webkit-border-radius: 10px;-moz-border-radius: 10px;border-radius: 10px;">
@@ -355,8 +354,12 @@ $dirlocation = array_reverse($dirlocation);
 							</div>
 						</div>
 					</div>
-					<div class="progress" id="upload_progress_box" style="margin-top:20px;">
-						<div class="progress-bar progress-bar-striped active" id="upload_progress" style="width: 0%"></div>
+					<div class="col-md-12" id="uploadpercentagebox">
+						<span id="uploadpercentage" class="text-info text-center col-md-12" style="font-size: 15px; margin-top:20px;">0%</span>
+						<div class="progress" id="upload_progress_box" style="margin-top:10px;">
+							<div class="progress-bar progress-bar-striped active" id="upload_progress" style="width: 0%">
+							</div>
+						</div>
 					</div>
 					<div id="upload_table_box">
 						<table class="table">
@@ -370,7 +373,19 @@ $dirlocation = array_reverse($dirlocation);
 						</table>
 					</div>
 					<iframe src="uploadiframe.php" style="border:none; width:100%; height:200px; display:none;" id="upload_iframe">您的瀏覽器暫時不支援 iframe </iframe>
-					<iframe src="remotedownload.php" style="border:none; width:100%; height:200px; display:none;" id="remote_iframe">您的瀏覽器暫時不支援 iframe </iframe>
+					<div id="remote_frame">
+						<form action="" method="post">
+						    <input id="remotedownload" remotedownload="file" type="text" required class="form-control" placeholder="請輸入網址"></br>
+						    <input id="remotedownload-btn" name="submit" type="submit" class="btn btn-primary" value="開始上傳">
+						</form>
+						<table class="table" id="remote_table">
+						    <tr>
+						        <td>檔案名稱</td>
+						        <td>檔案大小</td>
+						        <td>上傳結果</td>
+						    </tr>
+						</table>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">關閉</button>
@@ -418,7 +433,12 @@ $dirlocation = array_reverse($dirlocation);
 					<h3>新增資料夾</h3>
 				</div>
 				<div class="modal-body">
-					<iframe src="mkdir.php" style="border:none; width:100%; height:200px;">您的瀏覽器暫時不支援 iframe ，請使用 <a href="mkdir.php">此連結</a> 新增</iframe>
+					<form action="mkdir.php" method="post" role="form">
+					    <div class="form-group">
+					        <input type="text" name="mkdirname" id="mkdirname" placeholder="資料夾名稱" class="form-control" required />
+					    </div>
+					    <input type="submit" value="送出" class="btn btn-info" id="mkdir-submit-btn" />
+					</form>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">關閉</button>
