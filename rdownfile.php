@@ -31,15 +31,39 @@ if ($_GET['download'] == 'true') {
 } else {
     $passphrase['a'] = $_GET['password'];
 }
+
 $iv = md5("\x1B\x3C\x58".$passphrase['a'], true).md5("\x1B\x3C\x58".$passphrase['a'], true);
 $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true).md5("\x2D\xFC\xD9".$passphrase['a'], true), 0, 24);
 $opts = array('iv' => $iv, 'key' => $key);
 $fp = fopen('./file/'.$res[0]['realname'].'.data', 'rb');
-stream_filter_append($fp, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
+$fp_filter = stream_filter_append($fp, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
 
 header('Content-Type: application/octet-stream');
 header('Content-Transfer-Encoding: binary');
 header('Content-Description: File Transfer');
 header('Content-Disposition: attachment; filename="'.$res[0]['name'].'"');
-$blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc');
-echo @substr(stream_get_contents($fp), 0, -($blocksize - ($res[0]['size'] % $blocksize)));
+
+$size = 4096;
+$pos = 0;
+$buffer = "";
+
+while ($pos < $res[0]['size']) {
+    if($pos != 0){
+        stream_filter_remove($fp_filter);
+        unset($key);
+        unset($iv);
+        unset($opts);
+        $iv = stream_get_contents($fp, mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc'), $pos - mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc'));
+        $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true).md5("\x2D\xFC\xD9".$passphrase['a'], true), 0, 24);
+        $opts = array('iv' => $iv, 'key' => $key);
+
+        $fp_filter = stream_filter_append($fp, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
+    }
+    $buffer = stream_get_contents($fp, $size, $pos);
+    $pos += $size;
+    if($pos > $res[0]['size']){
+        echo @substr($buffer, 0, ($res[0]['size'] % $size));
+    }else{
+        echo $buffer;
+    }
+}

@@ -1,6 +1,6 @@
 /*
-Allen Disk 1.6
-Copyright (C) 2012~2016 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -24,11 +24,9 @@ function getCookie(cname) {
 }
 function resizeIframe(obj) {
 	var height = obj.contentWindow.document.body.scrollHeight;
-	console.log(obj.contentWindow.document.body.scrollHeight);
 	if (height === 'undefined' || height / $(window).height() < 0.5) {
 		height = $(window).height() * 0.7;
 	}
-	console.log(height);
     obj.style.height = height + 'px';
 }
 $(function() {
@@ -36,6 +34,7 @@ $(function() {
 	function progressload(e) {
 		if (e.lengthComputable) {
 			$('#upload_progress').css('width', (e.loaded / e.total) * 100 + '%');
+			$('#uploadpercentage').text(Math.round( (e.loaded / e.total) * 100 ) + '%');
 		}
 	}
 
@@ -294,6 +293,8 @@ $(function() {
 		   	}
 	   	}
 	});
+
+	/* Delete File*/
 	$('body').on('click', '.file-action a[data-delete-id]', function(e) {
 		e.preventDefault();
 		$.ajax({
@@ -335,351 +336,6 @@ $(function() {
 				swal('刪除失敗', '', 'warning');
 			}
 		});
-	});
-
-	$('#rename-file').on('hide.bs.modal', function() {
-		$('#rename-file-btn').off();
-	});
-	$('body').on('click', '.file-action a[data-dir-color-id], .file-action a[data-color-id]', function(e) {
-		e.preventDefault();
-		$('.color-tag-btn.btn').removeClass('active');
-		$('.color-tag-btn.btn').find('input').removeAttr('checked');
-		if ($('.ui-selected').length == 1) {
-			if ($(this).attr('data-dir-color-id') != null) {
-				$('.color-tag-btn').attr('data-id', $(this).attr('data-dir-color-id')).attr('data-type', 'dir');
-			} else {
-				$('.color-tag-btn').attr('data-id', $(this).attr('data-color-id')).attr('data-type', 'file');
-			}
-			if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-success')) {
-				$('.color-tag-btn.btn-success').addClass('active');
-				$('.color-tag-btn.btn-success').find('input').attr('checked', 'checked');
-			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-warning')) {
-				$('.color-tag-btn.btn-warning').addClass('active');
-				$('.color-tag-btn.btn-warning').find('input').attr('checked', 'checked');
-			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-info')) {
-				$('.color-tag-btn.btn-info').addClass('active');
-				$('.color-tag-btn.btn-info').find('input').attr('checked', 'checked');
-			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-danger')) {
-				$('.color-tag-btn.btn-danger').addClass('active');
-				$('.color-tag-btn.btn-danger').find('input').attr('checked', 'checked');
-			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-primary')) {
-				$('.color-tag-btn.btn-primary').addClass('active');
-				$('.color-tag-btn.btn-primary').find('input').attr('checked', 'checked');
-			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-default')) {
-				$('.color-tag-btn.btn-default').addClass('active');
-				$('.color-tag-btn.btn-default').find('input').attr('checked', 'checked');
-			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-black')) {
-				$('.color-tag-btn.btn-black').addClass('active');
-				$('.color-tag-btn.btn-black').find('input').attr('checked', 'checked');
-			} else {
-				$('.color-tag-btn.btn-default').addClass('active');
-				$('.color-tag-btn.btn-default').find('input').attr('checked', 'checked');
-			}
-		}
-		$('#color-tag').modal('show');
-	});
-	$('body').on('click', '#tag-btn', function(e) {
-		e.preventDefault();
-		$('#color-tag').modal('show');
-	});
-	$('body').on('click', '.color-tag-btn', function(e) {
-		e.preventDefault();
-		$(this).addClass('active');
-		var id = $(this).attr('id');
-		$('.ui-selected').each(function() {
-			$.ajax({
-				url: 'ajax/ajax_set_color.php',
-				type: 'GET',
-				dataType: 'json',
-				data: {
-					id: $(this).attr('data-id'),
-					type: $(this).attr('data-type'),
-					color: id
-				},
-				success: function() {
-					updateAll();
-				},
-				error: function() {
-					swal('檔案標記錯誤', '', 'warning');
-				}
-			});
-		});
-		$('.color-tag-btn.btn').removeClass('active');
-		$('.color-tag-btn.btn').find('input').removeAttr('checked');
-
-		$('#color-tag').modal('hide');
-	});
-	$('body').on('click', '.file-action a[data-rename-id]', function(e) {
-		e.preventDefault();
-		var filename = $(this).parents('.panel').find('.panel-footer').eq(0).text();
-		var ext = filename.split('.').pop();
-		var name = filename.replace('.' + ext, '');
-		console.log(filename + ', ' + name + ', ' + ext);
-		$(this).parents('.panel').removeClass('ui-selectee ui-selected').addClass('renaming').find('.panel-footer').attr('style', 'padding:6px 15px').html('<div class="input-group input-group-sm"><input class="form-control rename-input" data-rename-url="' + $(this).attr('href') + '" data-id="' + $(this).attr('data-rename-id') + '" value="' + name + '" /><div class="input-group-addon file-ext">.' + ext + '</div></div>');
-		$('.rename-input').focus();
-	});
-	$('body').on('blur', '.rename-input', function() {
-		$('.rename-input').focus();
-	});
-	$('body').on('keyup', '.rename-input', function(e) {
-		if (e.keyCode == 27) {
-			e.preventDefault();
-			$('.rename-input').remove();
-			updateAll();
-			return false;
-		}else if (e.type == 'keyup' && e.keyCode == 13) {
-			e.preventDefault();
-			if ($('.rename-input').val() == '') {
-				updateAll();
-				return false;
-			}
-			var val = $('.rename-input').val() + $('.file-ext').eq(0).text();
-			if (val) {
-				$.ajax({
-					url: 'ajax/' + $('.rename-input').attr('data-rename-url'),
-					type: 'GET',
-					dataType: 'json',
-					data: {
-						id: $('.rename-input').attr('data-id'),
-						name: val
-					},
-					success: function(data) {
-						updateAll();
-
-					},
-					error: function() {
-						swal('重新命名發生錯誤', '', 'warning');
-					}
-				});
-			}
-		}
-	});
-	$('body').on('click', '.file-action a[data-dir-rename-id]', function(e) {
-		e.preventDefault();
-		var name = $(this).parents('.panel').find('.panel-footer').eq(0).text();
-		console.log(name);
-		$(this).parents('.panel').removeClass('ui-selectee ui-selected').addClass('renaming').find('.panel-footer').attr('style', 'padding:6px 15px').find('span').html('<div class="input-group input-group-sm"><input class="form-control rename-input-dir" data-rename-url="' + $(this).attr('href') + '" data-id="' + $(this).attr('data-dir-rename-id') + '" value="' + name + '" /></div>');
-		$('.rename-input-dir').focus();
-	});
-	$('body').on('blur', '.rename-input-dir', function() {
-		$('.rename-input-dir').focus();
-	});
-	$('body').on('keydown', '.rename-input-dir', function(e) {
-		if (e.keyCode === 27) {
-			e.preventDefault();
-			$('.rename-input-dir').remove();
-			updateAll();
-			return false;
-		}else if (e.keyCode === 13) {
-			if ($('.rename-input-dir').val() == '') {
-				updateAll();
-				return false;
-			}
-			$.ajax({
-				url: 'ajax/' + $('.rename-input-dir').attr('data-rename-url'),
-				type: 'GET',
-				dataType: 'json',
-				data: {
-					id: $('.rename-input-dir').attr('data-id'),
-					name: $('.rename-input-dir').val()
-				},
-				success: function(data) {
-					updateAll();
-				},
-				error: function() {
-					swal('重新命名發生錯誤', '', 'warning');
-				}
-			});
-		}
-	});
-	$('body').on('click', '.file-action a[data-share-id]', function(e) {
-		e.preventDefault();
-		if ($(this).text() == '公開檔案' || $(this).text() == '公開資料夾') {
-			var $target = $(this);
-			console.log(getCookie('share_warning'));
-			if (getCookie('share_warning') != 'no_warning') {
-				swal({
-				  title: '你確定要公開檔案嗎？',
-				  text: '公開檔案會降低您檔案的安全係數，您確定要這麼作嗎？',
-				  type: 'warning',
-				  showCancelButton: true,
-				  confirmButtonClass: 'btn-danger',
-				  confirmButtonText: '恩，我確定要公開檔案',
-				  cancelButtonText: '取消',
-				  closeOnConfirm: false
-				},function(isConfirm) {
-					if (isConfirm) {
-						$.ajax({
-							url: 'ajax/ajax_share.php',
-							type: 'GET',
-							dataType: 'json',
-							data: {
-								id: $target.attr('data-share-id'),
-								type: $target.attr('data-share-type'),
-							},
-							success: function(data) {
-								updateAll();
-							},
-							error: function() {
-								swal('改變權限發生錯誤', '', 'warning');
-							}
-						});
-					  	swal({
-						    title: '未來還需要提醒您嗎？',
-						    text: '未來是否還要再跳此通知',
-						    type: 'warning',
-						    showCancelButton: true,
-						    confirmButtonClass: 'btn-info',
-						    confirmButtonText: '以後不需要再提醒我了',
-						    cancelButtonText: '以後還是要提醒我',
-						    closeOnConfirm: true
-					  	},function() {
-					  		setCookie('share_warning', 'no_warning', 365);
-					  	});
-					}else {
-						return false;
-					}
-				});
-			}else {
-				$.ajax({
-					url: 'ajax/ajax_share.php',
-					type: 'GET',
-					dataType: 'json',
-					data: {
-						id: $target.attr('data-share-id'),
-						type: $target.attr('data-share-type'),
-					},
-					success: function(data) {
-						updateAll();
-					},
-					error: function() {
-						swal('改變權限發生錯誤', '', 'warning');
-					}
-				});
-			}
-		}else {
-			$.ajax({
-				url: 'ajax/ajax_share.php',
-				type: 'GET',
-				dataType: 'json',
-				data: {
-					id: $(this).attr('data-share-id'),
-					type: $(this).attr('data-share-type'),
-				},
-				success: function(data) {
-					updateAll();
-				},
-				error: function() {
-					swal('改變權限發生錯誤', '', 'warning');
-				}
-			});
-		}
-
-		console.log(4);
-	});
-
-	$('#recycle-btn').on('click', function(e) {
-		e.preventDefault();
-
-		$('#recycle-box').modal('show');
-	});
-	$('#upload-file').on('hide.bs.modal', function() {
-		$('#upload-file-btn').off();
-	});
-	$('#upload-btn').on('click', function(e) {
-		e.preventDefault();
-		$('#upload-file').modal('show');
-	});
-	$('#mkdir-btn').on('click', function(e) {
-		e.preventDefault();
-		$('#mkdir-modal').modal('show');
-	});
-	$('#info-btn').on('click', function(e) {
-		e.preventDefault();
-		$('#info-modal').modal('show');
-	});
-	$('#move-btn').on('click', function(e) {
-		e.preventDefault();
-		$.ajax({
-			url: 'ajax/ajax_list_dir.php',
-			type: 'GET',
-			dataType: 'json',
-			success: function(data) {
-				$('#ajax_load_tree').html(data[0].content);
-			},
-		});
-		$('#mvfile-modal').modal('show');
-	});
-	$('body').on('click', '.file-action a[data-preview-id]', function(e) {
-		e.preventDefault();
-		$('#preview-iframe').attr('src', 'preview.php?id=' + $(this).attr('data-preview-id'));
-		$('#preview-file').modal('show');
-	});
-	$('#file_list_container').selectable({
-		filter: '.panel',
-		cancel: '.ui-selected, .renaming',
-		start: function(e, ui ) {
-			$contextMenu.hide();
-		},
-		selecting: function(e, ui) {
-			$('#navbar-file-action').html('');
-		}
-	});
-
-	$('body').on('mousedown', '#file_list_container .ui-selectee', function(e) {
-		if (e.which == 1) {
-			if (!e.ctrlKey && !e.metaKey) {
-				$('.ui-selected').removeClass('ui-selected');
-		        $('#file_list_container').trigger('selectableselected');
-		    }
-		    if (e.ctrlKey || e.metaKey) {
-				$(this).removeClass('ui-selected');
-		    }
-		}
-    });
-	$('.ui-selected').on('click', function() {
-  		$(this).removeClass('ui-selected').parents('.ui-selectable').trigger('selectablestop');
-	});
-
-	$('body').on('dblclick', '.panel:not(.renaming), .panel i', function(e) {
-		if (!e.ctrlKey && !e.metaKey) {
-			console.log($(this).parent().html());
-			window.open($(this).attr('data-download-url') , '_self');
-        }
-    });
-
-    $('body').on('click', '.file-action', function(e) {
-    	e.stopPropagation();
-    });
-
-	$('#preview-file').on('hide.bs.modal', function(e) {
-		$('#preview-iframe').attr('src', 'preview.php');
-	});
-	var moving_id = '';
-	$('body').on('click', '.file-action a[data-move-id] , .file-action a[data-dir-move-id]', function(e) {
-		e.preventDefault();
-		if ($(this).attr('data-dir-move-id') != null) {
-			moving_id = $(this).attr('data-dir-move-id');
-			//$('tr[data-id="' + $(this).attr('data-dir-move-id') + '"]').addClass('is_moving');
-			var cdir = $(this).attr('data-dir-move-id');
-		} else {
-			moving_id = $(this).attr('data-move-id');
-			//$('tr[data-id="' + $(this).attr('data-move-id') + '"]').addClass('is_moving');
-			var cdir = '';
-		}
-		console.log($(this).attr('data-move-id'));
-		$.ajax({
-			url: 'ajax/ajax_list_dir.php',
-			type: 'GET',
-			dataType: 'json',
-			success: function(data) {
-				$('#ajax_load_tree').html(data[0].content);
-				$('#ajax_load_tree').find('a').addClass('filetreeselector').removeAttr('href');
-				//$('[data-id=' + cdir + ']').removeClass("filetreeselector");
-				//$('[data-parent=' + cdir + ']').remove();
-			},
-		});
-		$('#mvfile-modal').modal('show');
 	});
 	$('body').on('click', '.real_delete', function(e) {
 		e.preventDefault();
@@ -775,11 +431,6 @@ $(function() {
 		updateAll();
 
 	});
-	$('body').on('click', '.filetreeselector', function(e) {
-		e.preventDefault();
-		$('.filetreeselector').removeClass('tree_selected');
-		$(this).addClass('tree_selected');
-	});
 	$('#delete-btn').on('click', function(e) {
 		var url = '';
 		$('.ui-selected').each(function() {
@@ -801,6 +452,315 @@ $(function() {
 			});
 			updateAll();
 		});
+	});
+
+	/* Rename File */
+	$('#rename-file').on('hide.bs.modal', function() {
+		$('#rename-file-btn').off();
+	});
+	$('body').on('click', '.file-action a[data-dir-color-id], .file-action a[data-color-id]', function(e) {
+		e.preventDefault();
+		$('.color-tag-btn.btn').removeClass('active');
+		$('.color-tag-btn.btn').find('input').removeAttr('checked');
+		if ($('.ui-selected').length == 1) {
+			if ($(this).attr('data-dir-color-id') != null) {
+				$('.color-tag-btn').attr('data-id', $(this).attr('data-dir-color-id')).attr('data-type', 'dir');
+			} else {
+				$('.color-tag-btn').attr('data-id', $(this).attr('data-color-id')).attr('data-type', 'file');
+			}
+			if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-success')) {
+				$('.color-tag-btn.btn-success').addClass('active');
+				$('.color-tag-btn.btn-success').find('input').attr('checked', 'checked');
+			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-warning')) {
+				$('.color-tag-btn.btn-warning').addClass('active');
+				$('.color-tag-btn.btn-warning').find('input').attr('checked', 'checked');
+			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-info')) {
+				$('.color-tag-btn.btn-info').addClass('active');
+				$('.color-tag-btn.btn-info').find('input').attr('checked', 'checked');
+			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-danger')) {
+				$('.color-tag-btn.btn-danger').addClass('active');
+				$('.color-tag-btn.btn-danger').find('input').attr('checked', 'checked');
+			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-primary')) {
+				$('.color-tag-btn.btn-primary').addClass('active');
+				$('.color-tag-btn.btn-primary').find('input').attr('checked', 'checked');
+			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-default')) {
+				$('.color-tag-btn.btn-default').addClass('active');
+				$('.color-tag-btn.btn-default').find('input').attr('checked', 'checked');
+			}else if ($(this).parents('.panel').find('.panel-footer').hasClass('tag-black')) {
+				$('.color-tag-btn.btn-black').addClass('active');
+				$('.color-tag-btn.btn-black').find('input').attr('checked', 'checked');
+			} else {
+				$('.color-tag-btn.btn-default').addClass('active');
+				$('.color-tag-btn.btn-default').find('input').attr('checked', 'checked');
+			}
+		}
+		$('#color-tag').modal('show');
+	});
+	$('body').on('click', '.file-action a[data-rename-id]', function(e) {
+		e.preventDefault();
+		var filename = $(this).parents('.panel').find('.panel-footer').eq(0).text();
+		var ext = filename.split('.').pop();
+		var name = filename.replace('.' + ext, '');
+		console.log(filename + ', ' + name + ', ' + ext);
+		$(this).parents('.panel').removeClass('ui-selectee ui-selected').addClass('renaming').find('.panel-footer').attr('style', 'padding:6px 15px').html('<div class="input-group input-group-sm"><input class="form-control rename-input" data-rename-url="' + $(this).attr('href') + '" data-id="' + $(this).attr('data-rename-id') + '" value="' + name + '" /><div class="input-group-addon file-ext">.' + ext + '</div></div>');
+		$('.rename-input').focus();
+	});
+	$('body').on('blur', '.rename-input', function() {
+		$('.rename-input').focus();
+	});
+	$('body').on('keyup', '.rename-input', function(e) {
+		if (e.keyCode == 27) {
+			e.preventDefault();
+			$('.rename-input').remove();
+			updateAll();
+			return false;
+		}else if (e.type == 'keyup' && e.keyCode == 13) {
+			e.preventDefault();
+			if ($('.rename-input').val() == '') {
+				updateAll();
+				return false;
+			}
+			var val = $('.rename-input').val() + $('.file-ext').eq(0).text();
+			if (val) {
+				$.ajax({
+					url: 'ajax/' + $('.rename-input').attr('data-rename-url'),
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						id: $('.rename-input').attr('data-id'),
+						name: val
+					},
+					success: function(data) {
+						updateAll();
+
+					},
+					error: function() {
+						swal('重新命名發生錯誤', '', 'warning');
+					}
+				});
+			}
+		}
+	});
+	$('body').on('click', '.file-action a[data-dir-rename-id]', function(e) {
+		e.preventDefault();
+		var name = $(this).parents('.panel').find('.panel-footer').eq(0).text();
+		console.log(name);
+		$(this).parents('.panel').removeClass('ui-selectee ui-selected').addClass('renaming').find('.panel-footer').attr('style', 'padding:6px 15px').find('span').html('<div class="input-group input-group-sm"><input class="form-control rename-input-dir" data-rename-url="' + $(this).attr('href') + '" data-id="' + $(this).attr('data-dir-rename-id') + '" value="' + name + '" /></div>');
+		$('.rename-input-dir').focus();
+	});
+	$('body').on('blur', '.rename-input-dir', function() {
+		$('.rename-input-dir').focus();
+	});
+	$('body').on('keydown', '.rename-input-dir', function(e) {
+		if (e.keyCode === 27) {
+			e.preventDefault();
+			$('.rename-input-dir').remove();
+			updateAll();
+			return false;
+		}else if (e.keyCode === 13) {
+			if ($('.rename-input-dir').val() == '') {
+				updateAll();
+				return false;
+			}
+			$.ajax({
+				url: 'ajax/' + $('.rename-input-dir').attr('data-rename-url'),
+				type: 'GET',
+				dataType: 'json',
+				data: {
+					id: $('.rename-input-dir').attr('data-id'),
+					name: $('.rename-input-dir').val()
+				},
+				success: function(data) {
+					updateAll();
+				},
+				error: function() {
+					swal('重新命名發生錯誤', '', 'warning');
+				}
+			});
+		}
+	});
+
+	/* File Tag */
+	$('body').on('click', '#tag-btn', function(e) {
+		e.preventDefault();
+		$('#color-tag').modal('show');
+	});
+	$('body').on('click', '.color-tag-btn', function(e) {
+		e.preventDefault();
+		$(this).addClass('active');
+		var id = $(this).attr('id');
+		$('.ui-selected').each(function() {
+			$.ajax({
+				url: 'ajax/ajax_set_color.php',
+				type: 'GET',
+				dataType: 'json',
+				data: {
+					id: $(this).attr('data-id'),
+					type: $(this).attr('data-type'),
+					color: id
+				},
+				success: function() {
+					updateAll();
+				},
+				error: function() {
+					swal('檔案標記錯誤', '', 'warning');
+				}
+			});
+		});
+		$('.color-tag-btn.btn').removeClass('active');
+		$('.color-tag-btn.btn').find('input').removeAttr('checked');
+
+		$('#color-tag').modal('hide');
+	});
+
+	/* Share */
+	$('body').on('click', '.file-action a[data-share-id]', function(e) {
+		e.preventDefault();
+		if ($(this).text() == '公開檔案' || $(this).text() == '公開資料夾') {
+			var $target = $(this);
+			console.log(getCookie('share_warning'));
+			if (getCookie('share_warning') != 'no_warning') {
+				swal({
+				  title: '你確定要公開檔案嗎？',
+				  text: '公開檔案會降低您檔案的安全係數，您確定要這麼作嗎？',
+				  type: 'warning',
+				  showCancelButton: true,
+				  confirmButtonClass: 'btn-danger',
+				  confirmButtonText: '恩，我確定要公開檔案',
+				  cancelButtonText: '取消',
+				  closeOnConfirm: false
+				},function(isConfirm) {
+					if (isConfirm) {
+						$.ajax({
+							url: 'ajax/ajax_share.php',
+							type: 'GET',
+							dataType: 'json',
+							data: {
+								id: $target.attr('data-share-id'),
+								type: $target.attr('data-share-type'),
+							},
+							success: function(data) {
+								updateAll();
+							},
+							error: function() {
+								swal('改變權限發生錯誤', '', 'warning');
+							}
+						});
+					  	swal({
+						    title: '未來還需要提醒您嗎？',
+						    text: '未來是否還要再跳此通知',
+						    type: 'warning',
+						    showCancelButton: true,
+						    confirmButtonClass: 'btn-info',
+						    confirmButtonText: '以後不需要再提醒我了',
+						    cancelButtonText: '以後還是要提醒我',
+						    closeOnConfirm: true
+					  	},function() {
+					  		setCookie('share_warning', 'no_warning', 365);
+					  	});
+					}else {
+						return false;
+					}
+				});
+			}else {
+				$.ajax({
+					url: 'ajax/ajax_share.php',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						id: $target.attr('data-share-id'),
+						type: $target.attr('data-share-type'),
+					},
+					success: function(data) {
+						updateAll();
+					},
+					error: function() {
+						swal('改變權限發生錯誤', '', 'warning');
+					}
+				});
+			}
+		}else {
+			$.ajax({
+				url: 'ajax/ajax_share.php',
+				type: 'GET',
+				dataType: 'json',
+				data: {
+					id: $(this).attr('data-share-id'),
+					type: $(this).attr('data-share-type'),
+				},
+				success: function(data) {
+					updateAll();
+				},
+				error: function() {
+					swal('改變權限發生錯誤', '', 'warning');
+				}
+			});
+		}
+	});
+
+	$('#recycle-btn').on('click', function(e) {
+		e.preventDefault();
+		$('#recycle-box').modal('show');
+	});
+	$('#upload-file').on('hide.bs.modal', function() {
+		$('#upload-file-btn').off();
+	});
+	$('#upload-btn').on('click', function(e) {
+		e.preventDefault();
+		$('#upload-file').modal('show');
+	});
+	$('#mkdir-btn').on('click', function(e) {
+		e.preventDefault();
+		$('#mkdir-modal').modal('show');
+	});
+	$('#info-btn').on('click', function(e) {
+		e.preventDefault();
+		$('#info-modal').modal('show');
+	});
+
+	/* Move File */
+	$('#move-btn').on('click', function(e) {
+		e.preventDefault();
+		$.ajax({
+			url: 'ajax/ajax_list_dir.php',
+			type: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				$('#ajax_load_tree').html(data[0].content);
+			},
+		});
+		$('#mvfile-modal').modal('show');
+	});
+	var moving_id = '';
+	$('body').on('click', '.file-action a[data-move-id] , .file-action a[data-dir-move-id]', function(e) {
+		e.preventDefault();
+		if ($(this).attr('data-dir-move-id') != null) {
+			moving_id = $(this).attr('data-dir-move-id');
+			//$('tr[data-id="' + $(this).attr('data-dir-move-id') + '"]').addClass('is_moving');
+			var cdir = $(this).attr('data-dir-move-id');
+		} else {
+			moving_id = $(this).attr('data-move-id');
+			//$('tr[data-id="' + $(this).attr('data-move-id') + '"]').addClass('is_moving');
+			var cdir = '';
+		}
+		console.log($(this).attr('data-move-id'));
+		$.ajax({
+			url: 'ajax/ajax_list_dir.php',
+			type: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				$('#ajax_load_tree').html(data[0].content);
+				$('#ajax_load_tree').find('a').addClass('filetreeselector').removeAttr('href');
+				//$('[data-id=' + cdir + ']').removeClass("filetreeselector");
+				//$('[data-parent=' + cdir + ']').remove();
+			},
+		});
+		$('#mvfile-modal').modal('show');
+	});
+	$('body').on('click', '.filetreeselector', function(e) {
+		e.preventDefault();
+		$('.filetreeselector').removeClass('tree_selected');
+		$(this).addClass('tree_selected');
 	});
 	$('#move-submit-btn').on('click', function(e) {
 		var url = '';
@@ -830,24 +790,96 @@ $(function() {
 			swal('您沒有選取資料夾', '', 'warning');
 		}
 	});
+	/* Preview */
+	$('body').on('click', '.file-action a[data-preview-id]', function(e) {
+		e.preventDefault();
+		$('#preview-iframe').attr('src', 'preview.php?id=' + $(this).attr('data-preview-id'));
+		$('#preview-file').modal('show');
+	});
+	$('#preview-file').on('hide.bs.modal', function(e) {
+		$('#preview-iframe').attr('src', 'preview.php');
+	});
 
-	//$('#file_list_container').css('height', $(document.body).height() + 'px');
+	/* File List & Select */
+	$('#file_list_container').selectable({
+		filter: '.panel',
+		cancel: '.ui-selected, .renaming',
+		start: function(e, ui ) {
+			$contextMenu.hide();
+		},
+		selecting: function(e, ui) {
+			$('#navbar-file-action').html('');
+		}
+	});
 
-	//Upload
+	$('body').on('mousedown', '#file_list_container .ui-selectee', function(e) {
+		if (e.which == 1) {
+			if (!e.ctrlKey && !e.metaKey) {
+				$('.ui-selected').removeClass('ui-selected');
+		        $('#file_list_container').trigger('selectableselected');
+		    }
+		    if (e.ctrlKey || e.metaKey) {
+				$(this).removeClass('ui-selected');
+		    }
+		}
+    });
+	$('.ui-selected').on('click', function() {
+  		$(this).removeClass('ui-selected').parents('.ui-selectable').trigger('selectablestop');
+	});
+
+	$('body').on('dblclick', '.panel:not(.renaming), .panel i', function(e) {
+		if (!e.ctrlKey && !e.metaKey) {
+			console.log($(this).parent().html());
+			window.open($(this).attr('data-download-url') , '_self');
+        }
+    });
+
+    $('body').on('click', '.file-action', function(e) {
+    	e.stopPropagation();
+    });
+
+    /* Create Directory */
+    $('#mkdir-submit-btn').on('click', function(e) {
+		e.preventDefault();
+		$.ajax({
+			url: 'ajax/ajax_mkdir.php',
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				name: $('#mkdirname').val()
+			},
+			success: function(data) {
+				if (!data.success) {
+					swal('資料夾建立失敗', data.message, 'warning');
+				}else{
+					swal('資料夾建立完成', '', 'success');
+				}
+				updateAll();
+
+			},
+			error: function() {
+				swal('資料夾建立失敗', '', 'warning');
+			}
+		});
+	});
+
+	/* Upload */
 	if (window.FileReader && Modernizr.draganddrop) {
 		$('#ajax_upload_btn').removeClass('btn-info').addClass('btn-primary');
 		$('#upload_box').show();
 		$('#upload_progress_box').show();
+		$('#uploadpercentagebox').show();
 		$('#upload_table_box').show();
 		$('#upload_iframe').hide();
-		$('#remote_iframe').hide();
+		$('#remote_frame').hide();
 	} else {
 		$('#traditional_upload_btn').removeClass('btn-info').addClass('btn-primary');
 		$('#upload_box').hide();
 		$('#upload_progress_box').hide();
+		$('#uploadpercentagebox').hide();
 		$('#upload_table_box').hide();
 		$('#upload_iframe').show();
-		$('#remote_iframe').hide();
+		$('#remote_frame').hide();
 	}
 	$('body').on('click', '#ajax_upload_btn', function(e) {
 		e.preventDefault();
@@ -856,9 +888,10 @@ $(function() {
 		$('#remote_upload_btn').removeClass('btn-primary').addClass('btn-info');
 		$('#upload_box').show();
 		$('#upload_progress_box').show();
+		$('#uploadpercentagebox').show();
 		$('#upload_table_box').show();
 		$('#upload_iframe').hide();
-		$('#remote_iframe').hide();
+		$('#remote_frame').hide();
 	});
 	$('body').on('click', '#traditional_upload_btn', function(e) {
 		e.preventDefault();
@@ -867,9 +900,10 @@ $(function() {
 		$('#remote_upload_btn').removeClass('btn-primary').addClass('btn-info');
 		$('#upload_box').hide();
 		$('#upload_progress_box').hide();
+		$('#uploadpercentagebox').hide();
 		$('#upload_table_box').hide();
 		$('#upload_iframe').show();
-		$('#remote_iframe').hide();
+		$('#remote_frame').hide();
 	});
 	$('body').on('click', '#remote_upload_btn', function(e) {
 		e.preventDefault();
@@ -878,23 +912,24 @@ $(function() {
 		$('#traditional_upload_btn').removeClass('btn-primary').addClass('btn-info');
 		$('#upload_box').hide();
 		$('#upload_progress_box').hide();
+		$('#uploadpercentagebox').hide();
 		$('#upload_table_box').hide();
 		$('#upload_iframe').hide();
-		$('#remote_iframe').show();
+		$('#remote_frame').show();
 	});
 	$('#upload_box').on('drop', function(e) {
 		e.preventDefault();
 		var files = e.originalEvent.dataTransfer.files;
 		var length = e.originalEvent.dataTransfer.files.length;
 		for (var i = 0; i < length; i++) {
-			$('#upload_progress').css('width', '0%');
+			$('#upload_progress').css('width', '2em');
 			var formData = new FormData();
-			formData.append('file[]', files[i]);
+			formData.append('file', files[i]);
 			$.ajax({
 				url: 'uploadfile.php',
 				data: formData,
 				type: 'post',
-				dataType: 'html',
+				dataType: 'json',
 				processData: false, //important!
 				contentType: false,
 				cache: false,
@@ -907,10 +942,62 @@ $(function() {
 				},
 				success: function(data) {
 					$('#upload_table').append(data);
+					$('#uploadpercentage').text('加密中');
+					$.ajax({
+						url: 'encryptfile.php',
+						type: 'POST',
+						dataType: 'html',
+						data: {
+							file: data.id
+						},
+						success: function(dataa) {
+							var result = "";
+							if (data.result == 'success' && dataa == 'success') {
+							    result = '上傳成功';
+							    $('#uploadpercentage').text('上傳完成！');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-success');
+							} else if (data.result == 'success' && dataa != 'success') {
+							    result = '加密失敗';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'sizeout') {
+							    result = '檔案太大';$('uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'unknow') {
+							    result = '找不到該檔案，或是發生未知得錯誤';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'totalout') {
+							    result = '帳戶空間不足';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'inierr') {
+							    result = '檔案超過 POST 或是伺服器設定限制';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'par') {
+							    result = '系統錯誤，檔案上傳不完全';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'nofile') {
+							    result = '沒有選取的檔案';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else {
+							    result = '發生未知的錯誤';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							}
+							$('#upload_table').append("<tr><td>" + data.name + "</td><td>" + data.size + "</td><td>" + result + "</td></tr>");
+						},
+						error: function() {
+							swal('加密程序發生錯誤', '', 'warning');
+						}
+					});
 					updateAll();
 				},
 				error: function() {
-					swal('上傳程序發生錯誤', 'warning');
+					swal('上傳程序發生錯誤', '', 'warning');
 				}
 			});
 		}
@@ -922,13 +1009,15 @@ $(function() {
 		var length = $(this)[0].files.length;
 		for (var i = 0; i < length; i++) {
 			$('#upload_progress').css('width', '0%');
+			$('#uploadpercentage').text('0%');
+			$('#uploadpercentage').addClass('text-info').removeClass('text-success text-danger');
 			var uploadData = new FormData();
-			uploadData.append('file[]', files[i]);
+			uploadData.append('file', files[i]);
 			$.ajax({
 				url: 'uploadfile.php',
 				data: uploadData,
 				type: 'post',
-				dataType: 'html',
+				dataType: 'json',
 				processData: false, //important!
 				contentType: false,
 				cache: false,
@@ -941,13 +1030,119 @@ $(function() {
 				},
 				success: function(data) {
 					$('#upload_table').append(data);
+					$('#uploadpercentage').text('加密中');
+					$.ajax({
+						url: 'encryptfile.php',
+						type: 'POST',
+						dataType: 'html',
+						data: {
+							file: data.id
+						},
+						success: function(dataa) {
+							var result = "";
+							if (data.result == 'success' && dataa == 'success') {
+							    result = '上傳成功';
+							    $('#uploadpercentage').text('上傳完成！');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-success');
+							} else if (data.result == 'success' && dataa != 'success') {
+							    result = '加密失敗';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'sizeout') {
+							    result = '檔案太大';$('uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'unknow') {
+							    result = '找不到該檔案，或是發生未知得錯誤';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'totalout') {
+							    result = '帳戶空間不足';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'inierr') {
+							    result = '檔案超過 POST 或是伺服器設定限制';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'par') {
+							    result = '系統錯誤，檔案上傳不完全';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else if (data.result == 'nofile') {
+							    result = '沒有選取的檔案';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							} else {
+							    result = '發生未知的錯誤';
+							    $('#uploadpercentage').text('上傳失敗');
+							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+							}
+							$('#upload_table').append("<tr><td>" + data.name + "</td><td>" + data.size + "</td><td>" + result + "</td></tr>");
+						},
+						error: function() {
+							swal('加密程序發生錯誤', '', 'warning');
+						}
+					});
 					updateAll();
 				},
 				error: function() {
 					swal('上傳程序發生錯誤', '', 'warning');
+					updateAll();
 				}
 			});
 		}
+	});
+	$('#remotedownload-btn').on('click', function(e) {
+		e.preventDefault();
+		$.ajax({
+			url: 'remotedownload.php',
+			data: {
+				file: $('#remotedownload').val()
+			},
+			type: 'post',
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				$.ajax({
+					url: 'encryptfile.php',
+					type: 'POST',
+					dataType: 'html',
+					data: {
+						file: data.id
+					},
+					success: function(dataa) {
+						var result = "";
+						if (data.result == 'success' && dataa == 'success') {
+						    result = '上傳成功';
+						} else if (data.result == 'success' && dataa != 'success') {
+						    result = '加密失敗';
+						} else if (data.result == 'sizeout') {
+						    result = '檔案太大';
+						} else if (data.result == 'unknow') {
+						    result = '找不到該檔案，或是發生未知得錯誤';
+						} else if (data.result == 'totalout') {
+						    result = '帳戶空間不足';
+						} else if (data.result == 'inierr') {
+						    result = '檔案超過 POST 或是伺服器設定限制';
+						} else if (data.result == 'par') {
+						    result = '系統錯誤，檔案上傳不完全';
+						} else if (data.result == 'nofile') {
+						    result = '沒有選取的檔案';
+						} else {
+						    result = '發生未知的錯誤';
+						}
+						$('#remote_table').append("<tr><td>" + data.name + "</td><td>" + data.size + "</td><td>" + result + "</td></tr>");
+					},
+					error: function() {
+						swal('加密程序發生錯誤', '', 'warning');
+					}
+				});
+				updateAll();
+			},
+			error: function() {
+				swal('上傳程序發生錯誤', '', 'warning');
+				updateAll();
+			}
+		});
 	});
 	$('div #upload_box').on('dragover', function(e) {
 		e.preventDefault();
