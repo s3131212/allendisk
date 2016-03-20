@@ -20,9 +20,28 @@ function decode_file($id)
     $key = substr(md5("\x2D\xFC\xD8".$passphrase, true).md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
     $opts = array('iv' => $iv, 'key' => $key);
     $fp = fopen('./file/'.$res[0]['realname'].'.data', 'rb');
-    stream_filter_append($fp, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
-    $blocksize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc');
-    echo @substr(stream_get_contents($fp), 0, -($blocksize - ($res[0]['size'] % $blocksize)));
+    $fp_filter = stream_filter_append($fp, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
+
+    $size = 4096;
+    $pos = 0;
+    $buffer = "";
+
+    while ($pos < $res[0]['size']) {
+        if($pos != 0){
+            stream_filter_remove($fp_filter);
+            unset($key);
+            unset($iv);
+            unset($opts);
+            $iv = stream_get_contents($fp, mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc'), $pos - mcrypt_get_block_size(MCRYPT_RIJNDAEL_256, 'cbc'));
+            $key = substr(md5("\x2D\xFC\xD8".$passphrase, true).md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
+            $opts = array('iv' => $iv, 'key' => $key);
+
+            $fp_filter = stream_filter_append($fp, 'mdecrypt.rijndael-256', STREAM_FILTER_READ, $opts);
+        }
+        $buffer .= stream_get_contents($fp, $size, $pos);
+        $pos += $size;
+    }
+    return $buffer;
 }
 function decrypt_code($code)
 {
