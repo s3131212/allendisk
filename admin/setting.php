@@ -43,6 +43,12 @@ if ($_SESSION['alogin']) {
             $session_protect = 'true';
         }
         $db->update('setting', array('value' => $session_protect), array('name' => 'session_protect'));
+        if ($_POST['encrypt_file'] != 'true') {
+            $encrypt_file = 'false';
+        } else {
+            $encrypt_file = 'true';
+        }
+        $db->update('setting', array('value' => $encrypt_file), array('name' => 'encrypt_file'));
         header('location: setting.php?s=1');
     }
     ?>
@@ -82,7 +88,7 @@ if ($_SESSION['alogin']) {
         <tr>
             <td>名稱</td>
             <td>值</td>
-            <td>註解</td>
+            <td width="50%">註解</td>
         </tr>
     </thead>
     <tbody>
@@ -153,6 +159,14 @@ if ($_SESSION['alogin']) {
 }
     ?> name="session_protect" id="session_protect" value="true" /></td>
             <td>防止同一網域底下 Session 互相干擾。若同一網域下沒有其他程式則可以不開啟，若有其他程序，尤其同為 Allen Disk ，則強烈建議開啟此功能。更新此選項後可能會被登出，請重新登入。</td>
+        </tr>
+        <tr>
+            <td>檔案加密</td>
+            <td><input type="checkbox" <?php if ($config['encrypt_file']) {
+    echo 'checked';
+}
+    ?> name="encrypt_file" id="encrypt_file" value="true" /></td>
+            <td>加密上傳的檔案。檔案金鑰為隨機生成，使用 AES 演算法對檔案加密，確保即使遭到入侵，資料也無法被存取。加密會消耗伺服器資源，並增加上傳所需時間，但為了安全性考量，仍強烈建議開啟此功能。注意，開啟與關閉此功能並不會把原先沒有加密過的檔案加密，也不會把已經加密的檔案解密，此選項僅影響完成設定之後的檔案。</td>
         </tr>
         <tr>
             <td>管理員密碼</td>

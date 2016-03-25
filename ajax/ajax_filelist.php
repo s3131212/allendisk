@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.6
-Copyright (C) 2012~2016 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -26,12 +26,16 @@ function sizecount($size)
 }
 function linkcheck($type, $id, $name, $secret)
 {
-    /* Decode Password */
-    $passphrase['b'] = $_SESSION['password'];
-    $passphrase['c'] = $secret;
-    $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
-    $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
-    $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
+    if($secret != ''){
+        /* Decode Password */
+        $passphrase['b'] = $_SESSION['password'];
+        $passphrase['c'] = $secret;
+        $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
+        $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
+        $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
+    }else{
+        $passphrase['a'] = 'nopassword';
+    }
     if (preg_match("/image\/(.*)/i", $type) || preg_match("/audio\/(.*)/i", $type) || preg_match("/video\/(.*)/i", $type) || preg_match("/text\/(.*)/i", $type) || $type == 'application/pdf' || $type == 'application/x-shockwave-flash') {
         echo '<a href="readfile.php/'.$name.'?id='.$id.'&password='.$passphrase['a'].'" target="_blank" class="btn btn-info">外連檔案</a>';
     } else {
@@ -60,12 +64,16 @@ function sharedir($share, $id)
 function sharefile($share, $id, $secret)
 {
     if ($share == '1') {
-        /* Decode Password */
-        $passphrase['b'] = $_SESSION['password'];
-        $passphrase['c'] = $secret;
-        $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
-        $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
-        $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
+        if($secret != ''){
+            /* Decode Password */
+            $passphrase['b'] = $_SESSION['password'];
+            $passphrase['c'] = $secret;
+            $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
+            $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
+            $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
+        }else{
+            $passphrase['a'] = 'nopassword';
+        }
 
         echo '<a href="downfile.php?id='.$id.'&password='.$passphrase['a'].'" target="_blank" class="btn btn-default">分享</a>';
         echo '<a href="#" class="btn btn-cos sharefile" data-share-id="'.$id.'" data-share-type="file">取消公開檔案</a>';

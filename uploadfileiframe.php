@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.6
-Copyright (C) 2012~2016 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -77,26 +77,31 @@ for ($j = 0; $j < count($_FILES['file']['name']); ++$j) {
         }
     }
 
-    /* Create Key */
-    $passphrase['a'] = sha1(md5(mt_rand().uniqid()));
-    $passphrase['b'] = $_SESSION['password'];
-    $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
-    $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
-    $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
-    unset($key);
-    unset($iv);
-
     $filename = sha1(md5(mt_rand().uniqid()));
     if ($result == '') {
-        $iv = md5("\x1B\x3C\x58".$passphrase['a'], true).md5("\x1B\x3C\x58".$passphrase['a'], true);
-        $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true).md5("\x2D\xFC\xD9".$passphrase['a'], true), 0, 24);
-        $opts = array('iv' => $iv, 'key' => $key);
-        $fp = fopen($_FILES['file']['tmp_name'][$j], 'rb');
-        $dest = fopen('./file/'.$filename.'.data', 'wb');
-        stream_filter_append($dest, 'mcrypt.rijndael-256', STREAM_FILTER_WRITE, $opts);
-        stream_copy_to_stream($fp, $dest);
-        fclose($fp);
-        fclose($dest);
+        if($config['encrypt_file']){
+            /* Create Key */
+            $passphrase['a'] = sha1(md5(mt_rand().uniqid()));
+            $passphrase['b'] = $_SESSION['password'];
+            $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
+            $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
+            $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
+            unset($key);
+            unset($iv);
+            
+            $iv = md5("\x1B\x3C\x58".$passphrase['a'], true).md5("\x1B\x3C\x58".$passphrase['a'], true);
+            $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true).md5("\x2D\xFC\xD9".$passphrase['a'], true), 0, 24);
+            $opts = array('iv' => $iv, 'key' => $key);
+            $fp = fopen($_FILES['file']['tmp_name'][$j], 'rb');
+            $dest = fopen('./file/'.$filename.'.data', 'wb');
+            stream_filter_append($dest, 'mcrypt.rijndael-256', STREAM_FILTER_WRITE, $opts);
+            stream_copy_to_stream($fp, $dest);
+            fclose($fp);
+            fclose($dest);
+        }else{
+            move_uploaded_file($_FILES['file']['tmp_name'], './file/'.$filename.'.data');
+            $passphrase['c'] = null;
+        }
         $mkid = sha1(mt_rand().uniqid());
         $db->insert(array('name' => $_FILES['file']['name'][$j], 'size' => $_FILES['file']['size'][$j], 'owner' => $_SESSION['username'], 'id' => $mkid, 'realname' => $filename, 'secret' => $passphrase['c'], 'type' => $_FILES['file']['type'][$j], 'dir' => $_SESSION['dir'], 'recycle' => '0'), 'file');
         $result = 'success';
