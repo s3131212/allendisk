@@ -1,8 +1,8 @@
 <?php
 
 /*
-Allen Disk 1.6
-Copyright (C) 2012~2016 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -13,8 +13,14 @@ if (!session_id()) {
 }
 header('Cache-Control: no-store, no-cache, must-revalidate');
 function decode_file($id)
-{
+{  
     $res = $GLOBALS['db']->select('file', array('id' => $id));
+
+    /* 檢查是否有密碼 */
+    if($res[0]['secret'] == null){
+        return file_get_contents('./file/'.$res[0]['realname'].'.data');
+    }
+
     $passphrase = decrypt_code($res[0]['secret']);
     $iv = md5("\x1B\x3C\x58".$passphrase, true).md5("\x1B\x3C\x58".$passphrase, true);
     $key = substr(md5("\x2D\xFC\xD8".$passphrase, true).md5("\x2D\xFC\xD9".$passphrase, true), 0, 24);
@@ -45,6 +51,7 @@ function decode_file($id)
 }
 function decrypt_code($code)
 {
+    if($code == '') return 'nopassword';
     $passphrase['b'] = $_SESSION['password'];
     $passphrase['c'] = $code;
     $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);

@@ -21,6 +21,13 @@ if (!isset($_POST['file'])) {
 $id = $_POST['file'];
 $file = $db->select('file', array( 'id' => $id ));
 
+/* 檢查需不需要加密 */
+if(!$config['encrypt_file']){
+    rename('./file/'.$file[0]['realname'].'.temp', './file/'.$file[0]['realname'].'.data');
+    echo 'success';
+    exit();
+}
+
 /* Create Key */
 /*
     $passphrase['a'] 是檔案加密用的 Key
