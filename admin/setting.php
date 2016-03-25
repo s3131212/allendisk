@@ -1,7 +1,7 @@
 <?php
 /*
-Allen Disk 1.6
-Copyright (C) 2012~2016 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
@@ -12,7 +12,7 @@ if (!session_id()) {
 if ($_SESSION['alogin']) {
     if (isset($_GET['set']) && $_GET['set'] == 'set') {
         $db->update('setting', array('value' => $_POST['sitename']), array('name' => 'sitename'));
-        $db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->databaseLink->real_escape_string($_POST['sitetitle'])));
+        $db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->SecureData($_POST['sitetitle'])));
         $db->update('setting', array('value' => $_POST['size']), array('name' => 'size'));
         $db->update('setting', array('value' => $_POST['url']), array('name' => 'url'));
         $db->update('setting', array('value' => $_POST['total']), array('name' => 'total'));
@@ -37,6 +37,12 @@ if ($_SESSION['alogin']) {
             $reg = 'true';
         }
         $db->update('setting', array('value' => $reg), array('name' => 'reg'));
+        if ($_POST['session_protect'] != 'true') {
+            $session_protect = 'false';
+        } else {
+            $session_protect = 'true';
+        }
+        $db->update('setting', array('value' => $session_protect), array('name' => 'session_protect'));
         header('location: setting.php?s=1');
     }
     ?>
@@ -139,6 +145,14 @@ if ($_SESSION['alogin']) {
 }
     ?> name="tos" id="tos" value="true" /></td>
             <td>單一使用者可以使用的空間</td>
+        </tr>
+        <tr>
+            <td>防止 Session 覆蓋</td>
+            <td><input type="checkbox" <?php if ($config['session_protect']) {
+    echo 'checked';
+}
+    ?> name="session_protect" id="session_protect" value="true" /></td>
+            <td>防止同一網域底下 Session 互相干擾。若同一網域下沒有其他程式則可以不開啟，若有其他程序，尤其同為 Allen Disk ，則強烈建議開啟此功能。更新此選項後可能會被登出，請重新登入。</td>
         </tr>
         <tr>
             <td>管理員密碼</td>

@@ -1,15 +1,15 @@
 <?php
 
 /*
-Allen Disk 1.6
-Copyright (C) 2012~2016 Allen Chou
+Allen Disk 1.5
+Copyright (C) 2012~2015 Allen Chou
 Author: Allen Chou ( http://allenchou.cc )
 License: MIT License
 */
 
 include 'database.php';
-error_reporting(0);
-//error_reporting(E_ALL);
+//error_reporting(0);
+error_reporting(E_ALL);
 
 $sitename = $db->select('setting', array('name' => 'sitename'));
 $config['sitename'] = $sitename[0]['value'];
@@ -50,19 +50,20 @@ if ($tos[0]['value'] == 'true') {
     $config['tos'] = false;
 }
 
-/* Session Directory Praser */
-//session_set_cookie_params(0, '/' . parse_url($config['url'])['path']);
-//setcookie('PHPSESSID',session_id(),0, '/' . parse_url($config['url'])['path']);
-//session_name(preg_replace("/[^a-zA-Z0-9]+/", "", $config['url']));
-if (!isset($_COOKIE['session_name'])) {
-    $session_name = uniqid('allendisk');
-    $dir = explode('/', dirname($_SERVER['SCRIPT_NAME']));
-    if (end($dir) == 'admin') {
-        array_pop($dir);
+$session_protect = $db->select('setting', array('name' => 'session_protect'));
+if ($session_protect[0]['value'] == 'true') {
+	$config['session_protect'] = true;
+    if(!isset($_COOKIE['session_name'])){
+    	$session_name = uniqid('allendisk');
+    	$dir = explode('/', dirname($_SERVER['SCRIPT_NAME']));
+    	if(end($dir) == 'admin'){
+    		array_pop($dir);
+    	}
+    	setcookie('session_name', $session_name, time()+(60*60*24*5), implode($dir, '/'));
+    	session_name($session_name);
+    }else{
+    	session_name($_COOKIE['session_name']);
     }
-    setcookie('session_name', $session_name, time() + (60 * 60 * 24 * 5), implode($dir, '/'));
-    //$_COOKIE['session_name'] = $session_name;
-    session_name($session_name);
-} else {
-    session_name($_COOKIE['session_name']);
+}else{
+	$config['session_protect'] = false;
 }
