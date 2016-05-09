@@ -67,7 +67,6 @@ $(function() {
                 	html += '</div>';
                 html += '</div>';
             html += '</div>';
-            console.log(html);
             filelist.dir.push(html);
 		});
 		$.each(json[0]['file'], function(key, val) {
@@ -106,8 +105,6 @@ $(function() {
                 	html += '</div>';
                 html += '</div>';
             html += '</div>';
-
-            console.log(html);
             filelist.file.push(html);
 		});
 		$('#dir_container').empty();
@@ -119,6 +116,45 @@ $(function() {
 			$('#file_container').append(val);
 		});
 	};
+	function recyclelist(json) {
+		var filelist = { 'file': [], 'dir': [] };
+		$.each(json[0]['file'], function(key, val) {
+			var html = "";
+			html += "<tr>";
+			    html += "<td>"+val['name']+"</td>";
+			    html += "<td>"+val['fileformat']+"</td>";
+			    html += "<td>"+val['ordir']+"</td>";
+			    html += "<td>";
+			        html += '<div class="btn-group">';
+			            html += '<a href="#"  data-id="'+val['id']+'" data-type="file" class="btn btn-default recycle_back">還原</a>';
+			            html += '<a href="#"  data-id="'+val['id']+'" data-type="file" class="btn btn-danger real_delete">永久刪除</a>';
+			        html += "</div>";
+			    html += "</td>";
+			html += "</tr>";
+			filelist.file.push(html);
+		});
+		$.each(json[0]['dir'], function(key, val) {
+			var html = "";
+			html += "<tr>";
+			    html += "<td>"+val['name']+"</td>";
+			    html += "<td>資料夾</td>";
+			    html += "<td>"+val['ordir']+"</td>";
+			    html += "<td>";
+			        html += '<div class="btn-group">';
+			            html += '<a href="#"  data-id="'+val['id']+'" data-type="dir" class="btn btn-default recycle_back">還原</a>';
+			            html += '<a href="#"  data-id="'+val['id']+'" data-type="dir" class="btn btn-danger real_delete">永久刪除</a>';
+			        html += "</div>";
+			    html += "</td>";
+			html += "</tr>";
+			filelist.dir.push(html);
+		});
+		$.each(filelist['dir'], function(key, val) {
+			$('#recycle_list').append(val);
+		});
+		$.each(filelist['file'], function(key, val) {
+			$('#recycle_list').append(val);
+		});
+	}
 	function updateList() {
 		$.ajax({
 			url: 'ajax/ajax_filelist.php',
@@ -139,11 +175,12 @@ $(function() {
 		$.ajax({
 			url: 'ajax/ajax_recyclelist.php',
 			type: 'GET',
-			dataType: 'html',
+			dataType: 'json',
 			cache: false,
 			timeout: 30000,
 			success: function(data) {
-				$('#recycle_list').html(data);
+				$('#recycle_list').empty();
+				recyclelist(data);
 			}
 		});
 	};

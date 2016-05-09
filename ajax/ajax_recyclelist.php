@@ -10,28 +10,32 @@ include dirname(dirname(__FILE__)).'/config.php';
 if (!session_id()) {
     session_start();
 }
-function fileformat($type, $name)
-{
+function fileformat($type, $name){
     if (preg_match("/image\/(.*)/i", $type)) {
-        echo strtoupper(str_replace('image/', '', $type)).' 圖檔';
+        return strtoupper(str_replace('image/', '', $type)).' 圖檔';
     } elseif (preg_match("/audio\/(.*)/i", $type)) {
-        echo strtoupper(str_replace('audio/', '', $type)).' 音樂檔';
+        return strtoupper(str_replace('audio/', '', $type)).' 音樂檔';
     } elseif (preg_match("/video\/(.*)/i", $type)) {
-        echo strtoupper(str_replace('vedio/', '', $type)).' 影片檔';
+        return strtoupper(str_replace('vedio/', '', $type)).' 影片檔';
     } elseif (preg_match("/text\/(.*)/i", $type)) {
-        echo '純文字檔';
+        return '純文字檔';
     } elseif ($type == 'application/msword' || $type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        echo 'MS Office Word';
+        return 'MS Office Word';
     } elseif ($type == 'application/vnd.ms-excel' || $type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-        echo 'MS Office Excel';
+        return 'MS Office Excel';
     } elseif ($type == 'application/vnd.ms-powerpoint' || $type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
-        echo 'MS Office Powerpoint';
+        return 'MS Office Powerpoint';
     } elseif ($type == 'application/x-bzip2' || $type == 'application/x-gzip' || $type == 'application/x-7z-compressed' || $type == 'application/x-rar-compressed' || $type == 'application/zip' || $type == 'application/x-apple-diskimage' || $type == 'application/x-tar') {
-        echo '壓縮檔';
+        return '壓縮檔';
     } else {
-        echo strtoupper(substr($name, -(strlen($name) - strrpos($name, '.') - 1))).'檔';
+        return strtoupper(substr($name, -(strlen($name) - strrpos($name, '.') - 1))).'檔';
     }
 }
+
+$filelist = array(
+    "file" => array(),
+    "dir" => array()
+);
 
 $res = $db->select('file', array('owner' => $_SESSION['username'], 'recycle' => '1'));
 if ($res[0]['id'] != null) {
@@ -45,22 +49,12 @@ if ($res[0]['id'] != null) {
         } else {
             $ordir = '主目錄';
         }
-        ?>
-        <tr>
-            <td><?php echo $d['name'];
-        ?></td>
-            <td><?php echo fileformat($d['type'], $d['name']);
-        ?></td>
-            <td><?php echo $ordir;
-        ?></td>
-            <td>
-                <div class="btn-group">
-                    <a href="#"  data-id="<?php echo $d['id'] ?>" data-type="file" class="btn btn-default recycle_back">還原</a>
-                    <a href="#"  data-id="<?php echo $d['id'] ?>" data-type="file" class="btn btn-danger real_delete">永久刪除</a>
-                </div>
-            </td>
-        </tr>
-<?php 
+        array_push($filelist["file"], array(
+            "name" => $d["name"],
+            "id" => $d["id"],
+            "fileformat" => fileformat($d['type'], $d['name']),
+            "ordir" => $ordir
+        ));
     }
 }
 $res = $db->select('dir', array('owner' => $_SESSION['username'], 'recycle' => '1'));
@@ -75,21 +69,13 @@ if ($res[0]['id'] != null) {
         } else {
             $ordir = '主目錄';
         }
-        ?>
-        <tr>
-            <td><?php echo $d['name'];
-        ?></td>
-            <td>資料夾</td>
-            <td><?php echo $ordir;
-        ?></td>
-            <td>
-                <div class="btn-group">
-                    <a href="#"  data-id="<?php echo $d['id'] ?>" data-type="dir" class="btn btn-default recycle_back">還原</a>
-                    <a href="#"  data-id="<?php echo $d['id'] ?>" data-type="dir" class="btn btn-danger real_delete">永久刪除</a>
-                </div>
-            </td>
-        </tr>
-<?php 
+        array_push($filelist["file"], array(
+            "name" => $d["name"],
+            "id" => $d["id"],
+            "fileformat" => "資料夾",
+            "ordir" => $ordir
+        ));
     }
 }
-exit();
+
+echo json_encode(array($filelist));
