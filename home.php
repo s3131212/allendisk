@@ -316,7 +316,10 @@ $dirlocation = array_reverse($dirlocation);
 			<div class="well" id="usage_box"></div>
 		</div>
 		<div class="col-md-9">
-			<div id="file_list_container"></div>
+			<div id="file_list_container">
+				<div class="row" id="dir_container"></div>
+				<div class="row" id="file_container"></div>
+			</div>
 		</div>
 	</div>
 	<nav class="navbar navbar-default navbar-fixed-bottom">
