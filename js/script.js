@@ -37,19 +37,100 @@ $(function() {
 			$('#uploadpercentage').text(Math.round( (e.loaded / e.total) * 100 ) + '%');
 		}
 	}
+	
+	function filelist(json) {
+		console.log(json);
+		var filelist = { 'file': [], 'dir': [] };
+		$.each(json[0]['dir'], function(key, val) {
+		  	var html = "";
+		  	html += '<div class="col-lg-3 col-md-4 col-sm-6">';
+		  		html += '<div class="panel" data-id="'+val['id']+'" data-type="dir" data-download-url="home.php?dir='+val['id']+'">';
+		  			html += '<div>';
+		  				html += '<div class="panel-body"><i class="fa fa-4x fa-fw fa-folder"></i></div>';
+		  				html += '<div class="panel-footer '+val['color']+'">';
+		  					html += '<span>'+val['name']+'</span>';
+		  				html += '</div>';
+		  				html += '<div class="file-action" style="display: none;">';
+		  					html += '<a href="home.php?dir='+val['id']+'" data-action="open"  class="btn btn-default">開啟</a>';
+		  					html += '<a href="ajax_recycle_dir.php" data-action="delete" data-dir-delete-id="'+val['id']+'" class="">刪除</a>'
+                			html += '<a href="ajax_rename_dir.php" data-action="rename" data-dir-rename-id="'+val['id']+'" class="">重新命名</a>';
+                			html += '<a href="ajax_move_dir.php" data-action="move" data-dir-move-id="'+val['id']+'" class="">移動</a>';
+                			if(val['share'] == 1){
+                				html += '<a href="share_dir.php?id='+val['id']+'" data-action="share" target="_blank" class="">分享</a>';
+        						html += '<a href="#" class="" data-share-id="'+val['id']+'" data-share-type="dir">取消公開資料夾</a>';
+                			}else{
+                				html += '<a href="#" data-action="share" class="disabled">分享</a>';
+        						html += '<a href="#" class="" data-share-id="'+val['id']+'" data-share-type="dir" >公開資料夾</a>';
+                			}
+                			html += '<a href="#" data-action="tag" data-dir-color-id="'+val['id']+'" class="">標記</a>';
+                		html += '</div>';
+                	html += '</div>';
+                html += '</div>';
+            html += '</div>';
+            console.log(html);
+            filelist.dir.push(html);
+		});
+		$.each(json[0]['file'], function(key, val) {
+		  	var html = "";
+		  	html += '<div class="col-lg-3 col-md-4 col-sm-6">';
+		  		html += '<div class="panel" data-id="'+val['id']+'" data-type="file" data-download-url="downfile.php?id='+val['id']+'&download=true">';
+		  			html += '<div>';
+		  				html += '<div class="panel-body"><i class="fa fa-4x fa-fw '+val['icon']+'"></i></div>';
+		  				html += '<div class="panel-footer '+val['color']+'">';
+		  					html += '<span>'+val['name']+'</span>';
+		  				html += '</div>';
+		  				html += '<div class="file-action" style="display: none;">';
+		  					if(val['share'] == 1){
+		  						html += '<a data-action="share" href="downfile.php?id='+val['id']+'&password='+val['passphrase']+'" target="_blank" class="">分享</a>';
+		  						html += '<a href="#" class="" data-share-id="'+val['id']+'" data-share-type="file">取消公開檔案</a>';
+		  					}else{
+		  						html += '<a href="#" data-action="share" class="disabled">分享</a>';
+		  						html += '<a href="#" class="" data-share-id="'+val['id']+'" data-share-type="file">公開檔案</a>';
+		  					}
+		  					if(val['linkcheck']){
+		  						html += '<a data-action="link" href="readfile.php/'+val['name']+'?id='+val['id']+'&password='+val['passphrase']+'" target="_blank" class="">外連檔案</a>';
+		  					}else{
+		  						html += '<a href="#" class="disabled" data-action="link">外連檔案</a>';
+		  					}
+		  					html += '<a href="home.php?dir='+val['id']+'" data-action="open" class="">開啟</a>';
+		  					html += '<a href="ajax_recycle.php" data-action="delete" data-delete-id="'+val['id']+'" class="">刪除</a>'
+                			html += '<a href="ajax_rename.php" data-action="rename" data-rename-id="'+val['id']+'" class="">重新命名</a>';
+                			html += '<a href="ajax_move.php" data-action="move" data-move-id="'+val['id']+'" class="">移動</a>';
+                			if(val['preview'] == 1){
+                				html += '<a href="#" data-action="preview" data-preview-id="'+val['id']+'" class="btn btn-warning">預覽</a>';
+                			}else{
+                				html += '<a href="#" data-action="preview" class="btn btn btn-warning disabled">預覽</a>';
+                			}
+                			html += '<a href="#" data-action="tag" data-color-id="'+val['id']+'" class="">標記</a>';
+                		html += '</div>';
+                	html += '</div>';
+                html += '</div>';
+            html += '</div>';
 
+            console.log(html);
+            filelist.file.push(html);
+		});
+		$('#dir_container').empty();
+		$('#file_container').empty();
+		$.each(filelist['dir'], function(key, val) {
+			$('#dir_container').append(val);
+		});
+		$.each(filelist['file'], function(key, val) {
+			$('#file_container').append(val);
+		});
+	};
 	function updateList() {
 		$.ajax({
 			url: 'ajax/ajax_filelist.php',
 			type: 'GET',
-			dataType: 'html',
+			dataType: 'json',
 			cache: false,
 			timeout: 30000,
 			data: {
 				dir: dir
 			},
 			success: function(data) {
-				$('#file_list_container').html(data);
+				filelist(data);
 			}
 		});
 	};
@@ -165,17 +246,17 @@ $(function() {
 		   	$('.ui-selected').removeClass('ui-selected');
 		   	$ContextMenuTarget.addClass('ui-selected');
 		   	//check preview
-		   	if ($ContextMenuTarget.find('.file-action').find(':nth-child(7)').hasClass('disabled')) {
+		   	if ($ContextMenuTarget.find('.file-action').find('[data-action=preview]').hasClass('disabled')) {
 		   		$('#contextMenu').find('a[data-action=preview]').parent().remove();
 		   	}
 
 		   	//check link
-		   	if ($ContextMenuTarget.find('.file-action').find(':nth-child(3)').hasClass('disabled')) {
+		   	if ($ContextMenuTarget.find('.file-action').find('[data-action=link]').hasClass('disabled')) {
 		   		$('#contextMenu').find('a[data-action=link]').parent().remove();
 		   	}
 
 		   	//check share
-		   	if ($ContextMenuTarget.find('.file-action').find(':nth-child(1)').hasClass('disabled')) {
+		   	if ($ContextMenuTarget.find('.file-action').find('[data-action=share]').hasClass('disabled')) {
 		   		$('#contextMenu').find('a[data-action=share]').parent().remove();
 		   	}
 
@@ -204,7 +285,7 @@ $(function() {
 		   	$ContextMenuTarget.addClass('ui-selected');
 
 		   	//check share
-		   	if ($ContextMenuTarget.find('.file-action').find(':nth-child(5)').hasClass('disabled')) {
+		   	if ($ContextMenuTarget.find('.file-action').find('[data-action=share]').hasClass('disabled')) {
 		   		$('#contextMenu').find('a[data-action=share]').parent().remove();
 		   	}
 
@@ -231,52 +312,52 @@ $(function() {
 					window.open($ContextMenuTarget.attr('data-download-url') , '_self');
 		   			break;
 		   		case 'share':
-		   			window.open($ContextMenuTarget.find('.file-action').find(':nth-child(1)').attr('href') , '_blank');
+		   			window.open($ContextMenuTarget.find('.file-action').find('[data-action=share]').attr('href') , '_blank');
 		   			break;
 		   		case 'public':
 		   			$ContextMenuTarget.find('.file-action').find(':nth-child(2)').click();
 		   			break;
 		   		case 'link':
-		   			window.open($ContextMenuTarget.find('.file-action').find(':nth-child(3)').attr('href') , '_blank');
+		   			window.open($ContextMenuTarget.find('.file-action').find('[data-action=link]').attr('href') , '_blank');
 		   			break;
 		   		case 'delete':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(4)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=delete]').click();
 		   			break;
 		   		case 'rename':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(5)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=rename]').click();
 		   			break;
 		   		case 'move':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(6)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=move').click();
 		   			break;
 		   		case 'preview':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(7)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=preview]').click();
 		   			break;
 		   		case 'tag':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(8)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=tag]').click();
 		   			break;
 		   	}
 	   	}else if (ContextMenuType == 'dir') {
 	   		switch (action) {
 		   		case 'open':
-					window.open($ContextMenuTarget.find(':nth-child(1)').attr('data-download-url') , '_self');
+					window.open($ContextMenuTarget.find('[data-action=open]').attr('data-download-url') , '_self');
 		   			break;
 		   		case 'delete':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(2)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=delete]').click();
 		   			break;
 		   		case 'rename':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(3)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=rename]').click();
 		   			break;
 		   		case 'move':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(4)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=move]').click();
 		   			break;
 		   		case 'share':
-		   			window.open($ContextMenuTarget.find('.file-action').find(':nth-child(5)').attr('href') , '_blank');
+		   			window.open($ContextMenuTarget.find('.file-action').find('[data-action=share]').attr('href') , '_blank');
 		   			break;
 		   		case 'public':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(6)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=public]').click();
 		   			break;
 		   		case 'tag':
-		   			$ContextMenuTarget.find('.file-action').find(':nth-child(7)').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=tag]').click();
 		   			break;
 		   	}
 		}else if (ContextMenuType == 'multi') {
