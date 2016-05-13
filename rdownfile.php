@@ -29,7 +29,16 @@ header('Content-Disposition: attachment; filename="'.$res[0]['name'].'"');
 
 /* 檢查是否有設定檔案密碼，如果沒有就直接傳檔案出去 */
 if($res[0]['secret'] == ''){
-    echo file_get_contents('./file/'.$res[0]['realname'].'.data');
+    $fp = fopen('./file/'.$res[0]['realname'].'.data', 'rb');
+
+    $size = 4096;
+    $pos = 0;
+
+    while ($pos < $res[0]['size']) {
+        echo stream_get_contents($fp, $size, $pos);
+        $pos += $size;
+    }
+
     exit();
 }
 
