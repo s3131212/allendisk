@@ -39,7 +39,6 @@ $(function() {
 	}
 	
 	function filelist(json) {
-		console.log(json);
 		var filelist = { 'file': [], 'dir': [] };
 		$.each(json[0]['dir'], function(key, val) {
 		  	var html = "";
@@ -1035,179 +1034,80 @@ $(function() {
 		$('#upload_iframe').hide();
 		$('#remote_frame').show();
 	});
-	$('#upload_box').on('drop', function(e) {
-		e.preventDefault();
-		var files = e.originalEvent.dataTransfer.files;
-		var length = e.originalEvent.dataTransfer.files.length;
-		for (var i = 0; i < length; i++) {
-			$('#upload_progress').css('width', '2em');
-			var formData = new FormData();
-			formData.append('file', files[i]);
-			$.ajax({
-				url: 'uploadfile.php',
-				data: formData,
-				type: 'post',
-				dataType: 'json',
-				processData: false, //important!
-				contentType: false,
-				cache: false,
-				xhr: function() {
-					var myXhr = $.ajaxSettings.xhr();
-					if (myXhr.upload) {
-						myXhr.upload.addEventListener('progress', progressload, false);
-					}
-					return myXhr;
-				},
-				success: function(data) {
-					$('#upload_table').append(data);
-					$('#uploadpercentage').text('加密中');
-					$.ajax({
-						url: 'encryptfile.php',
-						type: 'POST',
-						dataType: 'html',
-						data: {
-							file: data.id
-						},
-						success: function(dataa) {
-							var result = "";
-							if (data.result == 'success' && dataa == 'success') {
-							    result = '上傳成功';
-							    $('#uploadpercentage').text('上傳完成！');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-success');
-							} else if (data.result == 'success' && dataa != 'success') {
-							    result = '加密失敗';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'sizeout') {
-							    result = '檔案太大';$('uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'unknow') {
-							    result = '找不到該檔案，或是發生未知得錯誤';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'totalout') {
-							    result = '帳戶空間不足';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'inierr') {
-							    result = '檔案超過 POST 或是伺服器設定限制';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'par') {
-							    result = '系統錯誤，檔案上傳不完全';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'nofile') {
-							    result = '沒有選取的檔案';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else {
-							    result = '發生未知的錯誤';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							}
-							$('#upload_table').append("<tr><td>" + data.name + "</td><td>" + data.size + "</td><td>" + result + "</td></tr>");
-						},
-						error: function() {
-							swal('加密程序發生錯誤', '', 'warning');
-						}
-					});
-					updateAll();
-				},
-				error: function() {
-					swal('上傳程序發生錯誤', '', 'warning');
-				}
-			});
-		}
+	var r = new Resumable({
+	  	target:'uploadfile.php',
+	  	testChunks: false,
+	  	chunkSize: 1*1024*1024
 	});
-	$('#file:file').on('change', function(e) {
-		e.preventDefault();
-		$('#upload_progress').css('width', '0%');
-		var files = this.files;
-		var length = $(this)[0].files.length;
-		for (var i = 0; i < length; i++) {
-			$('#upload_progress').css('width', '0%');
-			$('#uploadpercentage').text('0%');
-			$('#uploadpercentage').addClass('text-info').removeClass('text-success text-danger');
-			var uploadData = new FormData();
-			uploadData.append('file', files[i]);
-			$.ajax({
-				url: 'uploadfile.php',
-				data: uploadData,
-				type: 'post',
-				dataType: 'json',
-				processData: false, //important!
-				contentType: false,
-				cache: false,
-				xhr: function() {
-					var myXhr = $.ajaxSettings.xhr();
-					if (myXhr.upload) {
-						myXhr.upload.addEventListener('progress', progressload, false);
-					}
-					return myXhr;
-				},
-				success: function(data) {
-					$('#upload_table').append(data);
-					$('#uploadpercentage').text('加密中');
-					$.ajax({
-						url: 'encryptfile.php',
-						type: 'POST',
-						dataType: 'html',
-						data: {
-							file: data.id
-						},
-						success: function(dataa) {
-							var result = "";
-							if (data.result == 'success' && dataa == 'success') {
-							    result = '上傳成功';
-							    $('#uploadpercentage').text('上傳完成！');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-success');
-							} else if (data.result == 'success' && dataa != 'success') {
-							    result = '加密失敗';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'sizeout') {
-							    result = '檔案太大';$('uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'unknow') {
-							    result = '找不到該檔案，或是發生未知得錯誤';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'totalout') {
-							    result = '帳戶空間不足';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'inierr') {
-							    result = '檔案超過 POST 或是伺服器設定限制';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'par') {
-							    result = '系統錯誤，檔案上傳不完全';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else if (data.result == 'nofile') {
-							    result = '沒有選取的檔案';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							} else {
-							    result = '發生未知的錯誤';
-							    $('#uploadpercentage').text('上傳失敗');
-							    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
-							}
-							$('#upload_table').append("<tr><td>" + data.name + "</td><td>" + data.size + "</td><td>" + result + "</td></tr>");
-						},
-						error: function() {
-							swal('加密程序發生錯誤', '', 'warning');
-						}
-					});
-					updateAll();
-				},
-				error: function() {
-					swal('上傳程序發生錯誤', '', 'warning');
-					updateAll();
+	r.assignBrowse(document.getElementById('file'));
+	r.assignDrop(document.getElementById('upload_box'));
+	r.on('fileAdded', function(file){
+		$('#upload_progress').css('width', '0%').removeClass('text-success').removeClass('text-danger').addClass('text-info');
+		r.upload();
+	});
+	r.on('progress', function(){
+		$('#upload_progress').css('width', (r.progress() * 100) + '%');
+		$('#uploadpercentage').text(Math.round(r.progress() * 100) + '%');
+	});
+	r.on('fileSuccess', function(file, message){
+		console.log('finished!');
+		console.log(message);
+		var data = jQuery.parseJSON(message);
+		console.log(data);
+
+		$('#uploadpercentage').text('加密中');
+		$.ajax({
+			url: 'encryptfile.php',
+			type: 'POST',
+			dataType: 'html',
+			data: {
+				file: data.id
+			},
+			success: function(dataa) {
+				var result = "";
+				if (data.result == 'success' && dataa == 'success') {
+				    result = '上傳成功';
+				    $('#uploadpercentage').text('上傳完成！');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-success');
+				} else if (data.result == 'success' && dataa != 'success') {
+				    result = '加密失敗';
+				    $('#uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+				} else if (data.result == 'sizeout') {
+				    result = '檔案太大';$('uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+				} else if (data.result == 'unknow') {
+				    result = '找不到該檔案，或是發生未知得錯誤';
+				    $('#uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+				} else if (data.result == 'totalout') {
+				    result = '帳戶空間不足';
+				    $('#uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+				} else if (data.result == 'inierr') {
+				    result = '檔案超過 POST 或是伺服器設定限制';
+				    $('#uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+				} else if (data.result == 'par') {
+				    result = '系統錯誤，檔案上傳不完全';
+				    $('#uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+				} else if (data.result == 'nofile') {
+				    result = '沒有選取的檔案';
+				    $('#uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+				} else {
+				    result = '發生未知的錯誤';
+				    $('#uploadpercentage').text('上傳失敗');
+				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
 				}
-			});
-		}
+				$('#upload_table').append("<tr><td>" + data.name + "</td><td>" + data.size + "</td><td>" + result + "</td></tr>");
+			},
+			error: function() {
+				swal('加密程序發生錯誤', '', 'warning');
+			}
+		});
+		updateAll();
 	});
 	$('#remotedownload-btn').on('click', function(e) {
 		e.preventDefault();

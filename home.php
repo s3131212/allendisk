@@ -76,6 +76,7 @@ $dirlocation = array_reverse($dirlocation);
 		var dir = '<?php echo $_SESSION['dir']; ?>';
 	</script>
 	<script src="js/modernizr.js" charset="utf-8"></script>
+	<script src="js/resumable.js" charset="utf-8"></script>
 	<script src="js/script.js" charset="utf-8"></script>
 	<style>
 		html,
