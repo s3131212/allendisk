@@ -92,24 +92,28 @@ if ($file[0]['id'] == null && $dir[0]['id'] == null) {
     echo json_encode(array($filelist));
     exit();
 }
-foreach($dir as $d){
-    array_push($filelist['dir'], array(
-        "id" => $d['id'],
-        "name" => $d[ 'name'],
-        "color" => ($d['color'] != null) ? 'tag-'.$d['color'] : '',
-        "share" => sharedir($d['share'], $d['id'])
-    ));
+if(is_array($dir) && !empty($dir)){
+    foreach($dir as $d){
+        array_push($filelist['dir'], array(
+            "id" => $d['id'],
+            "name" => $d[ 'name'],
+            "color" => ($d['color'] != null) ? 'tag-'.$d['color'] : '',
+            "share" => sharedir($d['share'], $d['id'])
+        ));
+    }
 }
-foreach($file as $d){
-    array_push($filelist['file'], array(
-        "id" => $d['id'],
-        "name" => $d[ 'name'],
-        "color" => ($d['color'] != null) ? 'tag-'.$d['color'] : '',
-        "icon" => fileicon($d['type'], $d['name']),
-        "passphrase" => decodepassphrase($d['secret']),
-        "share" => $d['share'],
-        "linkcheck" => linkcheck($d['type'], $d['id'], $d['name'], $d['secret']),
-        "preview" => previewcheck($d['type'], $d['id'])
-    ));
+if(is_array($file) && !empty($file)){
+    foreach($file as $d){
+        array_push($filelist['file'], array(
+            "id" => $d['id'],
+            "name" => $d[ 'name'],
+            "color" => ($d['color'] != null) ? 'tag-'.$d['color'] : '',
+            "icon" => fileicon($d['type'], $d['name']),
+            "passphrase" => decodepassphrase($d['secret']),
+            "share" => $d['share'],
+            "linkcheck" => linkcheck($d['type'], $d['id'], $d['name'], $d['secret']),
+            "preview" => previewcheck($d['type'], $d['id'])
+        ));
+    }
 }
 echo json_encode(array($filelist));
