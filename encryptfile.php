@@ -12,7 +12,6 @@ if (!session_id()) {
 if (!$_SESSION['login']) {
     exit();
 }
-@ignore_user_abort(false);
 @set_time_limit(0);
 error_reporting(E_ALL);
 if (!isset($_POST['file'])) {
