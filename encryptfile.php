@@ -59,10 +59,14 @@ while ($pos < $file[0]['size']) {
     $write = stream_copy_to_stream($fp, $dest, $size, $pos);
     $pos += $write;
     fclose($dest);
+
+    //Write Progress
+    file_put_contents(dirname(__FILE__).'/temp/'.$id.'.txt', (floor(($pos/$file[0]['size'])*100) . '%'));
 }
 fclose($fp);
 
 @unlink('./file/'.$file[0]['realname'].'.temp');
+@unlink('./temp/'.$id.'.txt');
 
 $result = $db->update('file', array('secret'=>$passphrase['c']), array('id'=>$id));
 echo 'success';
