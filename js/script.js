@@ -1036,7 +1036,7 @@ $(function() {
 	});
 	var r = new Resumable({
 	  	target:'uploadfile.php',
-	  	testChunks: false,
+	  	testChunks: true,
 	  	chunkSize: 1*1024*1024
 	});
 	r.assignBrowse(document.getElementById('file'));
@@ -1054,8 +1054,28 @@ $(function() {
 		console.log(message);
 		var data = jQuery.parseJSON(message);
 		console.log(data);
+		console.log(file);
 
 		$('#uploadpercentage').text('加密中');
+		var check_encryption_status = setInterval(function(){
+			$.ajax({
+				url: 'temp/'+data.id+'.txt',
+				type: 'GET',
+				dataType: 'text',
+				timeOut: 5,
+				success: function(data){
+					if ( data != ''  && $('#uploadpercentage').text() != '上傳完成！') {
+						$('#uploadpercentage').text('加密進度：' + data);
+						$('#upload_progress').css('width', data);
+					}
+				},
+				error: function(data){
+					if ( $('#uploadpercentage').text() != '上傳完成！') {
+						$('#uploadpercentage').text('加密中');
+					}
+				}
+			});
+		}, 5000);
 		$.ajax({
 			url: 'encryptfile.php',
 			type: 'POST',
@@ -1102,12 +1122,27 @@ $(function() {
 				    $('#uploadpercentage').removeClass('text-info').addClass('text-danger');
 				}
 				$('#upload_table').append("<tr><td>" + data.name + "</td><td>" + data.size + "</td><td>" + result + "</td></tr>");
+				clearInterval(check_encryption_status);
 			},
 			error: function() {
 				swal('加密程序發生錯誤', '', 'warning');
+				clearInterval(check_encryption_status);
 			}
 		});
 		updateAll();
+	});
+	r.on('fileError', function(file, message){
+		console.log(file);
+		if (data.result == 'par') {
+			file.retry();
+			result = '檔案上傳不完全，正在嘗試重新上傳';
+			$('#uploadpercentage').text('上傳失敗');
+			$('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+		}else{
+			result = '檔案上傳失敗';
+			$('#uploadpercentage').text('上傳失敗');
+			$('#uploadpercentage').removeClass('text-info').addClass('text-danger');
+		}
 	});
 	$('#remotedownload-btn').on('click', function(e) {
 		e.preventDefault();

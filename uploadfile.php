@@ -46,17 +46,20 @@ function createFileFromChunks($temp_dir, $fileName, $chunkSize, $totalSize,$tota
     // create the final destination file 
         if (($fp = fopen('file/'.$fileName.'.temp', 'w')) !== false) {
             for ($i=1; $i<=$total_files; $i++) {
+                if(!file_exists($temp_dir.'/'.$fileName.'.part'.$i)){
+                    rrmdir($temp_dir);
+                    return false;
+                }
                 fwrite($fp, file_get_contents($temp_dir.'/'.$fileName.'.part'.$i));
             }
             fclose($fp);
         } else {
+            rrmdir($temp_dir);
             return false;
         }
 
         // rename the temporary directory (to avoid access from other 
         // concurrent chunks uploads) and than delete it
-
-        rrmdir($temp_dir);
         return $total_files_on_server_size;
     }
     return false;
@@ -119,18 +122,27 @@ function finish_upload($temp_dir, $resumableFilename, $resumableChunkSize, $resu
                 'size' => sizecount($filesize / 1000 / 1000)
             );
             echo json_encode($return);
+        }else{
+            header("HTTP/1.1 500 Internal Server Error");
+            $return = array(
+                'result' => 'par',
+                'id' => 'Unknown',
+                'name' => 'Unknown',
+                'size' => 'Unknown'
+            );
+            echo json_encode($return);
+            exit();
         }
 }
 
-if (!isset($_FILES['file'])) {
-    exit();
-}
-
 //Check Chunk 還有一些 Bug 需要修
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+if (isset($_GET['resumableFilename'])) {
 
-    if(isset($_GET['resumableFilename']) && !isset($_SESSION['file_name'][$_GET['resumableFilename']])){
-        $_SESSION['file_name'][$_GET['resumableFilename']] = sha1(md5(mt_rand().uniqid()));
+    //Initialize
+    if(isset($_GET['resumableFilename']) && isset($_GET['resumableChunkNumber'])){
+        if($_GET['resumableChunkNumber'] == 1){
+            $_SESSION['file_name'][$_GET['resumableFilename']] = sha1(md5(mt_rand().uniqid()));
+        }
     }
 
     if(!(isset($_GET['resumableIdentifier']) && trim($_GET['resumableIdentifier'])!='')){
@@ -148,9 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $chunk_file = $temp_dir.'/'.$_SESSION['file_name'][$_GET['resumableFilename']].'.part'.$_GET['resumableChunkNumber'];
     if (file_exists($chunk_file)) {
-        //header("HTTP/1.0 200 Ok");
-        if($_GET['resumableTotalChunks'] <= $_GET['resumableChunkNumber']){
-            echo 1;
+        header("HTTP/1.0 200 Ok");
+        if($_GET['resumableTotalChunks'] == $_GET['resumableChunkNumber']){
             finish_upload($temp_dir, $_GET['resumableFilename'], $_GET['resumableChunkSize'], $_GET['resumableTotalSize'], $_GET['resumableTotalChunks']);
         }
     } else {
@@ -164,11 +175,13 @@ if (!empty($_FILES)) foreach ($_FILES as $file) {
 
     // check the error status
     if ($file['error'] != 0) {
+        header("HTTP/1.1 500 Internal Server Error");
         continue;
     }
 
-    if(isset($_POST['resumableFilename']) && !isset($_SESSION['file_name'][$_POST['resumableFilename']])){
-        $_SESSION['file_name'][$_POST['resumableFilename']] = sha1(md5(mt_rand().uniqid()));
+    if(!isset($_SESSION['file_name'][$_POST['resumableFilename']])){
+        header("HTTP/1.1 500 Internal Server Error");
+        exit();
     }
 
     // init the destination file (format <filename.ext>.part<#chunk>
@@ -188,7 +201,7 @@ if (!empty($_FILES)) foreach ($_FILES as $file) {
     if (move_uploaded_file($file['tmp_name'], $dest_file)) {
         // check if all the parts present, and create the final destination file
 
-        if($_POST['resumableTotalChunks'] <= $_POST['resumableChunkNumber']){
+        if($_POST['resumableTotalChunks'] == $_POST['resumableChunkNumber']){
             finish_upload($temp_dir, $_POST['resumableFilename'], $_POST['resumableChunkSize'], $_POST['resumableTotalSize'], $_POST['resumableTotalChunks']);
         }
     }
