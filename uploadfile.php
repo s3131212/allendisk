@@ -53,6 +53,7 @@ function createFileFromChunks($temp_dir, $fileName, $chunkSize, $totalSize,$tota
                 fwrite($fp, file_get_contents($temp_dir.'/'.$fileName.'.part'.$i));
             }
             fclose($fp);
+            rrmdir($temp_dir);
         } else {
             rrmdir($temp_dir);
             return false;
@@ -78,6 +79,8 @@ function rrmdir($dir) {
         }
         reset($objects);
         rmdir($dir);
+    }else{
+        unlink($dir);
     }
 }
 function finish_upload($temp_dir, $resumableFilename, $resumableChunkSize, $resumableTotalSize, $resumableTotalChunks){
@@ -133,6 +136,10 @@ function finish_upload($temp_dir, $resumableFilename, $resumableChunkSize, $resu
             echo json_encode($return);
             exit();
         }
+}
+
+function check_if_all_files_are_uploaded($id, $total_files, $temp_dir){
+    return (substr_count(implode(" ", scandir($temp_dir)), $id) == $total_files);
 }
 
 //Check Chunk 還有一些 Bug 需要修
@@ -201,7 +208,7 @@ if (!empty($_FILES)) foreach ($_FILES as $file) {
     if (move_uploaded_file($file['tmp_name'], $dest_file)) {
         // check if all the parts present, and create the final destination file
 
-        if($_POST['resumableTotalChunks'] == $_POST['resumableChunkNumber']){
+        if(check_if_all_files_are_uploaded($_SESSION['file_name'][$_POST['resumableFilename']], $_POST['resumableTotalChunks'], $temp_dir)){
             finish_upload($temp_dir, $_POST['resumableFilename'], $_POST['resumableChunkSize'], $_POST['resumableTotalSize'], $_POST['resumableTotalChunks']);
         }
     }
