@@ -72,6 +72,7 @@ if (version_compare($newest_version, $current_version, '>')) {
             <li><a href="setting.php">設定</a></li>
             <li><a href="newuser.php">新增使用者</a></li>
             <li><a href="manuser.php">管理使用者</a></li>
+            <li><a href="page.php">頁面</a></li>
             <li><a href="../index.php">回到首頁</a></li>
             <li><a href="login.php">登出</a></li>
         </ul>

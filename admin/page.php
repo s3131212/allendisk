@@ -25,24 +25,6 @@ function sizecount($size)
         return round(($size / 1000), 2).'GB';
     }
 }
-$alert = '';
-if (isset($_GET['delete'])) {
-    $file_list = $db->select('file', array('owner' => $_GET['delete']));
-    if (is_array($file_list)) {
-        foreach ($file_list as $d) {
-            @unlink(dirname(dirname(__FILE__)).'/file/'.$d['realname'].'.data');
-            $db->delete('file', array('id' => $d['id']));
-        }
-    }
-    $dir_list = $db->select('dir', array('owner' => $_GET['delete']));
-    if (is_array($dir_list)) {
-        foreach ($db->select('dir', array('owner' => $_GET['delete'])) as $d) {
-            $db->delete('dir', array('id' => $d['id']));
-        }
-    }
-    $db->delete('user', array('name' => $_GET['delete']));
-    $alert = "<div class='alert alert-success'>刪除成功</div>";
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -62,37 +44,39 @@ if (isset($_GET['delete'])) {
         <li><a href="index.php">管理介面首頁</a></li>
         <li><a href="setting.php">設定</a></li>
         <li><a href="newuser.php">新增使用者</a></li>
-        <li class="active"><a href="#">管理使用者</a></li>
-        <li><a href="page.php">頁面</a></li>
+        <li><a href="manuser.php">管理使用者</a></li>
+        <li class="active"><a href="#">頁面</a></li>
         <li><a href="../index.php">回到首頁</a></li>
         <li><a href="login.php">登出</a></li>
     </ul>
-    <?php echo $alert; ?>
+    <?php
+        if(isset($_GET['success']) && $_GET['success'] == 'edit'){
+            echo "<div class='alert alert-success'>編輯成功</div>";
+        }elseif(isset($_GET['success']) && $_GET['success'] == 'delete'){
+            echo "<div class='alert alert-success'>刪除成功</div>";
+        } 
+    ?>
+    <a class="btn" href="manpage.php?id=new">新增</a>
     <table class="table">
         <thead>
             <tr>
-                <td>帳號</td>
-                <td>Email</td>
-                <td>加入時間</td>
-                <td>使用空間</td>
-                <td>管理</td>
+                <td>ID</td>
+                <td>標題</td>
+                <td>動作</td>
             </tr>
         </thead>
         <tbody>
             <?php
-                $user_list = $db->select('user');
-                if (is_array($user_list)) {
-                    foreach ($db->select('user') as $d) {
-                        $used = $db->ExecuteSQL(sprintf("SELECT SUM(`size`) AS `sum` FROM `file` WHERE `owner` = '%s'", $db->SecureData($d['name'])));
-                        ?>
+                $pages = $db->select('page');
+                if (is_array($pages)) {
+                    foreach ($pages as $d) {
+            ?>
                         <tr>
-                            <td><?php echo $d['name'] ?></td>
-                            <td><?php echo $d['email'] ?></td>
-                            <td><?php echo $d['jointime'] ?></td>
-                            <td><?php echo sizecount(($used[0]['sum'] / 1000 / 1000));
-                        ?></td>
-                            <td><a href="manuser.php?delete=<?php echo $d['name'];
-                        ?>" class="btn btn-danger">刪除</a></td>
+                            <td><?php echo $d['id'] ?></td>
+                            <td><?php echo $d['title'] ?></td>
+                            <td>
+                                <a class="btn btn-info" href="manpage.php?id=<?php echo $d['id'] ?>">編輯</a>
+                            </td>
                         </tr> 
             <?php
 
