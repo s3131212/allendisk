@@ -9,6 +9,10 @@ include 'class/password_compat.php';
 if (!session_id()) {
     session_start();
 }
+if(!$config['reg']){
+	header("Location: index.php");
+	eixt();
+}
 if (isset($_POST[ 'name']) && isset($_POST[ 'password2']) && isset($_POST[ 'password']) && $config[ 'reg'] == 'true') {
     $username = $_POST[ 'name'];
     $email = $_POST[ 'email'];
@@ -57,7 +61,7 @@ $_SESSION['captcha'] = simple_php_captcha();
 		<h1 class="text-center">Allen Disk</h1>
 		<div class="col-md-6 col-md-offset-3">
 			<?php include('nav.php'); ?>
-			<?php if ($err == '1') {
+			<?php if (isset($err) && $err == '1') {
 		    	echo '<div class="alert alert-danger">兩次輸入的密碼必須相同</div>';
 			} elseif (isset($err) && $err == '0') {
 		        echo '<div class="alert alert-danger">不能有任何欄位是空白的</div>';
@@ -119,9 +123,7 @@ $_SESSION['captcha'] = simple_php_captcha();
 							</div>
 							<div class="col-sm-12">
 								<br/>
-								<p>註冊後代表您已經同意<a href="tos.php">使用條款</a>且如果有違反，
-									<?php echo $config[ 'sitename'];
-    ?>將不必負任何責任</p>
+								<?php if($config['tos'] != 0){ ?><p>註冊後代表您已經同意<a href="page.php?id=<?php echo $config['tos']; ?>">使用條款</a>且如果有違反，<?php echo $config['sitename'];?>將不必負任何責任<?php } ?></p>
 								<div class="form-group">
 									<div class="controls">
 										<button type="submit" class="btn btn-primary">註冊</button>
@@ -132,10 +134,6 @@ $_SESSION['captcha'] = simple_php_captcha();
 					</form>
 				</div>
 			</div>
-			<?php 
-} else {
-    echo '<div class="alert alert-warning" role="alert">很抱歉，'.$config['sitename'].'已經關閉註冊</div>';
-} ?>
 		</div>
 		<p class="text-center text-info col-md-12">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a>
 		</p>
