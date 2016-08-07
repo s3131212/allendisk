@@ -12,7 +12,7 @@ if (!session_id()) {
 if ($_SESSION['alogin']) {
     if (isset($_GET['set']) && $_GET['set'] == 'set') {
         $db->update('setting', array('value' => $_POST['sitename']), array('name' => 'sitename'));
-        $db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->SecureData($_POST['sitetitle'])));
+        $db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->databaseLink->real_escape_string($_POST['sitetitle'])));
         $db->update('setting', array('value' => $_POST['size']), array('name' => 'size'));
         $db->update('setting', array('value' => $_POST['url']), array('name' => 'url'));
         $db->update('setting', array('value' => $_POST['total']), array('name' => 'total'));
