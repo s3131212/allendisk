@@ -29,6 +29,12 @@ $config['total'] = $total[0]['value'];
 $subtitle = $db->select('setting', array('name' => 'subtitle'));
 $config['subtitle'] = $subtitle[0]['value'];
 
+$tos = $db->select('setting', array('name' => 'tos'));
+$config['tos'] = $tos[0]['value'];
+
+$why = $db->select('setting', array('name' => 'why'));
+$config['why'] = $why[0]['value'];
+
 $reg = $db->select('setting', array('name' => 'reg'));
 if ($reg[0]['value'] == 'true') {
     $config['reg'] = true;
@@ -36,18 +42,11 @@ if ($reg[0]['value'] == 'true') {
     $config['reg'] = false;
 }
 
-$why = $db->select('setting', array('name' => 'why'));
-if ($why[0]['value'] == 'true') {
-    $config['why'] = true;
+$reg = $db->select('setting', array('name' => 'encrypt_file'));
+if ($reg[0]['value'] == 'true') {
+    $config['encrypt_file'] = true;
 } else {
-    $config['why'] = false;
-}
-
-$tos = $db->select('setting', array('name' => 'tos'));
-if ($tos[0]['value'] == 'true') {
-    $config['tos'] = true;
-} else {
-    $config['tos'] = false;
+    $config['encrypt_file'] = false;
 }
 
 $session_protect = $db->select('setting', array('name' => 'session_protect'));

@@ -1,4 +1,17 @@
 <?php
+if(!function_exists('sizecount')){
+    function sizecount($size){
+        if ($size < 0.001) {
+            return round(($size * 1000 * 1000), 2).'B';
+        } elseif ($size >= 0.001 && $size < 1) {
+            return round(($size * 1000), 2).'KB';
+        } elseif ($size >= 1 && $size < 1000) {
+            return round($size, 2).'MB';
+        } elseif ($size >= 1000) {
+            return round(($size / 1000), 2).'GB';
+        }
+    }
+}
 if(!function_exists('replace_attr')){
     function replace_attr($context){
         global $config;

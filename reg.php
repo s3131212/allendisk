@@ -56,63 +56,19 @@ $_SESSION['captcha'] = simple_php_captcha();
 	<div class="container">
 		<h1 class="text-center">Allen Disk</h1>
 		<div class="col-md-6 col-md-offset-3">
-			<?php if ($_SESSION[ 'login']) {
-    ?>
-			<ul class="nav nav-tabs">
-				<li><a href="index.php">首頁</a>
-				</li>
-				<li><a href="logout.php">登出</a>
-				</li>
-			</ul>
-			<?php 
-} else {
-    ?>
-			<ul class="nav nav-tabs">
-				<li><a href="index.php">首頁</a>
-				</li>
-				<?php if ($config[ 'why']) {
-    ?>
-				<li>
-					<a href="why.php">
-						<?php echo $config[ 'sitename'];
-    ?>的好處</a>
-				</li>
-				<?php 
-}
-    ?>
-				<li><a href="login.php">登入</a>
-				</li>
-				<?php if ($config[ 'reg']) {
-    ?>
-				<li class="active"><a href="reg.php">註冊</a>
-				</li>
-				<?php 
-}
-    ?>
-				<?php if ($config[ 'tos']) {
-    ?>
-				<li><a href="tos.php">使用條款</a>
-				</li>
-				<?php 
-}
-    ?>
-			</ul>
-			<?php 
-} ?>
-			<?php if ($config[ 'reg']) {
-    ?>
+			<?php include('nav.php'); ?>
 			<?php if ($err == '1') {
-    	echo '<div class="alert alert-danger">兩次輸入的密碼必須相同</div>';
-	} elseif (isset($err) && $err == '0') {
-        echo '<div class="alert alert-danger">不能有任何欄位是空白的</div>';
-    } elseif (isset($err) && $err == '2') {
-        echo '<div class="alert alert-danger">已經有重複的帳號</div>';
-    } elseif (isset($err) && $err == '3') {
-        echo '<div class="alert alert-success">註冊完成</div>';
-    } elseif (isset($err) && $err == '4') {
-        echo '<div class="alert alert-danger">驗證碼錯誤</div>';
-    }
-    ?>
+		    	echo '<div class="alert alert-danger">兩次輸入的密碼必須相同</div>';
+			} elseif (isset($err) && $err == '0') {
+		        echo '<div class="alert alert-danger">不能有任何欄位是空白的</div>';
+		    } elseif (isset($err) && $err == '2') {
+		        echo '<div class="alert alert-danger">已經有重複的帳號</div>';
+		    } elseif (isset($err) && $err == '3') {
+		        echo '<div class="alert alert-success">註冊完成</div>';
+		    } elseif (isset($err) && $err == '4') {
+		        echo '<div class="alert alert-danger">驗證碼錯誤</div>';
+		    }
+		    ?>
 			<br/>
 			<div class="panel panel-default">
 				<div class="panel-body">

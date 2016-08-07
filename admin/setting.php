@@ -18,30 +18,9 @@ if ($_SESSION['alogin']) {
         $db->update('setting', array('value' => $_POST['total']), array('name' => 'total'));
         $db->update('setting', array('value' => $_POST['admin']), array('name' => 'admin'));
         $db->update('setting', array('value' => $_POST['subtitle']), array('name' => 'subtitle'));
+        $db->update('setting', array('value' => $_POST['tos']), array('name' => 'tos'));
+        $db->update('setting', array('value' => $_POST['why']), array('name' => 'why'));
 
-        if ($_POST['tos'] != 'true') {
-            $tos = 'false';
-        } else {
-            $tos = 'true';
-        }
-        $db->update('setting', array('value' => $tos), array('name' => 'tos'));
-        if ($_POST['why'] != 'true') {
-            $why = 'false';
-        } else {
-            $why = 'true';
-        }
-        $db->update('setting', array('value' => $why), array('name' => 'why'));
-        if ($_POST['reg'] != 'true') {
-            $reg = 'false';
-        } else {
-            $reg = 'true';
-        }
-        $db->update('setting', array('value' => $reg), array('name' => 'reg'));
-        if ($_POST['session_protect'] != 'true') {
-            $session_protect = 'false';
-        } else {
-            $session_protect = 'true';
-        }
         $db->update('setting', array('value' => $session_protect), array('name' => 'session_protect'));
         if ($_POST['encrypt_file'] != 'true') {
             $encrypt_file = 'false';
@@ -138,19 +117,34 @@ if ($_SESSION['alogin']) {
             <td>允許使用者註冊帳號，個人用網路硬碟請勿勾選</td>
         </tr>
         <tr>
-            <td>顯示「為何選用XXX」</td>
-            <td><input type="checkbox" <?php if ($config['why']) {
-    echo 'checked';
-}
-    ?> name="why" id="why" value="true" /></td>
+            <td>「為何選用XXX」頁面</td>
+            <td>
+                <select name="why" id="tos">
+                    <option value="0">無</option>
+                    <?php 
+                    if(is_array($db->select('page'))){
+                        foreach ($db->select('page') as $value) {
+                            echo '<option value="'. $value['id'] .'" '. (($config['why'] == $value['id']) ? 'selected' : '') .'>'. $value['title'] .'</option>';
+                        }
+                    }
+                    ?>
+                </select>
+            </td>
             <td>內容請至why.php修改</td>
         </tr>
         <tr>
-            <td>顯示「使用條款」</td>
-            <td><input type="checkbox" <?php if ($config['tos']) {
-    echo 'checked';
-}
-    ?> name="tos" id="tos" value="true" /></td>
+            <td>「使用條款」頁面</td>
+            <td>
+                <select name="tos" id="tos">
+                    <option value="0">無</option>
+                    <?php 
+                    if(is_array($db->select('page'))){
+                        foreach ($db->select('page') as $value) {
+                            echo '<option value="'. $value['id'] .'" '. (($config['tos'] == $value['id']) ? 'selected' : '') .'>'. $value['title'] .'</option>';
+                        }
+                    }
+                    ?>
+                </select></td>
             <td>單一使用者可以使用的空間</td>
         </tr>
         <tr>
