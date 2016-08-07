@@ -11,7 +11,7 @@ if (!session_id()) {
 }
 if(!$config['reg']){
 	header("Location: index.php");
-	eixt();
+	exit();
 }
 if (isset($_POST[ 'name']) && isset($_POST[ 'password2']) && isset($_POST[ 'password']) && $config[ 'reg'] == 'true') {
     $username = $_POST[ 'name'];
