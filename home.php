@@ -341,8 +341,8 @@ $dirlocation = array_reverse($dirlocation);
 				</div>
 				<div class="modal-body">
 					<p>檔案大小限制：
-						<?php echo ($config['size'] != 0) ? sizecount($config[ 'size']) : '無'; ?><?php if ($config['tos']) {
-    ?>，當您上傳檔案，代表您已經同意<a href="tos.php" target="_blank">使用條款</a>了，如果您不同意，請勿上傳任何檔案<?php 
+						<?php echo ($config['size'] != 0) ? sizecount($config[ 'size']) : '無'; ?><?php if ($config['tos'] != 0) {
+    ?>，當您上傳檔案，代表您已經同意<a href="page.php?id=<?php echo $config['tos']; ?>" target="_blank">使用條款</a>了，如果您不同意，請勿上傳任何檔案<?php 
 } ?></p>
 					<p class="text-center"><a href="#" class="btn btn-info" id="ajax_upload_btn">拖曳上傳</a>&nbsp;<a href="#" class="btn btn-info" id="traditional_upload_btn">傳統上傳</a>&nbsp;<a href="#" class="btn btn-info" id="remote_upload_btn">遠端上傳</a>
 					</p>

@@ -33,30 +33,14 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
 <body>
 <div class="container">
     <h1 class="text-center"><?php echo $config['sitetitle']; ?></h1>
-        <ul class="nav nav-tabs">
-            <li><a href="index.php">首頁</a></li>
-            <?php if ($config['why']) {
-    ?><li><a href="why.php"><?php echo $config['sitename'];
-    ?>的好處</a></li><?php 
-} ?>
-            <li><a href="login.php">登入</a></li>
-            <?php if ($config['reg']) {
-    ?><li><a href="reg.php">註冊</a></li><?php 
-} ?>
-            <?php if ($config['tos']) {
-    ?><li><a href="tos.php">使用條款</a></li><?php 
-} ?>
-        </ul>
+        <?php include('nav.php'); ?>
     <div class="jumbotron">
-    <h1><?php echo $config['sitename'];?></h1>
-    <p><?php echo $config['subtitle'];?></p>
-    <p>
-        <?php if ($config['why']) {
-    ?><a href="why.php" class="btn btn-primary btn-large">為何使用<?php echo $config['sitename'];
-    ?></a><?php 
-} ?>
-    </p>
-</div>
+        <h1><?php echo $config['sitename'];?></h1>
+        <p><?php echo $config['subtitle'];?></p>
+        <?php if ($config['why']) { ?>
+            <a href="page.php?id=<?php echo $config['why']; ?>" class="btn btn-primary btn-large">為何使用<?php echo $config['sitename']; ?></a>
+        <?php } ?>
+    </div>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
 </div>
 </body>
