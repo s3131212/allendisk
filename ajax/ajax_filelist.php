@@ -25,20 +25,19 @@ function sizecount($size)
     }
 }
 function decodepassphrase($secret){
+    /* Decode Password */
     if($secret != ''){
-        /* Decode Password */
         $passphrase['b'] = $_SESSION['password'];
-        $passphrase['c'] = $secret;
-        $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
-        $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
-        $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
+        $passphrase['c'] = base64_decode($secret);
+        $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true), 0 ,16);
+        $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 32);
+        $passphrase['a'] = openssl_decrypt($passphrase['c'], 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
     }else{
         $passphrase['a'] = 'nopassword';
     }
     return $passphrase['a'];
 }
-function linkcheck($type, $id, $name, $secret){
-    $passphrase['a'] = decodepassphrase($secret);
+function linkcheck($type, $id, $name){
     if (preg_match("/image\/(.*)/i", $type) || preg_match("/audio\/(.*)/i", $type) || preg_match("/video\/(.*)/i", $type) || preg_match("/text\/(.*)/i", $type) || $type == 'application/pdf' || $type == 'application/x-shockwave-flash') {
         return true;
     } else {
@@ -81,6 +80,9 @@ function fileicon($type, $name){
         return 'fa-file-o';
     }
 }
+function base64url_encode($data) { 
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '='); 
+} 
 
 $filelist = array(
     "file" => array(),
@@ -109,9 +111,9 @@ if(is_array($file) && !empty($file)){
             "name" => $d[ 'name'],
             "color" => ($d['color'] != null) ? 'tag-'.$d['color'] : '',
             "icon" => fileicon($d['type'], $d['name']),
-            "passphrase" => decodepassphrase($d['secret']),
+            "passphrase" => base64url_encode(decodepassphrase($d['secret'])),
             "share" => $d['share'],
-            "linkcheck" => linkcheck($d['type'], $d['id'], $d['name'], $d['secret']),
+            "linkcheck" => linkcheck($d['type'], $d['id'], $d['name']),
             "preview" => previewcheck($d['type'], $d['id'])
         ));
     }

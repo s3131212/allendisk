@@ -81,23 +81,32 @@ for ($j = 0; $j < count($_FILES['file']['name']); ++$j) {
     if ($result == '') {
         if($config['encrypt_file']){
             /* Create Key */
-            $passphrase['a'] = sha1(md5(mt_rand().uniqid()));
+
+            $passphrase['a'] = openssl_random_pseudo_bytes(32) . openssl_random_pseudo_bytes(16);
             $passphrase['b'] = $_SESSION['password'];
-            $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
-            $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
-            $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
+            $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true), 0 ,16);
+            $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 32);
+            $passphrase['c'] = openssl_encrypt($passphrase['a'], 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
             unset($key);
-            unset($iv);
-            
-            $iv = md5("\x1B\x3C\x58".$passphrase['a'], true).md5("\x1B\x3C\x58".$passphrase['a'], true);
-            $key = substr(md5("\x2D\xFC\xD8".$passphrase['a'], true).md5("\x2D\xFC\xD9".$passphrase['a'], true), 0, 24);
-            $opts = array('iv' => $iv, 'key' => $key);
-            $fp = fopen($_FILES['file']['tmp_name'][$j], 'rb');
-            $dest = fopen('./file/'.$filename.'.data', 'wb');
-            stream_filter_append($dest, 'mcrypt.rijndael-256', STREAM_FILTER_WRITE, $opts);
-            stream_copy_to_stream($fp, $dest);
-            fclose($fp);
+            unset($iv); 
+
+            $key = substr($passphrase['a'], 0, 32);
+            $iv = substr($passphrase['a'], 32, 16);
+
+            $fp = fopen($_FILES['file']['tmp_name'][$j], 'rb'); //讀取原始檔案 Plaintext
+            $file[0]['size'] = fstat($fp)['size'];
+            $dest = fopen('./file/'.$filename.'.data', 'wb'); // 建立並開啟加密後的檔案 Cipher
+            $size = 4096; //每 4096 bytes 為一個 loop
+            $pos = 0; // 初始化
+            $buffer = "";
+            while ($pos < $file[0]['size']) { //在 $pos 跑完整個檔案後才會退出 while
+                $buffer = openssl_encrypt(fread($fp, $size), 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv); //加密程序
+                fwrite($dest, $buffer, $size + 16); //把內容寫進加密檔 $dest 
+                $iv = substr($buffer, -16); //為下一輪 loop 找出 IV
+                $pos += $size;
+            }
             fclose($dest);
+            fclose($fp);
         }else{
             move_uploaded_file($_FILES['file']['tmp_name'], './file/'.$filename.'.data');
             $passphrase['c'] = null;
