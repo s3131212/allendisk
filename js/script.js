@@ -363,7 +363,7 @@ $(function() {
 		   			$ContextMenuTarget.find('.file-action').find('[data-action=rename]').click();
 		   			break;
 		   		case 'move':
-		   			$ContextMenuTarget.find('.file-action').find('[data-action=move').click();
+		   			$ContextMenuTarget.find('.file-action').find('[data-action=move]').click();
 		   			break;
 		   		case 'preview':
 		   			$ContextMenuTarget.find('.file-action').find('[data-action=preview]').click();
