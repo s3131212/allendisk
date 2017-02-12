@@ -31,8 +31,10 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
         <li><a href="logout.php">登出</a></li>
         <?php
         $pages = $db->select('page');
-        foreach ($pages as $page) {
-            echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+        if(is_array($pages)){
+            foreach ($pages as $page) {
+                echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+            }
         }
         ?>
     </ul>
@@ -47,8 +49,10 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
         <?php } ?>
         <?php
         $pages = $db->select('page');
-        foreach ($pages as $page) {
-            echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+        if(is_array($pages)){
+            foreach ($pages as $page) {
+                echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+            }
         }
         ?>
     </ul>
