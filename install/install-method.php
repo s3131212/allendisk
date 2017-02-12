@@ -34,7 +34,7 @@ if (file_exists('install.lock')) {
     <br />
     <div>
         <a href="mysql-setting.php" class="btn btn-primary btn-lg btn-block">全新安裝</a>
-        <p>如果您已經有 1.5 版且正常運作，請留下 /file 與 database.php ，其餘直接覆蓋後即完成更新程序</p>
+        <p>由於技術問題，目前不提供升級程序。如果您已經有 1.6 版且正常運作，請所有用戶下載檔案之後安裝全新的 1.7 並重新上傳檔案。</p>
     </div>
 </div>
 <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
