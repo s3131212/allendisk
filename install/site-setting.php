@@ -75,21 +75,21 @@ if (file_exists('install.lock')) {
                     <td>啟用註冊功能</td>
                     <td><input type="checkbox" name="reg" id="reg" value="true" /></td>
                     <td>允許使用者註冊帳號，個人用網路硬碟請勿勾選</td>
+                </tr>        
+                <tr>
+                    <td>防止 Session 覆蓋</td>
+                    <td><input type="checkbox" name="session_protect" id="session_protect" value="true" /></td>
+                    <td>防止同一網域底下 Session 互相干擾。若同一網域下沒有其他程式則可以不開啟，若有其他程序，尤其同為 Allen Disk ，則強烈建議開啟此功能。</td>
                 </tr>
                 <tr>
-                    <td>顯示「為何選用XXX」</td>
-                    <td><input type="checkbox" name="why" id="why" value="true" /></td>
-                    <td>內容請至why.php修改</td>
-                </tr>
-                <tr>
-                    <td>顯示「使用條款」</td>
-                    <td><input type="checkbox" name="tos" id="tos" value="true" /></td>
-                    <td>單一使用者可以使用的空間</td>
+                    <td>檔案加密</td>
+                    <td><input type="checkbox" name="encrypt_file" id="encrypt_file" value="true" /></td>
+                    <td>加密上傳的檔案。檔案金鑰為隨機生成，使用 AES 演算法對檔案加密，確保即使遭到入侵，資料也無法被存取。加密會消耗伺服器資源，並增加上傳所需時間，但為了安全性考量，仍強烈建議開啟此功能。注意，開啟與關閉此功能並不會把原先沒有加密過的檔案加密，也不會把已經加密的檔案解密，此選項僅影響完成設定之後的檔案。</td>
                 </tr>
                 <tr>
                     <td>管理員密碼</td>
                     <td><input type="text" value="" name="admin" id="admin" class="form-control" /></td>
-                    <td>到管理介面的密碼</td>
+                    <td>到管理介面（/admin）的密碼</td>
                 </tr>
             </tbody>
         </table>

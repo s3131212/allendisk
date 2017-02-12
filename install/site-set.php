@@ -31,18 +31,18 @@ $db->update('setting', array('value' => $_POST['total']), array('name' => 'total
 $db->update('setting', array('value' => $_POST['admin']), array('name' => 'admin'));
 $db->update('setting', array('value' => $_POST['subtitle']), array('name' => 'subtitle'));
 
-if (isset($_POST['tos']) && $_POST['tos'] != 'true') {
+if (isset($_POST['session_protect']) && $_POST['session_protect'] != 'true') {
     $tos = 'false';
 } else {
     $tos = 'true';
 }
-$db->update('setting', array('value' => $tos), array('name' => 'tos'));
-if (isset($_POST['why']) && $_POST['why'] != 'true') {
+$db->update('setting', array('value' => $tos), array('name' => 'session_protect'));
+if (isset($_POST['encrypt_file']) && $_POST['encrypt_file'] != 'true') {
     $why = 'false';
 } else {
     $why = 'true';
 }
-$db->update('setting', array('value' => $why), array('name' => 'why'));
+$db->update('setting', array('value' => $why), array('name' => 'encrypt_file'));
 if (isset($_POST['reg']) && $_POST['reg'] != 'true') {
     $reg = 'false';
 } else {
