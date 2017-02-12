@@ -21,13 +21,26 @@ if ($_SESSION['alogin']) {
         $db->update('setting', array('value' => $_POST['tos']), array('name' => 'tos'));
         $db->update('setting', array('value' => $_POST['why']), array('name' => 'why'));
 
+        if($_POST['session_protect'] != 'true'){
+            $session_protect = 'false';
+        }else{
+            $session_protect = 'true';
+        }
         $db->update('setting', array('value' => $session_protect), array('name' => 'session_protect'));
+
         if ($_POST['encrypt_file'] != 'true') {
             $encrypt_file = 'false';
         } else {
             $encrypt_file = 'true';
         }
         $db->update('setting', array('value' => $encrypt_file), array('name' => 'encrypt_file'));
+
+        if($_POST['reg'] != 'true'){
+            $reg = 'false';
+        }else{
+            $reg = 'true';
+        }
+        $db->update('setting', array('value' => $reg), array('name' => 'reg'));
         header('location: setting.php?s=1');
     }
     ?>
