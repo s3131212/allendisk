@@ -143,7 +143,7 @@ if ($_SESSION['alogin']) {
                     ?>
                 </select>
             </td>
-            <td>內容請至why.php修改</td>
+            <td>請至導引欄的「頁面」新增一個頁面並在這裡選取</td>
         </tr>
         <tr>
             <td>「使用條款」頁面</td>
@@ -158,7 +158,7 @@ if ($_SESSION['alogin']) {
                     }
                     ?>
                 </select></td>
-            <td>單一使用者可以使用的空間</td>
+            <td>請至導引欄的「頁面」新增一個頁面並在這裡選取</td>
         </tr>
         <tr>
             <td>防止 Session 覆蓋</td>
