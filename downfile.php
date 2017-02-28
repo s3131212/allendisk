@@ -39,7 +39,7 @@ function check_dir($id)
     }
 }
 $res = $db->select('file', array('id' => $_GET['id']));
-if ($_SESSION['login'] && $_SESSION['username'] == $res[0]['owner'] && isset($_GET['download']) && $_GET['download'] == 'true') {
+if (isset($_SESSION['login']) && $_SESSION['login'] && $_SESSION['username'] == $res[0]['owner'] && isset($_GET['download']) && $_GET['download'] == 'true') {
     header('Location: rdownfile.php?id='.$_GET['id'].'&download=true');
 }
 if ($res[0]['recycle'] == '1' || $res[0]['share'] == '0') {
@@ -65,7 +65,7 @@ if ($res[0]['recycle'] == '1' || $res[0]['share'] == '0') {
 <div class="container">
     <h1 class="text-center"><?php echo $config['sitetitle']; ?></h1>
         <?php
-        if ($_SESSION['login']) {
+        if (isset($_SESSION['login']) && $_SESSION['login']) {
             ?>
             <ul class="nav nav-tabs">
                 <li><a href="index.php">首頁</a></li>
