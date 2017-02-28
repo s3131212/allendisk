@@ -16,7 +16,7 @@ function base64url_decode($data) {
 } 
 
 $res = $db->select('file', array('id' => $_GET['id'], 'recycle' => '0'));
-if (!$_SESSION['login'] || $_SESSION['username'] != $res[0]['owner']) {
+if (!isset($_SESSION['login']) || !$_SESSION['login'] || $_SESSION['username'] != $res[0]['owner']) {
     if ($_SERVER['HTTP_REFERER'] != $config['url'].'downfile.php?id='.$_GET['id'].'&password='.$_GET['password']) {
         header('Location: '.$config['url'].'downfile.php?id='.$_GET['id'].'&password='.$_GET['password']);
         exit();
