@@ -56,10 +56,10 @@ $(function() {
                 			html += '<a href="ajax_move_dir.php" data-action="move" data-dir-move-id="'+val['id']+'" class="">移動</a>';
                 			if(val['share'] == 1){
                 				html += '<a href="share_dir.php?id='+val['id']+'" data-action="share" target="_blank" class="">分享</a>';
-        						html += '<a href="#" class="" data-share-id="'+val['id']+'" data-share-type="dir">取消公開資料夾</a>';
+        						html += '<a href="#" class="" data-action="public" data-share-id="'+val['id']+'" data-share-type="dir">取消公開資料夾</a>';
                 			}else{
                 				html += '<a href="#" data-action="share" class="disabled">分享</a>';
-        						html += '<a href="#" class="" data-share-id="'+val['id']+'" data-share-type="dir" >公開資料夾</a>';
+        						html += '<a href="#" class="" data-action="public" data-share-id="'+val['id']+'" data-share-type="dir" >公開資料夾</a>';
                 			}
                 			html += '<a href="#" data-action="tag" data-dir-color-id="'+val['id']+'" class="">標記</a>';
                 		html += '</div>';

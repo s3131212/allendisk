@@ -13,12 +13,19 @@ if (!session_id()) {
 function scan_dir($id, $per)
 {
     $result = true;
-    foreach ($GLOBALS['db']->select('dir', array('parent' => $id)) as $k) {
-        $result = $GLOBALS['db']->update('dir', array('share' => $per), array('id' => $k['id']));
-        $result = scan_dir($k['id'], $per);
+
+    $dir = $GLOBALS['db']->select('dir', array('parent' => $id));
+    $file = $GLOBALS['db']->select('file', array('dir' => $id));
+    if(is_array($dir) && !empty($dir)){
+        foreach ($dir as $k) {
+            $result = $GLOBALS['db']->update('dir', array('share' => $per), array('id' => $k['id']));
+            $result = scan_dir($k['id'], $per);
+        }
     }
-    foreach ($GLOBALS['db']->select('file', array('dir' => $id)) as $d) {
-        $result = $GLOBALS['db']->update('file', array('share' => $per), array('id' => $d['id']));
+    if(is_array($file) && !empty($file)){
+        foreach ($file as $d) {
+            $result = $GLOBALS['db']->update('file', array('share' => $per), array('id' => $d['id']));
+        }
     }
 
     return $result;
