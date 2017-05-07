@@ -102,8 +102,8 @@ if ($res[0]['recycle'] == '1' || $res[0]['share'] == '0') {
     ?></br>檔案大小：<?php sizecount($res[0]['size'] / 1000 / 1000);
     ?></br>上傳時間：<?php echo $res[0]['date'];
     ?></p>
-        <p><a href="rdownfile.php?id=<?php echo $_GET['id'];
-    ?>&password=<?php echo $_GET['password'];
+        <p><a href="rdownfile.php?id=<?php echo htmlspecialchars($_GET['id']);
+    ?>&password=<?php echo htmlspecialchars($_GET['password']);
     ?>" class="btn btn-large btn-primary">下載</a></p>
         <?php 
 } else {

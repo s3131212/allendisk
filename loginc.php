@@ -42,7 +42,7 @@ switch ($res) {
 
     case 1:
         $_SESSION['login'] = true;
-        $_SESSION['username'] = $username;
+        $_SESSION['username'] = htmlspecialchars($username);
         $_SESSION['password'] = md5_128($password);
         echo 2;
     break;
