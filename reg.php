@@ -29,7 +29,7 @@ if (isset($_POST[ 'name']) && isset($_POST[ 'password2']) && isset($_POST[ 'pass
         $err = 0;
     } elseif ($password != $password2) {
         $err = 1;
-    } elseif (strtolower($_POST['captcha']) != strtolower($_SESSION['captcha']['code'])) {
+    } elseif (!isset($_SESSION['captcha']['code']) || strtolower($_POST['captcha']) != strtolower($_SESSION['captcha']['code'])) {
         $err = 4;
     } else {
         $db->insert(array('name' => $username, 'pass' => password_hash($password, PASSWORD_DEFAULT), 'email' => $email), 'user');

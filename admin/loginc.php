@@ -11,7 +11,7 @@ if (!session_id()) {
     session_start();
 }
 $res = $db->select('setting', array('name' => 'admin'));
-if ($_POST['password'] == $res[0]['value'] && strtolower($_POST['captcha']) == strtolower($_SESSION['captcha']['code'])) {
+if ($_POST['password'] == $res[0]['value'] && isset($_SESSION['captcha']['code']) && strtolower($_POST['captcha']) == strtolower($_SESSION['captcha']['code'])) {
     $_SESSION['alogin'] = true;
     header('Location: index.php');
 } else {
