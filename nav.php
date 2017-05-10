@@ -30,12 +30,12 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
         <li><a href="index.php">首頁</a></li>
         <li><a href="logout.php">登出</a></li>
         <?php
-        $pages = $db->select('page');
-        if(is_array($pages)){
-            foreach ($pages as $page) {
-                echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+            $pages = $db->select('page');
+            if(is_array($pages)){
+                foreach ($pages as $page) {
+                    echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+                }
             }
-        }
         ?>
     </ul>
 <?php 
@@ -44,16 +44,14 @@ if (isset($_SESSION['login']) && $_SESSION['login'] === true) {
     <ul class="nav nav-tabs">
         <li><a href="index.php">首頁</a></li>
         <li><a href="login.php">登入</a></li>
-        <?php if ($config['reg']) { ?>
-            <li><a href="reg.php">註冊</a></li>
-        <?php } ?>
+        <?php if ($config['reg']) { ?> <li><a href="reg.php">註冊</a></li><?php } ?>
         <?php
-        $pages = $db->select('page');
-        if(is_array($pages)){
-            foreach ($pages as $page) {
-                echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+            $pages = $db->select('page');
+            if(is_array($pages)){
+                foreach ($pages as $page) {
+                    echo '<li><a href="page.php?id=' . $page['id'] . '">'.replace_attr($page['title']).'</a></li>';
+                }
             }
-        }
         ?>
     </ul>
 <?php } ?>

@@ -252,13 +252,13 @@ $dirlocation = array_reverse($dirlocation);
 							<?php
                                 if (!empty($dirlocation)) {
                                     foreach ($dirlocation as $key => $value) {
-                                        ?>
+                            ?>
 										<button class="btn btn-default btn-arrow"><i class="fa fa-caret-right"></i></button>
 										<a href="home.php?dir=<?php echo $value['id'];
                                         ?>" class="btn <?php echo ($value['id'] == $_GET['dir']) ? 'btn-primary' : 'btn-default';
                                         ?>"><i class="fa fa-folder"></i> <?php echo $value['name'];
                                         ?></a>
-								<?php	
+							<?php	
                                     }
                                 }
                             ?>

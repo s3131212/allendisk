@@ -52,68 +52,32 @@ if ($res[0]['recycle'] == '1' || $res[0]['share'] == '0') {
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-<title><?php echo $res[0]['name']; ?> - <?php echo $config['sitename'];?></title>
-<meta charset="utf-8" />
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>body{ background-color: #F8F8F8; }</style>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-</head>
-<body>
-<div class="container">
-    <h1 class="text-center"><?php echo $config['sitetitle']; ?></h1>
-        <?php
-        if (isset($_SESSION['login']) && $_SESSION['login']) {
-            ?>
-            <ul class="nav nav-tabs">
-                <li><a href="index.php">首頁</a></li>
-                <li><a href="logout.php">登出</a></li>
-            </ul>
-        <?php 
-        } else {
-            ?>
-            <ul class="nav nav-tabs">
-                <li><a href="index.php">首頁</a></li>
-                <?php if ($config['why']) {
-    ?><li><a href="why.php"><?php echo $config['sitename'];
-    ?>的好處</a></li><?php 
-}
-            ?>
-                <li><a href="login.php">登入</a></li>
-                <?php if ($config['reg']) {
-    ?><li><a href="reg.php">註冊</a></li><?php 
-}
-            ?>
-                <?php if ($config['tos']) {
-    ?><li><a href="tos.php">使用條款</a></li><?php 
-}
-            ?>
-            </ul>
-        <?php 
-        } ?>
-    <div class="jumbotron">
-        <?php if ($show) {
-    ?>
-        <h1><?php echo $res[0]['name'];
-    ?></h1>
-        <p>擁有者：<?php echo $res[0]['owner'];
-    ?></br>檔案大小：<?php sizecount($res[0]['size'] / 1000 / 1000);
-    ?></br>上傳時間：<?php echo $res[0]['date'];
-    ?></p>
-        <p><a href="rdownfile.php?id=<?php echo htmlspecialchars($_GET['id']);
-    ?>&password=<?php echo htmlspecialchars($_GET['password']);
-    ?>" class="btn btn-large btn-primary">下載</a></p>
-        <?php 
-} else {
-    ?>
-        <h1>404 Not Found</h1>
-        <p>此檔案不存在，可能不存在、已經被刪除或是被設定為不公開。</p>
-        <?php 
-} ?>
-    </div>
-    <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
-</div>
-</body>
+    <head>
+        <title><?php echo $res[0]['name']; ?> - <?php echo $config['sitename'];?></title>
+        <meta charset="utf-8" />
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>body{ background-color: #F8F8F8; }</style>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="text-center"><?php echo $config['sitetitle']; ?></h1>
+            <?php include('nav.php'); ?>
+            <div class="jumbotron">
+                <?php if ($show) { ?>
+                    <h1><?php echo $res[0]['name']; ?></h1>
+                    <p>擁有者：<?php echo $res[0]['owner']; ?></br>
+                    檔案大小：<?php sizecount($res[0]['size'] / 1000 / 1000); ?></br>
+                    上傳時間：<?php echo $res[0]['date']; ?></p>
+                    <p><a href="rdownfile.php?id=<?php echo htmlspecialchars($_GET['id']); ?>&password=<?php echo htmlspecialchars($_GET['password']);?>" class="btn btn-large btn-primary">下載</a></p>
+                <?php } else { ?>
+                    <h1>404 Not Found</h1>
+                    <p>此檔案不存在，可能不存在、已經被刪除或是被設定為不公開。</p>
+                <?php } ?>
+            </div>
+            <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>
+        </div>
+    </body>
 </html>

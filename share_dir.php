@@ -70,35 +70,7 @@ if (!check_dir($_GET['id'])) {
 <body>
     <div class="container">
         <h1 class="text-center"><?php echo $config['sitetitle']; ?></h1>
-        <?php
-        if ($_SESSION['login']) {
-            ?>
-            <ul class="nav nav-tabs">
-                <li><a href="index.php">首頁</a></li>
-                <li><a href="logout.php">登出</a></li>
-            </ul>
-        <?php 
-        } else {
-            ?>
-            <ul class="nav nav-tabs">
-                <li><a href="index.php">首頁</a></li>
-                <?php if ($config['why']) {
-    ?><li><a href="why.php"><?php echo $config['sitename'];
-    ?>的好處</a></li><?php 
-}
-            ?>
-                <li><a href="login.php">登入</a></li>
-                <?php if ($config['reg']) {
-    ?><li><a href="reg.php">註冊</a></li><?php 
-}
-            ?>
-                <?php if ($config['tos']) {
-    ?><li><a href="tos.php">使用條款</a></li><?php 
-}
-            ?>
-            </ul>
-        <?php 
-        } ?>
+        <?php include('nav.php'); ?>
         <h2>檢視<?php echo $dir[0]['name'] ?></h2>
         <?php echo $alert; ?>
         <table class="table">
@@ -116,11 +88,9 @@ if (!check_dir($_GET['id'])) {
                     foreach ($dircheck as $d) {
                         ?>
                         <tr>
-                            <td><?php echo $d['name'];
-                        ?></td>
+                            <td><?php echo $d['name']; ?></td>
                             <td>資料夾</td>
-                            <td><a href="share_dir.php?id=<?php echo $d['id'];
-                        ?>" class="btn btn-default">開啟</a></td>
+                            <td><a href="share_dir.php?id=<?php echo $d['id']; ?>" class="btn btn-default">開啟</a></td>
                         </tr>
             <?php 
                     }
@@ -129,12 +99,9 @@ if (!check_dir($_GET['id'])) {
                     foreach ($filecheck as $d) {
                         ?>
                         <tr>
-                            <td><?php echo $d['name'];
-                        ?></td>
-                            <td><?php fileformat($d['type'], $d['name']);
-                        ?></td>
-                            <td><a href="downfile.php?id=<?php echo $d['id'];
-                        ?>" target="_blank" class="btn btn-default">下載</a></td>
+                            <td><?php echo $d['name']; ?></td>
+                            <td><?php fileformat($d['type'], $d['name']); ?></td>
+                            <td><a href="downfile.php?id=<?php echo $d['id']; ?>" target="_blank" class="btn btn-default">下載</a></td>
                         </tr>
             <?php 
                     }
