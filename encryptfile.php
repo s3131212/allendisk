@@ -57,7 +57,7 @@ while ($pos < $file[0]['size']) { //在 $pos 跑完整個檔案後才會退出 w
     $iv = substr($buffer, -16); //為下一輪 loop 找出 IV
     $pos += $size;
     //登記現在的加密進度，不怎麼重要的東西
-    file_put_contents(dirname(__FILE__).'/temp/'.$id.'.txt', (floor(($pos/$file[0]['size'])*100) . '%'));
+    file_put_contents(dirname(__FILE__).'/temp/'.$id.'.txt', (floor(($pos/$file[0]['size'])*100)));
 }
 fclose($dest);
 fclose($fp);

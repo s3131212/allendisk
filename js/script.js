@@ -1075,9 +1075,9 @@ $(function() {
 						dataType: 'text',
 						timeOut: 5,
 						success: function(data){
-							if ( data != ''  && $('#uploadpercentage').text() != '上傳完成！') {
-								$('#uploadpercentage').text('加密進度：' + data);
-								$('#upload_progress').css('width', data);
+							if ( data.match(/^[0-9a-z]+$/)  && $('#uploadpercentage').text() != '上傳完成！') {
+								$('#uploadpercentage').text('加密進度：' + data + '%');
+								$('#upload_progress').css('width', data + '%');
 							}
 						},
 						error: function(data){
