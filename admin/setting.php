@@ -11,8 +11,15 @@ if (!session_id()) {
 }
 if ($_SESSION['alogin']) {
     if (isset($_GET['set']) && $_GET['set'] == 'set') {
+        //Check CSRF
+        if($_POST['csrf_token2'] != $_SESSION['csrf_token'][$_POST['csrf_token1']]){
+            die('Token error');
+        }else{
+             unset($_SESSION['csrf_token'][$_POST['csrf_token1']]);
+        }
+
         $db->update('setting', array('value' => $_POST['sitename']), array('name' => 'sitename'));
-        $db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->databaseLink->real_escape_string($_POST['sitetitle'])));
+        $db->ExecuteSQL(sprintf("UPDATE `setting` SET `value` = '%s' WHERE `setting`.`name` = 'sitetitle';", $db->SecureData($_POST['sitetitle'])));
         $db->update('setting', array('value' => $_POST['size']), array('name' => 'size'));
         $db->update('setting', array('value' => $_POST['url']), array('name' => 'url'));
         $db->update('setting', array('value' => $_POST['total']), array('name' => 'total'));
@@ -43,7 +50,12 @@ if ($_SESSION['alogin']) {
         $db->update('setting', array('value' => $reg), array('name' => 'reg'));
         header('location: setting.php?s=1');
     }
-    ?>
+
+//Generate CSRF Token
+$csrf_token_id = sha1(md5(mt_rand().uniqid()));
+$_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -184,6 +196,8 @@ if ($_SESSION['alogin']) {
         </tr>
     </tbody>
 </table>
+<input type="hidden" name="csrf_token1" value="<?php echo $csrf_token_id ?>" />
+<input type="hidden" name="csrf_token2" value="<?php echo $_SESSION['csrf_token'][$csrf_token_id] ?>" />
 <input type="submit" value="送出" class="btn btn-primary">
 </form>
 </br>

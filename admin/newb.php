@@ -15,6 +15,14 @@ if (!$_SESSION['alogin']) {
     header('location:login.php');
     exit();
 }
+
+//Check CSRF
+if($_POST['csrf_token2'] != $_SESSION['csrf_token'][$_POST['csrf_token1']]){
+    die('Token error');
+}else{
+     unset($_SESSION['csrf_token'][$_POST['csrf_token1']]);
+}
+
 $username = $_POST['username'];
 $email = $_POST['email'];
 $password = $_POST['password'];

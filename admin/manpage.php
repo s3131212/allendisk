@@ -46,19 +46,38 @@ if(isset($_GET['id'])){
 
 $alert = '';
 if (isset($_GET['delete'])) {
+    //Check CSRF
+    if($_GET['csrf_token2'] != $_SESSION['csrf_token'][$_GET['csrf_token1']]){
+        die('Token error');
+    }else{
+         unset($_SESSION['csrf_token'][$_GET['csrf_token1']]);
+    }
     $db->delete('page', array('id' => $_GET['id']));
     header('Location: page.php?success=delete');
     exit();
 }
 if(isset($_POST['context'])){
-    if($_POST['id'] == 'new'){
-        $db->ExecuteSQL(sprintf("INSERT INTO `page` (`id`, `title`, `context`) VALUES (NULL, '%s', '%s');", $db->databaseLink->real_escape_string($_POST['title']), $db->databaseLink->real_escape_string($_POST['context'])));
+    
+    //Check CSRF
+    if($_POST['csrf_token2'] != $_SESSION['csrf_token'][$_POST['csrf_token1']]){
+        die('Token error');
     }else{
-        $db->ExecuteSQL(sprintf("UPDATE `page` SET `title` = '%s', `context` = '%s' WHERE `page`.`id` = '%s';", $db->databaseLink->real_escape_string($_POST['title']), $db->databaseLink->real_escape_string($_POST['context']),$db->databaseLink->real_escape_string($_POST['id'])));
+         unset($_SESSION['csrf_token'][$_POST['csrf_token1']]);
+    }
+
+    if($_POST['id'] == 'new'){
+        $db->ExecuteSQL(sprintf("INSERT INTO `page` (`id`, `title`, `context`) VALUES (NULL, '%s', '%s');", $db->SecureData($_POST['title']), $db->SecureData($_POST['context'])));
+    }else{
+        $db->ExecuteSQL(sprintf("UPDATE `page` SET `title` = '%s', `context` = '%s' WHERE `page`.`id` = '%s';", $db->SecureData($_POST['title']), $db->SecureData($_POST['context']),$db->SecureData($_POST['id'])));
     }
     header('Location: page.php?success=edit');
     exit();
 }
+
+//Generate CSRF Token
+$csrf_token_id = sha1(md5(mt_rand().uniqid()));
+$_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -103,8 +122,11 @@ if(isset($_POST['context'])){
             </div>
             <div id="texteditor"><?php echo ($insertmode) ? '' : $res[0]['context']; ?></div>
             <input type="hidden" id="context" name="context" />
-            <input class="btn" value="<?php echo ($insertmode) ? 'new' : $_GET['id']; ?>" type="hidden" id="id" name="id" />
-            <input class="btn" value="送出" type="submit" />
+            <input type="hidden" name="csrf_token1" value="<?php echo $csrf_token_id ?>" />
+            <input type="hidden" name="csrf_token2" value="<?php echo $_SESSION['csrf_token'][$csrf_token_id] ?>" />
+            <input value="<?php echo ($insertmode) ? 'new' : $_GET['id']; ?>" type="hidden" id="id" name="id" />
+            <input class="btn btn-primary" value="送出" type="submit" />
+            <a class="btn btn-link" href="manpage.php?id=<?php echo $_GET['id']; ?>&delete=true&csrf_token1=<?php echo $csrf_token_id ?>&csrf_token2=<?php echo $_SESSION['csrf_token'][$csrf_token_id] ?>">刪除</a>
         </form>
     </div>
     <p class="text-center text-info">Proudly Powered by <a href="http://ad.allenchou.cc/">Allen Disk</a></p>

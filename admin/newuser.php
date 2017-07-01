@@ -47,6 +47,10 @@ if (isset($_GET['err']) && $_GET['err'] == '0') {
 if (isset($_GET['err']) && $_GET['err'] == '2') {
     echo '<div class="alert alert-danger">已經有重複的帳號</div>';
 }
+
+//Generate CSRF Token
+$csrf_token_id = sha1(md5(mt_rand().uniqid()));
+$_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
 ?>
 <p style="font-size:30px;">新增使用者</p>
 <div class="row" style="margin:0 auto;"> <div class="col-md-6">
@@ -69,9 +73,11 @@ if (isset($_GET['err']) && $_GET['err'] == '2') {
           <input type="text" id="email" class="form-control" placeholder="Email" name="email">
         </div>
     </div>
+    <input type="hidden" name="csrf_token1" value="<?php echo $csrf_token_id ?>" />
+    <input type="hidden" name="csrf_token2" value="<?php echo $_SESSION['csrf_token'][$csrf_token_id] ?>" />
     <div class="form-group">
         <div class="controls">
-          <button type="submit" class="btn btn-default">新增使用者</button>
+          <input type="submit" class="btn btn-default" value="新增使用者" />
         </div>
     </div>
 </form></div></div>

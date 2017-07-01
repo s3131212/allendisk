@@ -27,6 +27,13 @@ function sizecount($size)
 }
 $alert = '';
 if (isset($_GET['delete'])) {
+    //Check CSRF
+    if($_GET['csrf_token2'] != $_SESSION['csrf_token'][$_GET['csrf_token1']]){
+        die('Token error');
+    }else{
+         unset($_SESSION['csrf_token'][$_GET['csrf_token1']]);
+    }
+
     $file_list = $db->select('file', array('owner' => $_GET['delete']));
     if (is_array($file_list)) {
         foreach ($file_list as $d) {
@@ -43,6 +50,11 @@ if (isset($_GET['delete'])) {
     $db->delete('user', array('name' => $_GET['delete']));
     $alert = "<div class='alert alert-success'>刪除成功</div>";
 }
+
+//Generate CSRF Token
+$csrf_token_id = sha1(md5(mt_rand().uniqid()));
+$_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -91,8 +103,7 @@ if (isset($_GET['delete'])) {
                             <td><?php echo $d['jointime'] ?></td>
                             <td><?php echo sizecount(($used[0]['sum'] / 1000 / 1000));
                         ?></td>
-                            <td><a href="manuser.php?delete=<?php echo $d['name'];
-                        ?>" class="btn btn-danger">刪除</a></td>
+                            <td><a href="manuser.php?delete=<?php echo $d['name']; ?>&csrf_token1=<?php echo $csrf_token_id ?>&csrf_token2=<?php echo $_SESSION['csrf_token'][$csrf_token_id] ?>" class="btn btn-danger">刪除</a></td>
                         </tr> 
             <?php
 

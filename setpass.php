@@ -25,6 +25,13 @@ function md5_128($text)
 
 $re = 0;
 if (isset($_POST['pass']) && isset($_POST['pass2'])) {
+    //Check CSRF
+    if($_POST['csrf_token2'] != $_SESSION['csrf_token'][$_POST['csrf_token1']]){
+        die('Token error');
+    }else{
+         unset($_SESSION['csrf_token'][$_POST['csrf_token1']]);
+    }
+
     if ($_POST['pass'] != $_POST['pass2']) {
         $re = 1;
     } else {
@@ -51,6 +58,11 @@ if (isset($_POST['pass']) && isset($_POST['pass2'])) {
         }
     }
 }
+
+//Generate CSRF Token
+$csrf_token_id = sha1(md5(mt_rand().uniqid()));
+$_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -82,6 +94,8 @@ if (isset($_POST['pass']) && isset($_POST['pass2'])) {
             <div class="form-group">
                 <input type="password" name="pass2" id="pass2" placeholder="確認密碼" class="form-control" required/>
             </div>
+            <input type="hidden" name="csrf_token1" value="<?php echo $csrf_token_id ?>" />
+            <input type="hidden" name="csrf_token2" value="<?php echo $_SESSION['csrf_token'][$csrf_token_id] ?>" />
             <input type="submit" value="送出" class="btn btn-info"/>
         </form>
     </div>
