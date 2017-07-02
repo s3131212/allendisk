@@ -10,6 +10,7 @@ License: MIT License
 include 'database.php';
 //error_reporting(0);
 error_reporting(E_ALL);
+@ini_set("session.cookie_httponly", 1);
 
 $sitename = $db->select('setting', array('name' => 'sitename'));
 $config['sitename'] = $sitename[0]['value'];
