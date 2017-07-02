@@ -42,17 +42,18 @@ if (isset($_POST['pass']) && isset($_POST['pass2'])) {
                 /* Change Key */
                 /* Get original key */
                 $passphrase['b'] = $_SESSION['password'];
-                $passphrase['c'] = $value['secret'];
-                $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
-                $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
-                $passphrase['a'] = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($passphrase['c']), MCRYPT_MODE_CBC, $iv), "\0\3");
+                $passphrase['c'] = base64_decode($value['secret']);
+                $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true), 0 ,16);
+                $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 32);
+                $passphrase['a'] = openssl_decrypt($passphrase['c'], 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
 
                 /* Update new key */
                 $passphrase['b'] = $new_password;
-                $iv = md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true);
-                $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 24);
-                $passphrase['c'] = rtrim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $passphrase['a'], MCRYPT_MODE_CBC, $iv)), "\0\3");
-                $db->update('file', array('secret' => $passphrase['c']), array('id' => $value['id']));
+                $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true), 0 ,16);
+                $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 32);
+                $passphrase['c'] = openssl_encrypt($passphrase['a'], 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+
+                $db->update('file', array('secret' => base64_encode($passphrase['c'])), array('id' => $value['id']));
             }
             $re = 2;
         }
@@ -75,7 +76,7 @@ $_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
         function redirection(){
             setTimeout(function(){
                 window.parent.location.href = "logout.php";
-            }, 3000);   
+            }, 3000);
         }
     </script>
 </head>
