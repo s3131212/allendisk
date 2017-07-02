@@ -37,7 +37,7 @@ $(function() {
 			$('#uploadpercentage').text(Math.round( (e.loaded / e.total) * 100 ) + '%');
 		}
 	}
-	
+
 	function filelist(json) {
 		var filelist = { 'file': [], 'dir': [] };
 		$.each(json[0]['dir'], function(key, val) {
@@ -1148,14 +1148,15 @@ $(function() {
 	});
 	r.on('fileError', function(file, message){
 		console.log(file);
-		if (data.result == 'par') {
+		console.log(message);
+		if (message.result == 'par') {
 			file.retry();
 			result = '檔案上傳不完全，正在嘗試重新上傳';
-			$('#uploadpercentage').text('上傳失敗');
+			$('#uploadpercentage').text('檔案上傳不完全，正在嘗試重新上傳');
 			$('#uploadpercentage').removeClass('text-info').addClass('text-danger');
 		}else{
 			result = '檔案上傳失敗';
-			$('#uploadpercentage').text('上傳失敗');
+			$('#uploadpercentage').text('檔案上傳失敗');
 			$('#uploadpercentage').removeClass('text-info').addClass('text-danger');
 		}
 	});
