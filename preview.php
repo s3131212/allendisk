@@ -118,5 +118,34 @@ if (isset($_GET['id']) && $_GET['id'] != null) {
              
          </body>
          </html>';
+    } elseif ($res[0]['type'] == 'application/pdf'){
+        $pass = decrypt_code($res[0]['secret']);
+        $token = base64_encode(json_encode(array(array('id' => $_GET['id'], 'time' => time(), 'dir' => $res[0]['dir']))));
+        $url = $config['url'].'readfile.php?id='.$_GET['id'].'&pretoken='.$token.'&password='.base64url_encode($pass['key'] . $pass['iv']);
+        echo '
+        <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                
+                <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+                <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+                <link href="css/bootstrap.min.css" rel="stylesheet">
+                <title>Document</title>
+                <script>
+                    $(function(){
+                        $("#link").on("click", function(){
+                            parent.$("#preview-file").modal("hide");
+                        });
+
+                    });
+                </script>
+         </head>
+         <body>
+             <base target="_blank">
+             <a id="link" target="_blank" class="btn btn-primary" href="pdfjs/viewer.html?file='.urlencode($url).'">在新的分頁開啟</a>
+             
+         </body>
+         </html>';
     }
 }

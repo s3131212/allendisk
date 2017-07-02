@@ -47,7 +47,7 @@ function linkcheck($type, $id, $name){
 
 function previewcheck($type, $id)
 {
-    if (preg_match("/image\/(.*)/i", $type) || preg_match("/audio\/(.*)/i", $type) || preg_match("/video\/(.*)/i", $type) || preg_match("/text\/(.*)/i", $type) || $type == 'application/msword' || $type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || $type == 'application/vnd.ms-excel' || $type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $type == 'application/vnd.ms-powerpoint' || $type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+    if (preg_match("/image\/(.*)/i", $type) || preg_match("/audio\/(.*)/i", $type) || preg_match("/video\/(.*)/i", $type) || preg_match("/text\/(.*)/i", $type) || $type == 'application/msword' || $type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || $type == 'application/vnd.ms-excel' || $type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || $type == 'application/vnd.ms-powerpoint' || $type == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || $type == 'application/pdf') {
         return true;
         echo '<a href="#" data-preview-id="'.$id.'" class="btn btn-warning">預覽</a>';
     } else {
