@@ -13,9 +13,12 @@ if (!session_id()) {
 function delete_dir($id)
 {
     $result = true;
-    foreach ($GLOBALS['db']->select('file', array('owner' => $_SESSION['username'], 'dir' => $id)) as $k) {
-        $result = $GLOBALS['db']->delete('file', array('id' => $k['id']));
-        $result = @unlink('file/'.$k['realname'].'.data');
+    $dir = $GLOBALS['db']->select('file', array('owner' => $_SESSION['username'], 'dir' => $id));
+    if(is_array($dir) && !empty($dir)){
+        foreach ($dir as $k) {
+            $result = $GLOBALS['db']->delete('file', array('id' => $k['id']));
+            $result = @unlink('file/'.$k['realname'].'.data');
+        }
     }
     $result = $GLOBALS['db']->delete('dir', array('id' => $id));
 
@@ -24,8 +27,11 @@ function delete_dir($id)
 function scan_dir($id)
 {
     $result = true;
-    foreach ($GLOBALS['db']->select('dir', array('owner' => $_SESSION['username'], 'parent' => $id)) as $d) {
-        $result = scan_dir($d['id']);
+    $dir = $GLOBALS['db']->select('dir', array('owner' => $_SESSION['username'], 'parent' => $id));
+    if(is_array($dir) && !empty($dir)){
+        foreach ($dir as $d) {
+            $result = scan_dir($d['id']);
+        }
     }
     $result = delete_dir($id);
 

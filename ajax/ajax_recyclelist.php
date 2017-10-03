@@ -69,10 +69,10 @@ if ($res[0]['id'] != null) {
         } else {
             $ordir = '主目錄';
         }
-        array_push($filelist["file"], array(
+        array_push($filelist["dir"], array(
             "name" => $d["name"],
             "id" => $d["id"],
-            "fileformat" => "資料夾",
+            "fileformat" => "dir",
             "ordir" => $ordir
         ));
     }
