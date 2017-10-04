@@ -82,12 +82,10 @@ function create_dir_passphrase($dir, $key){
     $user = $GLOBALS['db']->select('user', array('name' => $dir['owner']));
     $passphrase['a'] = $key;
     $passphrase['b'] = substr($dir['id'], 0, 20).substr($user[0]['pass'], 0, 20);
-    //print_r($passphrase);
 
     $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true), 0 ,16);
     $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 32);
     $passphrase['c'] = openssl_encrypt($passphrase['a'], 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
-    //print_r($passphrase);
 
     return base64url_encode($passphrase['c']);
 }
