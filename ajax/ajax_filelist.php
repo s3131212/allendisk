@@ -7,6 +7,7 @@ License: MIT License
 */
 
 @set_time_limit(20);
+error_reporting(E_ALL);
 include dirname(dirname(__FILE__)).'/config.php';
 if (!session_id()) {
     session_start();
@@ -36,6 +37,28 @@ function decodepassphrase($secret){
         $passphrase['a'] = 'nopassword';
     }
     return $passphrase['a'];
+}
+function create_dir_passphrase($dir_id){
+    global $config;
+    if(!$config['encrypt_file']) return '';
+
+    /* Create Key */
+    /*
+        $passphrase['a'] 是使用者密碼
+        $passphrase['b'] 是資料夾 ID 和使用者 Hash 過的密碼混和
+        $passphrase['c'] 由 a, b 算出
+    */
+    $user = $GLOBALS['db']->select('user', array('name' => $_SESSION['username']));
+    $passphrase['a'] = $_SESSION['password'];
+    $passphrase['b'] = substr($dir_id, 0, 20).substr($user[0]['pass'], 0, 20);
+    //print_r($passphrase);
+
+    $iv = substr(md5("\x1B\x3C\x58".$passphrase['b'], true).md5("\x1B\x3C\x58".$passphrase['b'], true), 0 ,16);
+    $key = substr(md5("\x2D\xFC\xD8".$passphrase['b'], true).md5("\x2D\xFC\xD9".$passphrase['b'], true), 0, 32);
+    $passphrase['c'] = openssl_encrypt($passphrase['a'], 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+    //print_r($passphrase);
+
+    return $passphrase['c'];
 }
 function linkcheck($type, $id, $name){
     if (preg_match("/image\/(.*)/i", $type) || preg_match("/audio\/(.*)/i", $type) || preg_match("/video\/(.*)/i", $type) || preg_match("/text\/(.*)/i", $type) || $type == 'application/pdf' || $type == 'application/x-shockwave-flash') {
@@ -100,7 +123,8 @@ if(is_array($dir) && !empty($dir)){
             "id" => $d['id'],
             "name" => $d[ 'name'],
             "color" => ($d['color'] != null) ? 'tag-'.$d['color'] : '',
-            "share" => sharedir($d['share'], $d['id'])
+            "share" => sharedir($d['share'], $d['id']),
+            'passphrase' => base64url_encode(create_dir_passphrase($d['id']))
         ));
     }
 }
