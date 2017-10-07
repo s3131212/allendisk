@@ -13,6 +13,7 @@ if (!session_id()) {
 $res = $db->select('setting', array('name' => 'admin'));
 if ($_POST['password'] == $res[0]['value'] && isset($_SESSION['captcha']['code']) && strtolower($_POST['captcha']) == strtolower($_SESSION['captcha']['code'])) {
     $_SESSION['alogin'] = true;
+    session_regenerate_id(true);
     header('Location: index.php');
 } else {
     header('Location: login.php?err=1');

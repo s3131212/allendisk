@@ -41,6 +41,7 @@ switch ($res) {
     break;
 
     case 1:
+        session_regenerate_id(true);
         $_SESSION['login'] = true;
         $_SESSION['username'] = htmlspecialchars($username);
         $_SESSION['password'] = md5_128($password);
