@@ -45,7 +45,7 @@ if ($_SESSION['login'] && $_SESSION['username'] == $res[0]['owner']) {
     }
     echo json_encode(array(
         'success' => $result,
-        'message' => $result ? '成功修改檔案權限。' : '修改檔案權限失敗。',
+        'message' => ($result !== false) ? '成功修改檔案權限。' : '修改檔案權限失敗。',
     ));
     $token = @touch(dirname(dirname(__FILE__)).'/updatetoken/'.md5($_SESSION['username']).'.token');
 } else {

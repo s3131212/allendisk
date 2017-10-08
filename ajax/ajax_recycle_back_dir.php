@@ -41,7 +41,7 @@ if ($_SESSION['login'] && $_SESSION['username'] == $res[0]['owner']) {
     $result = scan_dir($_GET['id']);
     echo json_encode(array(
         'success' => $result,
-        'message' => $result ? '成功還原' : '還原失敗。',
+        'message' => ($result !== false) ? '成功還原' : '還原失敗。',
     ));
 } else {
     echo json_encode(array(

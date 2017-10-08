@@ -42,7 +42,7 @@ if ($_SESSION['login'] && $_SESSION['username'] == $res[0]['owner']) {
     $result = scan_dir($_GET['id']);
     echo json_encode(array(
         'success' => $result,
-        'message' => $result ? '成功刪除。' : '刪除失敗。',
+        'message' => ($result !== false) ? '成功刪除。' : '刪除失敗。',
     ));
     $token = @touch(dirname(dirname(__FILE__)).'/updatetoken/'.md5($_SESSION['username']).'.token');
 } else {
