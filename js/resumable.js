@@ -57,11 +57,12 @@
       testMethod: 'GET',
       prioritizeFirstAndLastChunk:false,
       target:'/',
+      testTarget: null,
       parameterNamespace:'',
       testChunks:true,
       generateUniqueIdentifier:null,
       getTarget:null,
-      maxChunkRetries:undefined,
+      maxChunkRetries:100,
       chunkRetryInterval:undefined,
       permanentErrors:[400, 404, 415, 500, 501],
       maxFiles:undefined,
@@ -113,8 +114,8 @@
 
     // EVENTS
     // catchAll(event, ...)
-    // fileSuccess(file), fileProgress(file), fileAdded(file, event), fileRetry(file), fileError(file, message),
-    // complete(), progress(), error(message, file), pause()
+    // fileSuccess(file), fileProgress(file), fileAdded(file, event), filesAdded(files, filesSkipped), fileRetry(file),
+    // fileError(file, message), complete(), progress(), error(message, file), pause()
     $.events = [];
     $.on = function(event,callback){
       $.events.push(event.toLowerCase(), callback);
@@ -153,10 +154,10 @@
           }
         }
       },
-      generateUniqueIdentifier:function(file){
+      generateUniqueIdentifier:function(file, event){
         var custom = $.getOpt('generateUniqueIdentifier');
         if(typeof custom === 'function') {
-          return custom(file);
+          return custom(file, event);
         }
         var relativePath = file.webkitRelativePath||file.fileName||file.name; // Some confusion in different versions of Firefox
         var size = file.size;
@@ -186,17 +187,21 @@
           return (size/1024.0/1024.0/1024.0).toFixed(1) + ' GB';
         }
       },
-      getTarget:function(params){
+      getTarget:function(request, params){
         var target = $.getOpt('target');
-        if(typeof target === 'function') {
+
+        if (request === 'test' && $.getOpt('testTarget')) {
+          target = $.getOpt('testTarget') === '/' ? $.getOpt('target') : $.getOpt('testTarget');
+        }
+
+        if (typeof target === 'function') {
           return target(params);
         }
-        if(target.indexOf('?') < 0) {
-          target += '?';
-        } else {
-          target += '&';
-        }
-        return target + params.join('&');
+
+        var separator = target.indexOf('?') < 0 ? '?' : '&';
+        var joinedParams = params.join('&');
+
+        return target + separator + joinedParams;
       }
     };
 
@@ -216,145 +221,112 @@
       e.preventDefault();
     };
 
-    // INTERNAL METHODS (both handy and responsible for the heavy load)
     /**
-     * @summary This function loops over the files passed in from a drag and drop operation and gets them ready for appendFilesFromFileList
-     *            It attempts to use FileSystem API calls to extract files and subfolders if the dropped items include folders
-     *            That capability is only currently available in Chrome, but if it isn't available it will just pass the items along to
-     *            appendFilesFromFileList (via enqueueFileAddition to help with asynchronous processing.)
-     * @param files {Array} - the File or Entry objects to be processed depending on your browser support
-     * @param event {Object} - the drop event object
-     * @param [queue] {Object} - an object to keep track of our progress processing the dropped items
-     * @param [path] {String} - the relative path from the originally selected folder to the current files if extracting files from subfolders
+     * processes a single upload item (file or directory)
+     * @param {Object} item item to upload, may be file or directory entry
+     * @param {string} path current file path
+     * @param {File[]} items list of files to append new items to
+     * @param {Function} cb callback invoked when item is processed
      */
-    var loadFiles = function (files, event, queue, path){
-      //initialize the queue object if it doesn't exist
-      if (!queue) {
-        queue = {
-          total: 0,
-          files: [],
-          event: event
-        };
+    function processItem(item, path, items, cb) {
+      var entry;
+      if(item.isFile){
+        // file provided
+        return item.file(function(file){
+          file.relativePath = path + file.name;
+          items.push(file);
+          cb();
+        });
+      }else if(item.isDirectory){
+        // item is already a directory entry, just assign
+        entry = item;
+      }else if(item instanceof File) {
+        items.push(item);
       }
-
-      //update the total number of things we plan to process
-      updateQueueTotal(files.length, queue);
-
-      //loop over all the passed in objects checking if they are files or folders
-      for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        var entry, reader;
-
-        if (file.isFile || file.isDirectory) {
-          //this is an object we can handle below with no extra work needed up front
-          entry = file;
-        }
-        else if (file.getAsEntry) {
-          //get the file as an entry object if we can using the proposed HTML5 api (unlikely to get implemented by anyone)
-          entry = file.getAsEntry();
-        }
-        else if (file.webkitGetAsEntry) {
-          //get the file as an entry object if we can using the Chrome specific webkit implementation
-          entry = file.webkitGetAsEntry();
-        }
-        else if (typeof file.getAsFile === 'function') {
-          //if this is still a DataTransferItem object, get it as a file object
-          enqueueFileAddition(file.getAsFile(), queue, path);
-          //we just added this file object to the queue so we can go to the next object in the loop and skip the processing below
-          continue;
-        }
-        else if (File && file instanceof File) {
-          //this is already a file object so just queue it up and move on
-          enqueueFileAddition(file, queue, path);
-          //we just added this file object to the queue so we can go to the next object in the loop and skip the processing below
-          continue;
-        }
-        else {
-          //we can't do anything with this object, decrement the expected total and skip the processing below
-          updateQueueTotal(-1, queue);
-          continue;
-        }
-
-        if (!entry) {
-          //there isn't anything we can do with this so decrement the total expected
-          updateQueueTotal(-1, queue);
-        }
-        else if (entry.isFile) {
-          //this is handling to read an entry object representing a file, parsing the file object is asynchronous which is why we need the queue
-          //currently entry objects will only exist in this flow for Chrome
-          entry.file(function(file) {
-            enqueueFileAddition(file, queue, path);
-          }, function(err) {
-            console.warn(err);
-          });
-        }
-        else if (entry.isDirectory) {
-          //this is handling to read an entry object representing a folder, parsing the directory object is asynchronous which is why we need the queue
-          //currently entry objects will only exist in this flow for Chrome
-          reader = entry.createReader();
-
-            var newEntries = [];
-            //wrap the callback in another function so we can store the path in a closure
-            var readDir = function(path){
-                reader.readEntries(
-                    //success callback: read entries out of the directory
-                    function(entries){
-                        if (entries.length>0){
-                            //add these results to the array of all the new stuff
-                            for (var i=0; i<entries.length; i++) { newEntries.push(entries[i]); }
-                            //call this function again as all the results may not have been sent yet
-                            readDir(entry.fullPath);
-                        }
-                        else {
-                            //we have now gotten all the results in newEntries so let's process them recursively
-                            loadFiles(newEntries, event, queue, path);
-                            //this was a directory rather than a file so decrement the expected file count
-                            updateQueueTotal(-1, queue);
-                        }
-                    },
-                    //error callback, most often hit if there is a directory with nothing inside it
-                    function(err) {
-                        //this was a directory rather than a file so decrement the expected file count
-                        updateQueueTotal(-1, queue);
-                        console.warn(err);
-                    }
-                );
-            };
-          readDir(entry.fullPath);
-        }
+      if('function' === typeof item.webkitGetAsEntry){
+        // get entry from file object
+        entry = item.webkitGetAsEntry();
       }
-    };
+      if(entry && entry.isDirectory){
+        // directory provided, process it
+        return processDirectory(entry, path + entry.name + '/', items, cb);
+      }
+      if('function' === typeof item.getAsFile){
+        // item represents a File object, convert it
+        item = item.getAsFile();
+        item.relativePath = path + item.name;
+        items.push(item);
+      }
+      cb(); // indicate processing is done
+    }
+
 
     /**
-     * @summary Adjust the total number of files we are expecting to process
-     *          if decrementing and the new expected total is equal to the number processed, flush the queue
-     * @param addition {Number} - the number of additional files we expect to process (may be negative)
-     * @param queue {Object} - an object to keep track of our progress processing the dropped items
+     * cps-style list iteration.
+     * invokes all functions in list and waits for their callback to be
+     * triggered.
+     * @param  {Function[]}   items list of functions expecting callback parameter
+     * @param  {Function} cb    callback to trigger after the last callback has been invoked
      */
-    var updateQueueTotal = function(addition, queue){
-      queue.total += addition;
-
-      // If all the files we expect have shown up, then flush the queue.
-      if (queue.files.length === queue.total) {
-        appendFilesFromFileList(queue.files, queue.event);
+    function processCallbacks(items, cb){
+      if(!items || items.length === 0){
+        // empty or no list, invoke callback
+        return cb();
       }
-    };
+      // invoke current function, pass the next part as continuation
+      items[0](function(){
+        processCallbacks(items.slice(1), cb);
+      });
+    }
 
     /**
-     * @summary Add a file to the queue of processed files, if it brings the total up to the expected total, flush the queue
-     * @param file {Object} - File object to be passed along to appendFilesFromFileList eventually
-     * @param queue {Object} - an object to keep track of our progress processing the dropped items
-     * @param [path] {String} - the file's relative path from the originally dropped folder if we are parsing folder content (Chrome only for now)
+     * recursively traverse directory and collect files to upload
+     * @param  {Object}   directory directory to process
+     * @param  {string}   path      current path
+     * @param  {File[]}   items     target list of items
+     * @param  {Function} cb        callback invoked after traversing directory
      */
-    var enqueueFileAddition = function(file, queue, path) {
-      //store the path to this file if it came in as part of a folder
-      if (path) file.relativePath = path + '/' + file.name;
-      queue.files.push(file);
+    function processDirectory (directory, path, items, cb) {
+      var dirReader = directory.createReader();
+      dirReader.readEntries(function(entries){
+        if(!entries.length){
+          // empty directory, skip
+          return cb();
+        }
+        // process all conversion callbacks, finally invoke own one
+        processCallbacks(
+          entries.map(function(entry){
+            // bind all properties except for callback
+            return processItem.bind(null, entry, path, items);
+          }),
+          cb
+        );
+      });
+    }
 
-      // If all the files we expect have shown up, then flush the queue.
-      if (queue.files.length === queue.total) {
-        appendFilesFromFileList(queue.files, queue.event);
+    /**
+     * process items to extract files to be uploaded
+     * @param  {File[]} items items to process
+     * @param  {Event} event event that led to upload
+     */
+    function loadFiles(items, event) {
+      if(!items.length){
+        return; // nothing to do
       }
+      $.fire('beforeAdd');
+      var files = [];
+      processCallbacks(
+          Array.prototype.map.call(items, function(item){
+            // bind all properties except for callback
+            return processItem.bind(null, item, "", files);
+          }),
+          function(){
+            if(files.length){
+              // at least one file found
+              appendFilesFromFileList(files, event);
+            }
+          }
+      );
     };
 
     var appendFilesFromFileList = function(fileList, event){
@@ -370,23 +342,35 @@
           return false;
         }
       }
-      var files = [];
+      var files = [], filesSkipped = [], remaining = fileList.length;
+      var decreaseReamining = function(){
+        if(!--remaining){
+          // all files processed, trigger event
+          if(!files.length && !filesSkipped.length){
+            // no succeeded files, just skip
+            return;
+          }
+          window.setTimeout(function(){
+            $.fire('filesAdded', files, filesSkipped);
+          },0);
+        }
+      };
       $h.each(fileList, function(file){
         var fileName = file.name;
         if(o.fileType.length > 0){
-			var fileTypeFound = false;
-			for(var index in o.fileType){
-				var extension = '.' + o.fileType[index];
-				if(fileName.indexOf(extension, fileName.length - extension.length) !== -1){
-					fileTypeFound = true;
-					break;
-				}
-			}
-			if (!fileTypeFound) {
-			  o.fileTypeErrorCallback(file, errorCount++);
-			  return false;
-			}
-		}
+          var fileTypeFound = false;
+          for(var index in o.fileType){
+            var extension = '.' + o.fileType[index];
+            if(fileName.indexOf(extension, fileName.length - extension.length) !== -1){
+              fileTypeFound = true;
+              break;
+            }
+          }
+          if (!fileTypeFound) {
+            o.fileTypeErrorCallback(file, errorCount++);
+            return false;
+          }
+        }
 
         if (typeof(o.minFileSize)!=='undefined' && file.size<o.minFileSize) {
           o.minFileSizeErrorCallback(file, errorCount++);
@@ -407,26 +391,32 @@
             window.setTimeout(function(){
               $.fire('fileAdded', f, event)
             },0);
-          })()};
+          })()} else {
+            filesSkipped.push(file);
+          };
+          decreaseReamining();
         }
         // directories have size == 0
-        var uniqueIdentifier = $h.generateUniqueIdentifier(file)
-        if(uniqueIdentifier && typeof uniqueIdentifier.done === 'function' && typeof uniqueIdentifier.fail === 'function'){
+        var uniqueIdentifier = $h.generateUniqueIdentifier(file, event);
+        if(uniqueIdentifier && typeof uniqueIdentifier.then === 'function'){
+          // Promise or Promise-like object provided as unique identifier
           uniqueIdentifier
-          .done(function(uniqueIdentifier){
+          .then(
+            function(uniqueIdentifier){
+              // unique identifier generation succeeded
               addFile(uniqueIdentifier);
-          })
-          .fail(function(){
-              addFile();
-          });
+            },
+           function(){
+              // unique identifier generation failed
+              // skip further processing, only decrease file count
+              decreaseReamining();
+            }
+          );
         }else{
+          // non-Promise provided as unique identifier, process synchronously
           addFile(uniqueIdentifier);
         }
-
       });
-      window.setTimeout(function(){
-        $.fire('filesAdded', files)
-      },0);
     };
 
     // INTERNAL OBJECT TYPES
@@ -439,7 +429,7 @@
       $.file = file;
       $.fileName = file.fileName||file.name; // Some confusion in different versions of Firefox
       $.size = file.size;
-      $.relativePath = file.webkitRelativePath || file.relativePath || $.fileName;
+      $.relativePath = file.relativePath || file.webkitRelativePath || $.fileName;
       $.uniqueIdentifier = uniqueIdentifier;
       $._pause = false;
       $.container = '';
@@ -634,17 +624,33 @@
           params.push([encodeURIComponent(parameterNamespace+k), encodeURIComponent(v)].join('='));
         });
         // Add extra data to identify chunk
-        params.push([parameterNamespace + $.getOpt('chunkNumberParameterName'), encodeURIComponent($.offset + 1)].join('='));
-        params.push([parameterNamespace + $.getOpt('chunkSizeParameterName'), encodeURIComponent($.getOpt('chunkSize'))].join('='));
-        params.push([parameterNamespace + $.getOpt('currentChunkSizeParameterName'), encodeURIComponent($.endByte - $.startByte)].join('='));
-        params.push([parameterNamespace + $.getOpt('totalSizeParameterName'), encodeURIComponent($.fileObjSize)].join('='));
-        params.push([parameterNamespace + $.getOpt('typeParameterName'), encodeURIComponent($.fileObjType)].join('='));
-        params.push([parameterNamespace + $.getOpt('identifierParameterName'), encodeURIComponent($.fileObj.uniqueIdentifier)].join('='));
-        params.push([parameterNamespace + $.getOpt('fileNameParameterName'), encodeURIComponent($.fileObj.fileName)].join('='));
-        params.push([parameterNamespace + $.getOpt('relativePathParameterName'), encodeURIComponent($.fileObj.relativePath)].join('='));
-        params.push([parameterNamespace + $.getOpt('totalChunksParameterName'), encodeURIComponent($.fileObj.chunks.length)].join('='));
+        params = params.concat(
+          [
+            // define key/value pairs for additional parameters
+            ['chunkNumberParameterName', $.offset + 1],
+            ['chunkSizeParameterName', $.getOpt('chunkSize')],
+            ['currentChunkSizeParameterName', $.endByte - $.startByte],
+            ['totalSizeParameterName', $.fileObjSize],
+            ['typeParameterName', $.fileObjType],
+            ['identifierParameterName', $.fileObj.uniqueIdentifier],
+            ['fileNameParameterName', $.fileObj.fileName],
+            ['relativePathParameterName', $.fileObj.relativePath],
+            ['totalChunksParameterName', $.fileObj.chunks.length]
+          ].filter(function(pair){
+            // include items that resolve to truthy values
+            // i.e. exclude false, null, undefined and empty strings
+            return $.getOpt(pair[0]);
+          })
+          .map(function(pair){
+            // map each key/value pair to its final form
+            return [
+              parameterNamespace + $.getOpt(pair[0]),
+              encodeURIComponent(pair[1])
+            ].join('=');
+          })
+        );
         // Append the relevant chunk and send it
-        $.xhr.open($.getOpt('testMethod'), $h.getTarget(params));
+        $.xhr.open($.getOpt('testMethod'), $h.getTarget('test', params));
         $.xhr.timeout = $.getOpt('xhrTimeout');
         $.xhr.withCredentials = $.getOpt('withCredentials');
         // Add data from header options
@@ -717,16 +723,26 @@
         $.xhr.addEventListener('timeout', doneHandler, false);
 
         // Set up the basic query data from Resumable
-        var query = {};
-        query[$.getOpt('chunkNumberParameterName')] = $.offset + 1;
-        query[$.getOpt('chunkSizeParameterName')] = $.getOpt('chunkSize');
-        query[$.getOpt('currentChunkSizeParameterName')] = $.endByte - $.startByte;
-        query[$.getOpt('totalSizeParameterName')] = $.fileObjSize;
-        query[$.getOpt('typeParameterName')] = $.fileObjType;
-        query[$.getOpt('identifierParameterName')] = $.fileObj.uniqueIdentifier;
-        query[$.getOpt('fileNameParameterName')] = $.fileObj.fileName;
-        query[$.getOpt('relativePathParameterName')] = $.fileObj.relativePath;
-        query[$.getOpt('totalChunksParameterName')] = $.fileObj.chunks.length;
+        var query = [
+          ['chunkNumberParameterName', $.offset + 1],
+          ['chunkSizeParameterName', $.getOpt('chunkSize')],
+          ['currentChunkSizeParameterName', $.endByte - $.startByte],
+          ['totalSizeParameterName', $.fileObjSize],
+          ['typeParameterName', $.fileObjType],
+          ['identifierParameterName', $.fileObj.uniqueIdentifier],
+          ['fileNameParameterName', $.fileObj.fileName],
+          ['relativePathParameterName', $.fileObj.relativePath],
+          ['totalChunksParameterName', $.fileObj.chunks.length],
+        ].filter(function(pair){
+          // include items that resolve to truthy values
+          // i.e. exclude false, null, undefined and empty strings
+          return $.getOpt(pair[0]);
+        })
+        .reduce(function(query, pair){
+          // assign query key/value
+          query[$.getOpt(pair[0])] = pair[1];
+          return query;
+        }, {});
         // Mix in custom data
         var customQuery = $.getOpt('query');
         if(typeof customQuery == 'function') customQuery = customQuery($.fileObj, $);
@@ -734,33 +750,34 @@
           query[k] = v;
         });
 
-        var func   = ($.fileObj.file.slice ? 'slice' : ($.fileObj.file.mozSlice ? 'mozSlice' : ($.fileObj.file.webkitSlice ? 'webkitSlice' : 'slice'))),
-        bytes  = $.fileObj.file[func]($.startByte,$.endByte),
-        data   = null,
-        target = $.getOpt('target');
+        var func = ($.fileObj.file.slice ? 'slice' : ($.fileObj.file.mozSlice ? 'mozSlice' : ($.fileObj.file.webkitSlice ? 'webkitSlice' : 'slice')));
+        var bytes = $.fileObj.file[func]($.startByte, $.endByte);
+        var data = null;
+        var params = [];
 
         var parameterNamespace = $.getOpt('parameterNamespace');
         if ($.getOpt('method') === 'octet') {
           // Add data from the query options
           data = bytes;
-          var params = [];
-          $h.each(query, function(k,v){
-            params.push([encodeURIComponent(parameterNamespace+k), encodeURIComponent(v)].join('='));
+          $h.each(query, function (k, v) {
+            params.push([encodeURIComponent(parameterNamespace + k), encodeURIComponent(v)].join('='));
           });
-          target = $h.getTarget(params);
         } else {
           // Add data from the query options
           data = new FormData();
-          $h.each(query, function(k,v){
-            data.append(parameterNamespace+k,v);
+          $h.each(query, function (k, v) {
+            data.append(parameterNamespace + k, v);
+            params.push([encodeURIComponent(parameterNamespace + k), encodeURIComponent(v)].join('='));
           });
-          data.append(parameterNamespace+$.getOpt('fileParameterName'), bytes);
+          data.append(parameterNamespace + $.getOpt('fileParameterName'), bytes);
         }
 
+        var target = $h.getTarget('upload', params);
         var method = $.getOpt('uploadMethod');
+
         $.xhr.open(method, target);
         if ($.getOpt('method') === 'octet') {
-          $.xhr.setRequestHeader('Content-Type', 'binary/octet-stream');
+          $.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
         }
         $.xhr.timeout = $.getOpt('xhrTimeout');
         $.xhr.withCredentials = $.getOpt('withCredentials');
@@ -769,9 +786,11 @@
         if(typeof customHeaders === 'function') {
           customHeaders = customHeaders($.fileObj, $);
         }
+
         $h.each(customHeaders, function(k,v) {
           $.xhr.setRequestHeader(k, v);
         });
+
         $.xhr.send(data);
       };
       $.abort = function(){
@@ -1014,6 +1033,9 @@
     $.handleChangeEvent = function (e) {
       appendFilesFromFileList(e.target.files, e);
       e.target.value = '';
+    };
+    $.updateQuery = function(query){
+        $.opts.query = query;
     };
 
     return(this);
