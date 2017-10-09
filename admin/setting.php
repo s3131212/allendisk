@@ -28,13 +28,6 @@ if ($_SESSION['alogin']) {
         $db->update('setting', array('value' => $_POST['tos']), array('name' => 'tos'));
         $db->update('setting', array('value' => $_POST['why']), array('name' => 'why'));
 
-        if($_POST['session_protect'] != 'true'){
-            $session_protect = 'false';
-        }else{
-            $session_protect = 'true';
-        }
-        $db->update('setting', array('value' => $session_protect), array('name' => 'session_protect'));
-
         if ($_POST['encrypt_file'] != 'true') {
             $encrypt_file = 'false';
         } else {
@@ -171,14 +164,6 @@ $_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
                     ?>
                 </select></td>
             <td>請至導引欄的「頁面」新增一個頁面並在這裡選取</td>
-        </tr>
-        <tr>
-            <td>防止 Session 覆蓋</td>
-            <td><input type="checkbox" <?php if ($config['session_protect']) {
-    echo 'checked';
-}
-    ?> name="session_protect" id="session_protect" value="true" /></td>
-            <td>防止同一網域底下 Session 互相干擾。若同一網域下沒有其他程式則可以不開啟，若有其他程序，尤其同為 Allen Disk ，則強烈建議開啟此功能。更新此選項後可能會被登出，請重新登入。</td>
         </tr>
         <tr>
             <td>檔案加密</td>

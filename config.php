@@ -10,7 +10,7 @@ License: MIT License
 include 'database.php';
 //error_reporting(0);
 error_reporting(E_ALL);
-@ini_set("session.cookie_httponly", 1);
+ini_set("session.cookie_httponly", 1);
 
 $sitename = $db->select('setting', array('name' => 'sitename'));
 $config['sitename'] = $sitename[0]['value'];
@@ -50,20 +50,8 @@ if ($reg[0]['value'] == 'true') {
     $config['encrypt_file'] = false;
 }
 
-$session_protect = $db->select('setting', array('name' => 'session_protect'));
-if ($session_protect[0]['value'] == 'true') {
-	$config['session_protect'] = true;
-    if(!isset($_COOKIE['session_name'])){
-    	$session_name = uniqid('allendisk');
-    	$dir = explode('/', dirname($_SERVER['SCRIPT_NAME']));
-    	if(end($dir) == 'admin'){
-    		array_pop($dir);
-    	}
-    	setcookie('session_name', $session_name, time()+(60*60*24*5), implode($dir, '/'));
-    	session_name($session_name);
-    }else{
-    	session_name($_COOKIE['session_name']);
-    }
-}else{
-	$config['session_protect'] = false;
+$dir = explode('/', dirname($_SERVER['SCRIPT_NAME']));
+if(end($dir) == 'admin'){
+    array_pop($dir);
 }
+session_set_cookie_params('', implode($dir, '/'), '', '', true);
