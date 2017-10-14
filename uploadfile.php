@@ -15,6 +15,7 @@ if (!$_SESSION['login']) {
 
 @ignore_user_abort(false);
 @set_time_limit(0);
+error_reporting(E_ALL);
 
 function sizecount($size){
     if ($size < 0.001) {
@@ -139,11 +140,11 @@ function finish_upload($temp_dir, $resumableFilename, $resumableChunkSize, $resu
 }
 
 function check_if_all_files_are_uploaded($id, $total_files, $temp_dir){
-    return (substr_count(implode(" ", scandir($temp_dir)), $id) == $total_files);
+    return (substr_count(implode(" ", scandir($temp_dir)), $id) >= $total_files);
 }
 
 //Check Chunk 還有一些 Bug 需要修
-if (isset($_GET['resumableFilename'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['resumableFilename'])) {
 
     //Initialize
     if(isset($_GET['resumableFilename']) && isset($_GET['resumableChunkNumber'])){
@@ -168,7 +169,7 @@ if (isset($_GET['resumableFilename'])) {
     $chunk_file = $temp_dir.'/'.$_SESSION['file_name'][$_GET['resumableFilename']].'.part'.$_GET['resumableChunkNumber'];
     if (file_exists($chunk_file)) {
         header("HTTP/1.0 200 Ok");
-        if($_GET['resumableTotalChunks'] == $_GET['resumableChunkNumber']){
+        if(check_if_all_files_are_uploaded($_SESSION['file_name'][$_GET['resumableFilename']], $_GET['resumableTotalChunks'], $temp_dir)){
             finish_upload($temp_dir, $_GET['resumableFilename'], $_GET['resumableChunkSize'], $_GET['resumableTotalSize'], $_GET['resumableTotalChunks']);
         }
     } else {
