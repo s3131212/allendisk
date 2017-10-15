@@ -94,6 +94,7 @@ $_SESSION['csrf_token'][$csrf_token_id] = sha1(md5(mt_rand().uniqid()));
     <style>body{ background-color: #F8F8F8; }</style>
     <script>
         $(document).ready(function() {
+            $('#context').val($('#texteditor').html());
             $('#texteditor').summernote({
                 lang: 'zh-TW'
             });
